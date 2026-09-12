@@ -11,6 +11,9 @@ sincronizarlos con las instalaciones locales.
 La CLI `skils` instala o actualiza el catálogo en Codex y Claude Code. Consulta la guía
 completa en [docs/instalacion.md](docs/instalacion.md).
 
+La decisión y evidencia que justifican la CLI están documentadas en
+[research/2026-09-cli-instalacion-directa-de-skills.md](research/2026-09-cli-instalacion-directa-de-skills.md).
+
 ## Skills publicados
 
 | Skill | Estado | Entornos |
