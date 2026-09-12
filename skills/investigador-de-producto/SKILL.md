@@ -1,18 +1,17 @@
 ---
 name: investigador-de-producto
-version: 2.0.0
 description: >
   Investigador de productos, herramientas y métodos: compara evidencia, explica cómo
   funcionan por dentro, los prueba sobre nuestros propios sistemas y deja un registro que
-  sostenga la decisión. Activar cuando el usuario quiere: "investigá esta herramienta",
-  "¿nos sirve esto?", "probemos esto sobre nuestro proyecto", "compará estas dos
-  opciones", "¿esto debería ser un skill?", "revisá qué hace este CLI antes de correrlo",
-  "documentá la investigación de", "¿qué tan confiable es este producto?", "auditá esta
-  herramienta", "registrá lo que probamos".
+  sostenga la decisión. Activar cuando el usuario quiere: "investiga esta herramienta",
+  "¿nos sirve esto?", "probemos esto sobre nuestro proyecto", "compara estas dos
+  opciones", "¿esto debería ser un skill?", "revisa qué hace este CLI antes de ejecutarlo",
+  "documenta la investigación de", "¿qué tan confiable es este producto?", "audita esta
+  herramienta", "registra lo que probamos".
 argument-hint: "[producto, herramienta o método a investigar, o 'registro' para documentar uno ya probado]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch, mcp__claude_ai_Notion__notion-fetch, mcp__claude_ai_Notion__notion-create-pages, mcp__claude_ai_Notion__notion-update-page, mcp__claude_ai_Notion__notion-search
-shell: powershell
-effort: high
+metadata:
+  version: "2.1.0"
+  entornos: "Codex, Claude Code"
 ---
 
 # Investigador de producto — Evidencia antes de adoptar
@@ -38,8 +37,8 @@ benchmarks y métodos; compararlos; probarlos en uso sobre un sistema propio; y 
 la investigación.
 
 **No hace:**
-- Investigación de patrones de diseño y benchmarking de interfaces → `ux-discovery`.
-- Investigación con usuarios (entrevistas, síntesis, validación) → `product-discovery`.
+- Investigación de patrones de diseño y benchmarking de interfaces → usar el skill especializado disponible para UX o diseño.
+- Investigación con usuarios (entrevistas, síntesis, validación) → usar el skill especializado disponible para discovery o investigación de usuarios.
 - Construir o reescribir el skill que la investigación justifique → `skill-builder`.
 - Búsquedas rápidas sin una decisión que documentar: eso no necesita este skill.
 
@@ -57,8 +56,14 @@ la investigación.
 ## GUARD — verificar contexto
 
 ```powershell
-Test-Path "$env:USERPROFILE\.claude\skills\investigador-de-producto\references\evaluacion-en-uso.md"
-Get-ChildItem "$env:USERPROFILE\.claude\skills\investigador-de-producto\references\casos" -File -ErrorAction SilentlyContinue | Select-Object Name
+$skillRoots = @(
+  (Join-Path $env:USERPROFILE '.codex\skills\investigador-de-producto'),
+  (Join-Path $env:USERPROFILE '.claude\skills\investigador-de-producto'),
+  'D:\Investigacion\Skills\e-skills\skills\investigador-de-producto'
+) | Where-Object { Test-Path -LiteralPath $_ }
+$skillRoot = $skillRoots | Select-Object -First 1
+Test-Path -LiteralPath (Join-Path $skillRoot 'references\evaluacion-en-uso.md')
+Get-ChildItem -LiteralPath (Join-Path $skillRoot 'references\casos') -File -ErrorAction SilentlyContinue | Select-Object Name
 ```
 
 - Si la primera da `False` → falta el método. Declararlo y no ejecutar ningún producto
@@ -77,10 +82,10 @@ Declarar el modo en la primera línea antes de cualquier acción.
 
 | Modo | Señales | Acción |
 |------|---------|--------|
-| `DOCUMENTAL` | "investigá esta herramienta", "¿nos sirve esto?", "compará estas dos opciones", "¿qué tan confiable es" | Fuentes primarias, clasificación del activo, comparación, informe |
+| `DOCUMENTAL` | "investiga esta herramienta", "¿nos sirve esto?", "compara estas dos opciones", "¿qué tan confiable es" | Fuentes primarias, clasificación del activo, comparación, informe |
 | `EN_USO` | "probemos esto sobre nuestro proyecto", "corré esto acá", "¿qué encuentra en nuestro sistema?" | Línea base, revisión de seguridad, rondas medidas, verificación propia |
-| `REGISTRO` | "documentá la investigación", "registrá lo que probamos", "guardalo en Notion" | Escribir el caso en disco y, si lo piden, en Notion |
-| `REVISION` | "retomemos la investigación de", "¿cambió algo desde que lo probamos?", "actualizá el caso" | Releer el caso, verificar qué caducó, actualizar |
+| `REGISTRO` | "documenta la investigación", "registra lo que probamos", "guárdalo en Notion" | Escribir el caso en disco y, si lo piden, en Notion |
+| `REVISION` | "retomemos la investigación de", "¿cambió algo desde que lo probamos?", "actualiza el caso" | Releer el caso, verificar qué caducó, actualizar |
 
 Desempate: si el producto se puede ejecutar sobre algo nuestro y el usuario lo quiere
 probar → `EN_USO`. Si solo se puede leer → `DOCUMENTAL`. Si el trabajo ya se hizo y falta
@@ -217,6 +222,7 @@ Pendiente:     [experimento o verificación que quedó abierta]
 - **B10 — Notion solo a pedido**: el registro vive en disco. No se crea ni se actualiza una página porque sí.
 - **B11 — Skill solo con evidencia**: no proponer convertir la investigación en skill o capacidad antes de que los hechos verificados lo sostengan. Si se decide, el trabajo es de `skill-builder`.
 - **B12 — Casos anteriores primero**: leer `references/casos/` antes de abrir uno nuevo. Dos registros del mismo objeto fragmentan la evidencia.
+- **B13 — Capacidades verificadas antes de actuar**: no asumir conectores de Notion, búsqueda web ni permisos por el frontmatter. Confirmar la capacidad disponible antes de usarla; si falta, conservar el caso local y declarar la sincronización como pendiente.
 
 ---
 

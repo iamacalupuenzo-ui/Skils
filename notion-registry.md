@@ -1,6 +1,6 @@
 # Registro de Notion
 
-Base consultada: `Skills` en el workspace Gestión Operativa.
+Catálogo vigente: `Sistema de Skills`.
 
 | Registro en Notion | Directorio publicado | Motivo |
 | --- | --- | --- |
@@ -8,9 +8,10 @@ Base consultada: `Skills` en el workspace Gestión Operativa.
 | `skill-builder` | `skills/skill-builder` | Coincidencia directa. |
 | `comsatel-design-system` | `skills/comsatel-design-system` | Coincidencia directa. |
 | `gestion-proyectos` | `skills/gestion-proyectos` | Coincidencia directa. |
-| `documentacion-handoff` | `skills/design-handoff` | Nombre vigente del skill de handoff técnico desde Figma. |
-| `paridad-diseno-desarrollo` | `skills/design-qa` | Nombre vigente del skill de QA y paridad de diseño. |
-| `gestor-notion` | `skills/notion-workspace` | Nombre vigente del operador del workspace de Notion. |
+| `documentacion-handoff` | `skills/documentacion-handoff` | Coincidencia directa; se conserva para evitar una migración no implementada. |
+| `paridad-diseno-desarrollo` | `skills/paridad-diseno-desarrollo` | Coincidencia directa; se conserva para evitar una migración no implementada. |
+| `gestor-notion` | `skills/gestor-notion` | Coincidencia directa; se conserva para evitar una migración no implementada. |
 
-Cuando se renombre un skill, actualizar esta tabla y el registro en Notion dentro del
-mismo cambio para conservar una sola identidad operativa.
+Cuando se renombre un skill, actualizar esta tabla, el registro en Notion y el instalador
+en el mismo cambio. La migración debe retirar o redirigir el nombre anterior de forma
+verificada; hasta entonces se conserva una sola identidad operativa publicada.

@@ -1,258 +1,207 @@
-# Skill Builder — Anatomía de un SKILL.md
+# Anatomía adaptable de un skill
 
-Cada sección en orden. Criterio de inclusión, reglas y anti-patrones.
+Lee esta referencia al crear o refactorizar la estructura.
+No es una plantilla de doce secciones obligatorias: cada pieza se incluye por su utilidad.
+El principal orienta; las referencias conservan el detalle que corresponde a recorridos concretos.
+Una mejora de estructura debe poder explicar dónde quedó el conocimiento anterior.
 
----
+## 1. Frontmatter: descubrimiento y contrato
 
-## 1. Frontmatter (YAML)
+Ejemplo del subconjunto utilizado para una fuente compartida:
 
 ```yaml
 ---
-name: nombre-en-kebab-case
-description: >
-  [Rol en una línea]. Activar cuando el usuario quiere: "[frase 1]", "[frase 2]",
-  "[frase 3]", "[frase 4]", "[frase 5]", "[frase 6]".
-argument-hint: "[descripción del argumento esperado]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-shell: powershell
-effort: low | medium | high
-version: 1.0.0   ← opcional, útil si el skill tiene historial
+name: documentar-componentes
+description: Documenta componentes existentes a partir de su implementación. Úsalo para actualizar variantes, propiedades y ejemplos de handoff; no implementa componentes ni publica cambios.
+metadata:
+  version: "1.0.0"
 ---
 ```
 
-### Reglas de `description`
-- Las frases entre comillas son **literales que el usuario diría** — no descripciones del skill
-- Mínimo 5-6 frases de trigger. Sin estas, el sistema no va a sugerir el skill en el momento correcto
-- Incluir variantes: "creá X", "necesitamos X", "construí X", "diseñá X"
-- Anti-patrón: `"Activar cuando se necesita gestionar el proceso de..."` → nadie dice eso
+Comprueba que name coincida con el directorio y que description explique capacidad y momento de uso.
+La descripción necesita distinguirse de skills vecinos; no una cuota de frases entre comillas.
+“Gestiona cosas del proyecto” no permite saber qué recorrido corresponde.
+“Revisa dependencias y propone correcciones sin modificar registros” sí delimita el resultado.
 
-### Reglas de `allowed-tools`
-- Solo incluir las herramientas que el skill efectivamente usa
-- Skills de solo lectura: `Read, Glob, Grep` (sin Write, Edit, Bash)
-- Skills que crean archivos: agregar `Write, Edit`
-- Skills con terminal: agregar `Bash`
-- Skills con MCP: agregar `mcp__nombre-servidor__*`
-- Anti-patrón: poner `Agent, WebSearch` sin necesitarlos
+Mantén los campos opcionales solo si existe una necesidad y el consumidor los admite.
+La especificación y un validador de un cliente pueden diferir: anota cuál comprobaste.
+Por ejemplo, el validador local de Codex inspeccionado el 2026-09-03 no admitía
+compatibility entre sus claves superiores, aunque existe en la especificación.
+Eso es una limitación de ese validador, no una prohibición universal del estándar.
 
-### Reglas de `effort`
-- `low`: skill de 1 modo, sin referencias, respuesta corta (auditores simples, reporters)
-- `medium`: 2-3 modos, con alguna referencia, fases moderadas
-- `high`: múltiples modos, preflight, referencias, fases con confirmación, cierre estructurado
+No agregues automáticamente shell, effort, argument-hint o controles de invocación a la
+fuente compartida. Verifica soporte específico antes de introducir una extensión.
+metadata.version sirve para identificar una versión; no configura el modelo ni la sesión.
+allowed-tools tampoco instala herramientas ni sustituye la autorización del usuario.
 
----
+## 2. Propósito y perspectiva
 
-## 2. Título + Rol
+Describe qué decisión o trabajo aporta el skill y cuál es el resultado observable.
 
-```markdown
-# Nombre del Skill — Subtítulo descriptivo
+**Útil:**
+> Evalúa la coherencia entre implementación y documentación; separa diferencias
+> comprobadas de elementos que no pudieron inspeccionarse.
 
-Sos [rol en primera persona]. [Qué hacés en 2-3 líneas].
-[Qué no hacés — límites con otros skills si aplica].
+**Insuficiente:**
+> Actúa como el mejor experto del mundo.
+
+Un rol puede orientar prioridades, pero no reemplaza criterios, fuentes y pruebas.
+No exige primera persona ni una identidad grandilocuente.
+Conserva el lenguaje del dominio cuando ayude a decidir y explica el tecnicismo si dificulta actuar.
+
+## 3. Alcance positivo y negativo
+
+Incluye límites explícitos cuando existan responsabilidades cercanas que se puedan confundir.
+
+| Puede hacer | No se deduce de ello |
+|---|---|
+| Auditar documentos | Reescribirlos sin autorización. |
+| Ajustar un skill | Publicarlo, instalar conectores o modificar el sistema descrito. |
+| Proponer una secuencia | Cambiar fechas comprometidas sin respaldo. |
+
+Si se deriva a otro skill, comprueba que esté disponible y que el usuario quiera esa acción.
+No uses dependencias nominales inexistentes para bloquear una tarea realizable.
+Un skill de propósito único puede resolver el alcance en una frase.
+
+## 4. Mapa de recursos
+
+| Recurso | Qué contiene | Criterio para incluirlo |
+|---|---|---|
+| SKILL.md | Propósito, selección, límites y rutas de lectura | Siempre. |
+| references/ | Protocolos, esquemas, criterios y ejemplos | Detalle que cambia decisiones concretas. |
+| scripts/ | Operación repetible con entrada y salida definidas | Más fiabilidad que reinterpretar instrucciones. |
+| assets/ | Plantilla o material reutilizado en la salida | Tiene un consumidor identificado. |
+| agents/ | Configuración específica del agente | Necesidad real y formato verificado. |
+
+Ejemplo de ruta de lectura:
+> Para actualizar un documento existente, lee references/protocol-update.md antes de editar.
+
+El ejemplo es ilustrativo: cada ruta del paquete real debe existir.
+No basta enumerar “patrones”: explica cuándo consultarlos.
+Evita encadenamientos profundos. El principal debe permitir localizar los recursos relevantes.
+Para una referencia extensa agrega un índice útil, no otro resumen que reemplace sus ejemplos.
+
+## 5. Precondiciones y salida ante fallos
+
+Comprueba lo que podría invalidar el trabajo: identidad, acceso, datos y capacidades.
+No impongas un número arbitrario de archivos ni una carpeta de otra plataforma.
+
+**Ejemplo de identidad de proyecto:**
+1. Lee el manifiesto del repositorio indicado.
+2. Contrasta su identificador con el proyecto solicitado.
+3. Si coincide, localiza los recursos que requiere la operación.
+4. Si no coincide, no escribas; informa qué proyecto encontraste.
+
+**Ejemplo de capacidad:**
+> Si el documento no puede leerse, entrega el alcance pendiente y solicita la fuente.
+> No completes la auditoría usando un documento distinto de nombre parecido.
+
+Una comprobación sin respuesta al fallo produce falsa seguridad.
+No interpretes un fallo de permisos como demostración de que un archivo no existe.
+
+## 6. Selección de flujo
+
+Agrega modos si cambian las acciones, permisos o artefactos.
+
+| Señal | Recorrido | Salida |
+|---|---|---|
+| “Revisa y dime qué falla” | Auditoría | Hallazgos, sin modificar el objeto. |
+| “Corrige el diagnóstico aprobado” | Actualización | Cambio y verificación. |
+| “Convierte este instructivo en un skill” | Migración | Mapa de equivalencia y paquete. |
+
+Si el pedido mezcla revisión y corrección explícitas, ambas pueden estar autorizadas.
+Si solo pide diagnóstico, no avances a editar por conveniencia.
+Anuncia el recorrido cuando ayude a entender el alcance; no repitas una cabecera ritual.
+No inventes modos para diferenciar pasos que siempre ocurren juntos.
+
+## 7. Protocolos con decisiones completas
+
+Cada fase relevante define:
+- Entrada: información necesaria para empezar.
+- Acción: operación concreta y destino.
+- Verificación: evidencia para saber qué ocurrió.
+- Salida: cuándo continuar, cambiar de ruta o detener el paso.
+
+**Ejemplo para una actualización:**
+> Lee el contenido y su versión actual. Calcula la diferencia autorizada.
+> Modifica solo esa diferencia. Relee el resultado y compara con lo esperado.
+> Si la respuesta fue incierta, inspecciona antes de repetir.
+
+Separa procedimientos largos cuando no se usan siempre juntos.
+Mantén en el principal el límite que nunca debe perderse.
+No fragmentes por alcanzar una cantidad fija de líneas.
+Una pausa responde a un riesgo o decisión nueva, no al final de cada fase por costumbre.
+
+## 8. Reglas comprobables
+
+Una regla útil tiene condición, acción y motivo o consecuencia.
+
+**Vaga:** “Evita problemas de información”.
+**Operativa:** “Si una fuente está incompleta, identifica la parte no verificada;
+no conviertas la ausencia de datos en un resultado de cero”.
+
+Numera reglas cuando otras secciones necesiten referenciarlas.
+No existe un mínimo universal de bloqueantes.
+Ordena primero los riesgos de mayor impacto y evita reglas opuestas en distintos archivos.
+Cuando una excepción sea legítima, intégrala en la definición original y en sus ejemplos.
+
+## 9. Atajos previsibles
+
+Esta sección es opcional. Úsala para errores recurrentes observados, no para rellenar.
+
+| Atajo | Corrección operativa |
+|---|---|
+| “Reducir líneas siempre mejora el skill” | Compara cobertura: una regla breve no reemplaza todos sus casos. |
+| “Hay respaldo, puedo retirar el original” | El respaldo permite recuperar; no concede autorización de borrado. |
+| “La herramienta respondió sin error” | Relee el estado que debía cambiar antes de declarar éxito. |
+| “Ya se auditó, no necesito probar el cambio” | La auditoría describe el antes; la verificación comprueba el después. |
+
+La tabla recuerda controles existentes. No crea otra definición normativa contradictoria.
+
+## 10. Alertas observables
+
+Incluye señales que puedan detectarse mientras se trabaja:
+- Una reducción extensa sin mapa de conservación.
+- Un ejemplo que ordena algo prohibido por la regla vigente.
+- Un archivo al que ya no llega ninguna ruta de lectura.
+- Un destino externo que no estaba incluido en el pedido.
+- Un resultado parcial presentado como validación de todo el sistema.
+
+Ante la señal, detén el paso riesgoso, revisa la causa y corrige el alcance.
+No interrumpas trabajo independiente que siga siendo seguro y autorizado.
+
+## 11. Contrato de salida
+
+Define la información necesaria para usar el resultado, no decoración obligatoria.
+
+```text
+Resultado: [qué quedó hecho]
+Fuente o destino: [ruta u objeto verificado]
+Cambios relevantes: [qué se modificó y qué se conservó]
+Validación: [prueba realmente ejecutada y resultado]
+Pendiente: [límite concreto, si existe]
 ```
 
-### Criterio de inclusión
-- El rol define el **punto de vista** y el **nivel de expertise** del skill
-- "Sos un Senior Full Stack Engineer" → genera respuestas con criterio de ese nivel
-- Sin definición de rol, el skill opera sin identidad → respuestas genéricas
-- Anti-patrón: "Este skill te ayuda a..." → tercera persona, sin identidad
+Para un diagnóstico, reemplaza “cambios” por hallazgos y propuestas.
+Una respuesta breve puede cubrir estos campos sin encabezados.
+Mantén español neutro latinoamericano con tuteo y evita informes llenos de términos vacíos.
+No expongas secretos ni vuelques todos los datos inspeccionados en el cierre.
 
----
+## 12. Mantenibilidad y cobertura
 
-## 3. Lo que ES y NO ES
+Cada archivo debe tener un propósito y un camino de lectura.
+Cada criterio crítico debe tener una definición canónica y al menos una forma de comprobarlo.
+No dupliques un índice al principio y al final por obligación.
+Separa datos del entorno de reglas reutilizables; incluye procedencia y vigencia cuando corresponda.
 
-Solo incluir si el skill tiene límites claros que se confunden frecuentemente.
+### Antipatrones y corrección
 
-```markdown
-## Lo que este skill PUEDE hacer
-- [capacidad 1]
-- [capacidad 2]
-
-## Lo que este skill NO PUEDE hacer
-- [límite 1] — derivar a [otro skill]
-- [límite 2]
-```
-
-**Cuándo incluir:** skills que comparten dominio con otros (design-director vs lofi-designer vs usability-test)
-**Cuándo omitir:** skills de propósito único donde no hay confusión posible
-
----
-
-## 4. Referencias disponibles
-
-Lista de los archivos en `references/` que el skill usa, con una línea de descripción.
-
-```markdown
-## Referencias disponibles
-
-- `references/nombre.md` — qué contiene y cuándo consultarlo
-- `references/otro.md` — ídem
-```
-
-### Criterio
-- Solo listar referencias que el SKILL.md **efectivamente cita** en sus fases
-- La descripción es una guía de cuándo leer ese archivo, no solo qué contiene
-- Anti-patrón: listar referencias que el skill nunca consulta
-
----
-
-## 5. GUARD
-
-Verificación de contexto que debe pasar antes de cualquier acción.
-
-**Skills project-specific (como lyse-ds):**
-```markdown
-## GUARD — verificar proyecto antes de continuar
-
-Antes de cualquier acción, confirmar que estamos en el proyecto correcto:
-```powershell
-Test-Path "archivo-que-identifica-el-proyecto.ext"
-```
-Si falla → este proyecto NO es [nombre]. Avisá al usuario y detené.
-```
-
-**Skills globales sin guard de proyecto:**
-```markdown
-## GUARD — verificar contexto
-```powershell
-Test-Path "$env:USERPROFILE\.claude\skills"
-```
-```
-
-**Cuándo incluir guard:**
-- Siempre. Todo skill debe verificar al menos que puede operar.
-- Skills project-specific: verificar ≥2 archivos del proyecto (para evitar falsos positivos)
-- Skills globales: verificar que las herramientas/directorios necesarios existen
-
-**Anti-patrones:**
-- Guard sin acción si falla → inútil
-- Guard que verifica algo trivial que siempre pasa → falsa seguridad
-
----
-
-## 6. Detección de modo
-
-Tabla que mapea señales del usuario a modos de operación.
-
-```markdown
-## Detección de modo
-
-Declarar el modo en la primera línea antes de cualquier acción.
-
-| Modo | Señales | Acción |
-|------|---------|--------|
-| `MODO_A` | "frase 1", "frase 2", condición implícita | descripción corta de qué hace |
-| `MODO_B` | "frase 3", "frase 4" | ídem |
-```
-
-### Reglas
-- Declarar siempre el modo en la primera línea de respuesta
-- Las señales son frases reales o condiciones observables (no conceptos abstractos)
-- Cada modo tiene un protocolo propio más abajo en el SKILL.md
-- Skills de un solo modo: la tabla puede omitirse, pero igual declarar el modo al inicio
-- Anti-patrón: modos sin señales claras o con señales que se superponen sin criterio de desempate
-
----
-
-## 7. Protocolos por modo
-
-Un bloque por modo con fases numeradas.
-
-```markdown
-## [MODO] — Protocolo [completo | reducido]
-
-### Fase 0 — [Nombre]
-[descripción + acciones + criterio de pausa]
-
-### Fase 1 — [Nombre]
-[ídem]
-
-[...]
-
-### Cierre obligatorio
-```
-[formato del reporte final]
-```
-```
-
-### Reglas de las fases
-- Numeradas desde 0
-- Fase 0 suele ser el setup/preflight/entrevista
-- Cada fase termina con un criterio de cuándo continuar a la siguiente
-- Si requiere confirmación del usuario → decirlo explícitamente: "Esperar confirmación antes de continuar"
-- El cierre es obligatorio y tiene formato fijo — define qué información el usuario recibe al terminar
-
-### Criterios de granularidad
-- Una fase = una responsabilidad clara
-- Si una fase tiene más de ~5 pasos complejos → dividirla
-- Si dos fases siempre van juntas sin decisión entre ellas → fusionarlas
-
----
-
-## 8. Comportamientos bloqueantes
-
-Lista numerada de reglas no negociables.
-
-```markdown
-## Comportamientos bloqueantes
-
-- **B1 — Nombre corto**: descripción concreta de qué no puede pasar y consecuencia.
-- **B2 — Nombre corto**: ídem.
-[...]
-```
-
-### Reglas de bloqueantes
-- **Numerados** (B1, B2...) para poder referenciarlos en contexto
-- **Nombre corto en negrita** — identifica el bloqueante sin leer todo
-- **Concretos**: "nunca usar overflow-hidden" > "evitar problemas de CSS"
-- **Con consecuencia**: "porque corta el menú absolutamente posicionado"
-- Mínimo 5-6 bloqueantes para skills complejos
-- Los más importantes primero (guard, datos críticos, confirmaciones)
-- Anti-patrón: "siempre ser cuidadoso" → sin acción concreta asociada
-
----
-
-## 9. Formato de respuesta
-
-```markdown
-## Formato de respuesta
-
-- Declarar modo en primera línea (`Modo detectado: X`)
-- [reglas de tono, idioma, estructura]
-- Sin emojis decorativos. Sin frases de relleno.
-- Idioma: español, tono [técnico / conversacional / directo]
-- [formato específico: preguntas, bloque de confirmación, cierre]
-```
-
-### Lo que siempre debe estar
-- Cómo declarar el modo
-- Idioma y tono
-- Restricciones de formato (sin emojis si aplica, límites de longitud)
-- Formato del cierre (qué información siempre se da al terminar)
-
----
-
-## 10. Referencias (sección final)
-
-Lista de archivos de references/ con descripción de una línea.
-
-```markdown
-## Referencias
-
-- `references/nombre.md` — descripción de uso
-- `references/otro.md` — ídem
-```
-
----
-
-## Anti-patrones globales
-
-| Anti-patrón | Por qué es malo | Fix |
-|-------------|----------------|-----|
-| Knowledge dump en SKILL.md | El skill se vuelve ilegible y difícil de mantener | Mover conocimiento estático a references/ |
-| Fases sin criterio de pausa | El skill ejecuta sin validar con el usuario | Agregar "Esperar confirmación antes de continuar" |
-| Bloqueantes vagos | No generan comportamiento concreto | Hacer cada bloqueante accionable y con consecuencia |
-| Trigger phrases en tercera persona | El sistema no las va a matchear | Reescribir como frases que el usuario diría |
-| Modo único sin declarlo | No se puede saber en qué estado está el skill | Siempre declarar modo en primera línea, aunque sea uno solo |
-| References citadas que no existen | El skill menciona algo que no hay | Crear el archivo o quitar la referencia |
-| Effort siempre en `high` | No calibra expectativas | Elegir según complejidad real |
-| Un solo archivo en skills/ sin references/ | El conocimiento queda en SKILL.md | Si hay ≥2 categorías de conocimiento, crear references/ |
+| Antipatrón | Problema | Ajuste |
+|---|---|---|
+| Volcar todo en el principal | Obliga a cargar recorridos que no corresponden | Referencias con instrucciones de lectura. |
+| Resumir también todas las referencias | Pierde ejemplos y decisiones | Conservar el detalle útil en su recurso. |
+| Exigir ocho respuestas siempre | Repite información conocida | Resolver solo vacíos materiales. |
+| Aprobar por encabezados o cantidad de reglas | No demuestra comportamiento | Evidencia y casos representativos. |
+| Usar rutas personales como contrato global | Falla en otra laptop | Configuración local separada. |
+| Retirar archivos porque parecen largos | Puede romper consumidores | Revisar llamadas y mapa de conservación. |
+| Agregar código de ejemplo no ejecutable como solución | Simula una capacidad inexistente | Distinguir plantilla de implementación y probar esta última. |

@@ -69,3 +69,69 @@ uso de ambas antes de proponer cambios.
 
 Los campos `Completada` y `Estado` deben ser coherentes. Una discrepancia es una alerta
 de calidad; no se corrige sin revisar evidencia y criterio de cierre.
+
+---
+
+## Ambiente Minimalist Project Manager
+
+**Hub:** `https://app.notion.com/p/e131a7d063888252b243010144934d8c`
+
+Este ambiente es la base simplificada para la gestión personal de proyectos, tareas y
+productividad. Antes de crear o modificar registros, consultar el schema vivo. No asumir que
+las bases anteriores son el destino de este ambiente.
+
+### Modelo vigente
+
+```text
+Proyecto ↔ Tareas
+    ├─ Notas
+    ├─ Recursos
+    └─ Reuniones
+
+Tarea ──Bloqueada por / Bloquea a── Tarea
+```
+
+| Entidad | Fuente de datos | Propósito |
+|---|---|---|
+| Project | `collection://b2d1a7d0-6388-8272-9051-877b11c20d9d` | Resultado de trabajo con fechas, prioridad, salud y tareas relacionadas. |
+| Tasks Manager | `collection://87a1a7d0-6388-82a0-82c0-8709ea959111` | Unidad de trabajo con fecha, avance, esfuerzo, cierre y dependencias. |
+| Notes | `collection://05f1a7d0-6388-822d-92e3-078941a7fb1b` | Contexto, decisiones y notas vinculables a proyecto o reunión. |
+| Meeting | `collection://cab1a7d0-6388-83ae-9c00-07e25aae11de` | Reuniones con fecha, cliente y notas. |
+
+### Campos operativos mínimos
+
+**Proyecto:** `Name`, `Status`, `Priority`, `Start Date`, `End Date`, `Objetivo`,
+`Criterio de cierre`, `Avance (%)`, `Salud`, `Fecha real de cierre`, `Tasks`, `Blocked by`,
+`Blocking`, `Notes` y `Resources`.
+
+**Tarea:** `Name`, `Status`, `Priority`, `Due Date`, `Project`, `Progreso (%)`,
+`Horas estimadas`, `Horas reales`, `Criterio de cierre`, `Fecha real de cierre`,
+`Bloqueada por` y `Bloquea a`.
+
+### Reglas de uso
+
+- Un proyecto representa un resultado, no una lista de actividades. Debe tener objetivo y
+  criterio de cierre antes de pasar a ejecución.
+- La tarea contiene esfuerzo y progreso; el agente calcula cumplimiento de plazo comparando
+  `Due Date` con `Fecha real de cierre` al completar, y marca alerta si la fecha vence sin
+  cierre. No inferir horas reales ni porcentajes.
+- `Bloqueada por` y `Bloquea a` son una relación bidireccional entre tareas. Registrar ambas
+  direcciones por la relación; no simular una dependencia solo con una prioridad o fecha.
+- `Salud` describe la condición del proyecto (`En curso`, `En riesgo`, `Bloqueado`, `En pausa`)
+  y no sustituye su `Status` de ciclo de vida.
+- No rellenar los registros de plantilla como si fueran trabajo real. Primero levantar los
+  proyectos y tareas actuales del usuario mediante entrevista o evidencia verificable.
+
+### Visibilidad compartida en ClickUp
+
+ClickUp es una fuente secundaria de visibilidad para el equipo y líderes; no sustituye el
+control interno de este ambiente de Notion. El alcance por defecto del agente es solo el usuario
+**Enzo Francisco Macalupu Herrera** (`101231538`, `enzo.macalupu@comsatelglobal.com`) en la
+ruta `Espacio del equipo [ES-LA]` (`90175693448`) → `Diseño UX/UI` (`90179266596`) →
+`Tareas del equipo` (`901714403439`). La consulta de Marketing no devolvió tareas de Enzo;
+no usar Marketing como alcance. Excluir tareas no asignadas, asignadas a terceros o ubicadas en
+otras áreas, excepto ante una solicitud explícita de coordinación o revisión de dependencias.
+
+Antes de escribir en ClickUp, definir y aprobar el mapeo entre campos, dirección de
+sincronización y fuente que prevalece por cada dato. No propagar automáticamente avances,
+horas, prioridades o cierres de Notion a ClickUp ni en sentido inverso.

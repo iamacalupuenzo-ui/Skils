@@ -1,6 +1,6 @@
-# Checklist de auditoría de tokens — 12 criterios (Angular)
+# Checklist de auditoría de tokens — 13 criterios (Angular)
 
-Aplicar los 12 en orden sobre cada componente
+Aplicar los 13 en orden sobre cada componente
 (`projects/comsatel-ds/src/lib/<nombre>/<nombre>.ts/html/css`) y su página de
 documentación (`src/app/pages/<nombre>-demo/<nombre>-page.ts/html/css`). La
 disciplina de tokens (C1, C2, C3, C5-C12) es la MISMA que en el sistema React
@@ -161,6 +161,52 @@ Playground mostraba el mes actual en vez del mes pedido) y
 `datetime-picker.ts` (`defaultValue` — ninguna demo con fecha precargada
 mostraba nada, `resolvedId`/`gridId` con `fieldId` sufrían lo mismo).
 
+**7 — Este proyecto corre SIN `zone.js` (zoneless por defecto, confirmado:
+no está en `package.json`) — una propiedad plana mutada dentro de un
+`setTimeout`/callback async nunca dispara una nueva pasada de detección de
+cambios.** El código "funciona" en el sentido de que la propiedad SÍ cambia
+en memoria — pero la vista nunca se entera, porque no hay `zone.js`
+parcheando esas APIs para avisarle a Angular que reaccione. La pista para
+distinguirlo de un bug real: un efecto imperativo en el MISMO callback (ej.
+`element.focus()`, que no depende de que Angular renderice nada de nuevo) sí
+funciona, mientras que un cambio de clase/estado en ese mismo callback no se
+refleja. Fix: usar `signal()` en vez de una propiedad plana para cualquier
+estado que se vaya a mutar fuera de un evento ligado por Angular
+(`(click)`, `@HostListener`, un `@Input()`/`input()` que cambia):
+```ts
+protected visible = false; // ❌ no se refleja si se muta en un setTimeout
+protected readonly visible = signal(false); // ✅
+```
+Caso real: `modal.ts` — la transición de entrada (opacity/scale) nunca se
+veía pese a que el foco, en el mismo callback, sí se aplicaba
+correctamente. Detalle completo del patrón en
+`references/accessibility-patterns.md` sección 0.
+
+**8 — El CSS de un componente sin template no alcanza su propio host si se
+escribe como una clase normal.** En encapsulación `Emulated`, un selector
+interno como `.cs-skeleton` se compila para elementos con `_ngcontent-*`,
+pero el host `<cs-skeleton>` recibe `_nghost-*`. Cuando el componente usa
+`template: ''` y su superficie visual ES el host, la regla no aplica, sin
+error de compilación: el DOM contiene las filas de carga, pero sus barras se
+ven transparentes. Fix: estilizar el host con `:host`, también dentro de
+media queries; no asumir que una clase declarada en `host: { class: ... }`
+equivale a un elemento de la plantilla.
+
+Caso real: `skeleton.css` — Table y TableTree insertaban el primitivo y
+anunciaban la carga, pero no dibujaban ninguna barra hasta cambiar
+`.cs-skeleton` por `:host` y verificarlo visualmente en ambos flujos.
+
+**9 — Un `@Input()` clásico leído en un inicializador de campo conserva el
+valor por defecto y descarta el binding del consumidor.** Angular asigna los
+inputs después de construir la instancia; por eso un campo como
+`resolvedName = this.name ?? generatedName` o `inputId = this.id ?? generatedId`
+queda congelado antes de recibir `name`/`id`. El síntoma es silencioso: la
+composición se ve correcta, pero el formulario no comparte el `name` esperado
+o el label externo no encuentra el `id` solicitado. Fix: conservar un id/name
+generado y resolverlo en un getter (o sincronizarlo en `ngOnChanges`), nunca en
+el inicializador. Caso real: `radio.ts`/`radio-group.ts`; se corrigió y se
+verificó con el árbol de accesibilidad y navegación nativa por flechas.
+
 ## C5 — z-index no usa la escala semántica
 
 Buscar cualquier `z-index` numérico suelto en componentes con
@@ -269,6 +315,41 @@ Regla general al construir cualquier fila de campos que deban verse
 simétricos: medir ambos con `getBoundingClientRect()` tras renderizar — "se
 ve bien" no basta cuando la diferencia es de pocos píxeles.
 
+**(c) Texto ópticamente alto en un control compacto de altura fija.**
+`align-items: center` centra la caja de línea, no necesariamente los glifos.
+En tamaños pequeños, el espacio interno de la métrica de la fuente puede hacer
+que el texto se perciba más alto que un ícono geométrico correctamente
+centrado. Es especialmente visible en badges, chips y estados con alto fijo.
+
+Regla: cuando un control compacto proyecta texto y opcionalmente íconos,
+verificar visualmente en el navegador al menos una composición solo-texto y
+otra texto+ícono. Si hay desbalance óptico, envolver el contenido proyectado
+en un hijo `inline-flex` centrado y hacer coincidir su caja de línea con la
+del ícono usado en esa composición; mantener la tipografía tokenizada en el
+contenedor. No aplicar este ajuste por intuición a texto de lectura o a
+controles cuya altura dependa del contenido.
+
+Caso real: `cs-badge` necesitó `.cs-badge__content` para separar la altura
+tipográfica del alto fijo del control. El wrapper conserva `gap` y centra
+texto e íconos como una unidad; los íconos de 12px de las composiciones se
+alinean con una caja de línea explícita de 12px, no con una caja de 11px.
+Para pares ícono+texto, revisar también el espacio visible entre ambos y usar
+un token de `--layout-gap-*`; en Badge, `--layout-gap-xs` (4px) conserva la
+relación sin que los elementos se perciban pegados.
+
+**(d) Solapamiento que tapa contenido legible.** En grupos apilados, el
+solapamiento válido para una foto puede recortar iniciales o texto. Verificar
+la composición con contenido visual y textual; si difieren, el margen negativo
+debe responder al contenido que queda debajo, usando un token de layout. Caso
+real: AvatarGroup conserva el solapamiento de fotos y reduce a 4px el de
+avatares con iniciales.
+
+Además, medir el ítem apilado, el anillo y el avatar interno: los tres deben
+tener el mismo ancho y alto. Un custom element `inline-flex` dentro de un
+contenedor normal puede introducir una caja de línea adicional; fijar el
+tamaño del ítem y usar `display: flex` evita que el anillo sea mayor que el
+círculo real.
+
 ## C11 — Un punto/glyph interior calculado como % del contenedor queda descentrado
 
 Un punto de radio, o cualquier hijo circular/cuadrado dentro de un
@@ -346,6 +427,46 @@ patrón (generar el hex candidato, calcular contraste contra cada fondo
 relevante, iterar la luminosidad hasta que las que fallan pasen, sin
 romper el orden relativo de la escala — ej. `bolder` debe seguir siendo
 más prominente que `default`, no invertirse al corregir).
+
+## C13 — `font-size` sin su `line-height` en un elemento cuya altura la define el propio texto
+
+Un `font-size: var(--font-size-*)` sin `line-height: var(--font-line-height-*)`
+en la MISMA regla cae al `line-height: normal` del navegador (~1.2, varía
+por fuente) en vez del ritmo real del sistema
+(`--font-line-height-content-note` = tamaño × 1.5, por ejemplo). Casi nunca
+importa cuando el elemento tiene un alto fijo explícito (`width`/`height`
++ `align-items: center`) o el padding domina la caja — SÍ importa, y se ve
+roto, en cualquier elemento cuya altura la determina puramente el texto:
+un botón de acción con solo padding vertical chico, un label, un párrafo
+de descripción, un chip. El síntoma es visual y específico: el control se
+ve más bajo/apretado de lo que su propio padding sugeriría.
+
+**Caso real (2026-09-10, encontrado por el usuario mirando Toast):** los
+botones de acción de `cs-toast` (`.cs-toast__action`) tenían
+`padding: var(--layout-padding-2xs) var(--layout-padding-md)` (2px
+vertical, valor real, fiel a la referencia) pero NINGÚN `line-height`
+propio — con `line-height: normal` el botón medía 18px con contenido
+(14px sin padding en la variante link de texto), notablemente más bajo
+que el resto de controles chicos del sistema (Button `xs` = 24px). Título
+y descripción del propio Toast (`.cs-toast__title`/`__desc`) tenían el
+mismo hueco. Auditoría de esa sesión encontró el mismo patrón repetido en
+Radio (`RadioGroup` label/error/helper), Pagination (`__of`), Spotlight
+(headline/desc/step/botones — el botón con el MISMO síntoma exacto que
+Toast, 2px de padding sin line-height), DateTimeRangePicker (label/error/
+helper), Menu (group-header/flyout-title/flyout-item/tooltip — dos de
+estos además tenían un `font-size` crudo en px que sí coincidía con un
+token real y no estaba atado, ver C1), y las celdas de Table/Table tree.
+Fix: agregar el `line-height` del mismo par de tokens (`--font-size-X` +
+`--font-line-height-X` siempre van juntos) a cada regla afectada — NUNCA
+a elementos con alto fijo explícito, ahí es ruido sin efecto visual, no
+hace falta perseguirlos.
+
+**Cómo detectarlo rápido:** grep de `font-size` en el `.css` del
+componente, y para cada match verificar en la MISMA regla si hay
+`line-height`. Si no lo hay, verificar si el elemento tiene alto fijo
+(`width`+`height`, o vive dentro de un padre `display:flex` con
+`align-items:center` Y su propio tamaño ya está determinado por otra vía)
+— si no lo tiene, es un hallazgo real.
 
 ---
 

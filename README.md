@@ -18,13 +18,13 @@ La decisión y evidencia que justifican la CLI están documentadas en
 
 | Skill | Estado | Entornos |
 | --- | --- | --- |
-| `investigador-de-producto` | Activo | Codex, Claude Code |
-| `skill-builder` | Activo | Codex, Claude Code |
-| `design-handoff` | Activo | Codex, Claude Code |
-| `design-qa` | Activo | Codex, Claude Code |
 | `comsatel-design-system` | Activo | Codex, Claude Code |
-| `notion-workspace` | Activo | Codex, Claude Code |
+| `documentacion-handoff` | Activo | Codex, Claude Code |
 | `gestion-proyectos` | Activo | Codex, Claude Code |
+| `gestor-notion` | Activo | Codex, Claude Code |
+| `investigador-de-producto` | Activo | Codex, Claude Code |
+| `paridad-diseno-desarrollo` | Activo | Codex, Claude Code |
+| `skill-builder` | Activo | Codex, Claude Code |
 
 La correspondencia entre los nombres vigentes y los registros históricos de Notion está
 en [`notion-registry.md`](notion-registry.md).
@@ -38,3 +38,7 @@ en [`notion-registry.md`](notion-registry.md).
 
 No mantener copias manuales con nombres alternos o respaldos dentro de los directorios
 de skills: el repositorio y su historial Git son el respaldo.
+
+Los directorios que no figuran en `skills-manifest.json` no se distribuyen. Pueden
+conservarse temporalmente como material de evaluación, pero no representan una versión
+activa ni sustituyen un skill publicado.

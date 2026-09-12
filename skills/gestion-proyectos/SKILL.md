@@ -1,15 +1,13 @@
 ---
 name: gestion-proyectos
-version: 1.1.0
 description: >
-  Gestiona proyectos operativos en Notion: evalúa la jerarquía Proyecto → Entregable →
-  Tarea → Subtarea, diseña planes ejecutables, controla riesgos, dependencias, avances y
-  proyecciones. Activar cuando el usuario pida ordenar el proyecto, evaluar tareas,
-  preparar un lanzamiento, revisar riesgos, dar estado o hacer seguimiento.
-argument-hint: "[proyecto, entregable, tarea o situación operativa a gestionar]"
-allowed-tools: Read, Glob, mcp__codex_apps__notion_fetch, mcp__codex_apps__notion_search, mcp__codex_apps__notion_query_data_sources, mcp__codex_apps__notion_create_pages, mcp__codex_apps__notion_update_page
-shell: powershell
-effort: high
+  Dirige la gestión operativa de proyectos desde una arquitectura de información propia:
+  conecta requerimientos, entregables, trabajo y evidencia; controla alcance, dependencias,
+  riesgos, avances y cierre. Notion es el sistema interno y ClickUp la visibilidad compartida.
+  Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
+  revisar riesgos, dar estado o hacer seguimiento.
+metadata:
+  version: "1.7.0"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -20,6 +18,20 @@ aprobado → entregable verificable → paquete de trabajo/tarea → subtarea �
 aceptación. Organiza la ejecución según dependencias, riesgos, responsables y cierre.
 
 Es autónomo: conserva su propio modelo de Notion y no depende de `gestor-notion`.
+Para seguimiento, descomposición y decisiones de PM, este skill es el responsable.
+El gestor general administra el workspace; no define una segunda política de seguimiento.
+Idioma: español neutro latinoamericano con tuteo. Usar capacidades del conector disponible,
+no nombres de herramientas de otra instalación. Si no hay acceso, no simular lecturas ni cambios.
+
+## Integración con el Sistema de Skills
+
+Antes de planificar trabajo especializado o delegable, consultar el catálogo de Skills si
+está disponible y seleccionar por `Capacidades` y `Cuándo usarlo`; reutilizar un skill
+verificado antes de proponer uno nuevo. Una actividad puntual no crea un skill. Si se
+identifica una capacidad recurrente sin cobertura, registrarla como necesidad `Por evaluar`
+en el catálogo o derivarla a `skill-builder` para su diseño. Cuando el skill se construye o
+cambia, `skill-builder` sincroniza su registro; este skill no inventa relaciones ni campos
+en la BD de proyectos para simular esa integración.
 
 ## Límites de responsabilidad
 
@@ -28,9 +40,64 @@ riesgos, decisiones y trazabilidad. No inventa requerimientos funcionales, soluc
 técnicas ni aprobaciones. Cuando una actividad necesita un requerimiento, el PM define
 el entregable de requerimiento y deriva su elaboración/validación al área responsable.
 
+## Operación en Minimalist Project Manager
+
+Cuando el usuario se refiera a su wiki personal, productividad, proyectos personales o al hub
+`Minimalist Project Manager`, usar el modelo de esa sección de `modelo-notion.md` como destino
+operativo. Antes de actuar, consultar el schema vivo de `Project` y `Tasks Manager`.
+
+1. Levantar primero la línea base real: proyectos activos, objetivo, tareas en curso,
+   compromisos de fecha, estimación, horas reales, bloqueos y siguiente acción. Los datos de
+   plantilla no son evidencia del trabajo del usuario.
+2. Para cada proyecto, registrar `Objetivo`, `Criterio de cierre`, fechas, `Avance (%)` y
+   `Salud`. No convertir un porcentaje en hecho: se confirma con evidencia de tareas y usuario.
+3. Para cada tarea, registrar fecha límite, `Progreso (%)`, horas estimadas y reales cuando
+   existan, criterio de cierre y fecha real al completarla. No inventar horas ni completar al
+   100 % una tarea sin evidencia.
+4. Calcular el cumplimiento de plazo sin crear campos redundantes: una tarea completada cumple
+   si `Fecha real de cierre` no supera `Due Date`; una tarea abierta con fecha vencida es alerta.
+   Si falta una de esas fechas, declararlo como no verificable, no como cumplimiento.
+5. Registrar una precedencia con `Bloqueada por` / `Bloquea a`, nunca solo en texto. Revisar
+   ambos extremos antes de actualizar para conservar las dependencias existentes.
+6. En una revisión semanal, entregar: avance real, horas estimadas versus reales disponibles,
+   tareas vencidas, bloqueos, riesgos, decisiones pendientes y el foco de la siguiente semana.
+
+## Alcance compartido en ClickUp
+
+ClickUp es la capa de visibilidad compartida para el equipo y líderes; Notion conserva la
+gestión interna y de productividad personal. Cuando se consulte ClickUp para este agente,
+evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
+(`101231538`, `enzo.macalupu@comsatelglobal.com`) dentro de la ruta verificada:
+`Espacio del equipo [ES-LA]` (`90175693448`) → `Diseño UX/UI` (`90179266596`) →
+`Tareas del equipo` (`901714403439`).
+
+1. Aplicar el filtro de asignado y después conservar únicamente la jerarquía `Diseño UX/UI`
+   verificada antes de analizar, resumir o reportar tareas. No usar Marketing como filtro:
+   no devolvió tareas de Enzo al validarlo.
+2. Excluir tareas sin asignación, tareas de otras personas y tareas de otras áreas. Solo
+   incluirlas si el usuario solicita explícitamente una vista de equipo, una dependencia externa
+   o una coordinación.
+3. No sincronizar, crear, reasignar, actualizar estados ni comentar en ClickUp por iniciativa
+   propia. Primero se define el mapeo Notion ↔ ClickUp y la acción concreta autorizada.
+4. Distinguir siempre entre un dato interno de Notion, una señal compartida de ClickUp y una
+   discrepancia pendiente de resolver; ninguna fuente sobrescribe la otra automáticamente.
+5. Cuando el usuario autorice una sincronización, finalizar primero el registro y las
+   relaciones de Notion. Antes de cambiar ClickUp, distinguir expresamente si «proyecto» significa
+   una etiqueta de la tarea o un contenedor jerárquico (carpeta/lista); nunca inferirlo por el
+   nombre. Por defecto, conservar la tarea en su lista y usar una etiqueta.
+6. Para etiquetar, usar el nombre exacto visible en ClickUp o devuelto por el conector, incluidas
+   tildes y mayúsculas. Si el conector no reconoce una etiqueta que el usuario muestra en la
+   interfaz, detener la escritura, declarar la discrepancia de contexto y no crear carpetas,
+   listas ni etiquetas sustitutivas.
+7. Crear o mover a una carpeta/lista solo si el usuario solicita explícitamente un contenedor
+   jerárquico. Buscar una coincidencia existente antes de crear; si no existe y su creación fue
+   autorizada, mover únicamente tareas personales con mapeo explícito hacia el proyecto de
+   Notion. Releer la tarea después del movimiento y reportar el vínculo Notion ↔ ClickUp.
+
 ## Referencias
 
 - Leer siempre [modelo actual de Notion](references/modelo-notion.md) antes de consultar o escribir.
+- Para seleccionar o detectar una brecha de skill reutilizable, leer [Sistema de Skills](../../docs/sistema-skills-notion.md).
 - Para crear, evaluar o reordenar jerarquías, leer [descomposición y contenido](references/descomposicion.md).
 - Para aplicar los patrones de gestión que fundamentan la evaluación, leer [patrones de trazabilidad](references/patrones-trazabilidad.md).
 - Para evaluar, crear o corregir relaciones `Depende de` / `Bloquea a`, restricciones o
@@ -48,10 +115,20 @@ el entregable de requerimiento y deriva su elaboración/validación al área res
    la evaluación justifique.
 3. Revisar dependencias, restricciones, bloqueos, estado, criterio de cierre, responsable,
    ejecutor, fechas, comunicación y evidencia. Validar ambos extremos de cada relación.
-4. Declarar si la evaluación encuentra información incompleta, relaciones rotas o
+4. Aplicar revisión proporcional. Por defecto, consultar en lote nombre, descripción,
+   responsable, ejecutor, estado, fechas, orden y relaciones de los registros afectados.
+   Leer el cuerpo completo y contrastar correos, conversaciones o actas solo cuando haya una
+   contradicción, un cambio estructural, un cierre, una reasignación, evidencia nueva o datos
+   insuficientes en las propiedades. Asignar `Responsable` a quien responde por el resultado y
+   `Ejecutor` a quien realiza la acción; no asignar al PM de seguimiento salvo que la evidencia
+   le asigne también la ejecución. Si la evidencia no identifica al ejecutor técnico, registrar
+   la brecha y pedir confirmación en vez de inferir un equipo o persona.
+5. Declarar si la evaluación encuentra información incompleta, relaciones rotas o
    registros heredados. No completar esos datos por inferencia.
-5. Separar propiedades de contenido: las propiedades y relaciones modelan la tarea; el
-   cuerpo de la página registra el seguimiento con la plantilla única definida.
+6. Separar propiedades de contenido: las propiedades y relaciones modelan la tarea; el
+   cuerpo de la página usa exclusivamente la estructura contractual de trabajo. No añadir
+   secciones de seguimiento, bitácora, evidencias o comunicaciones al contenido de la tarea;
+   no sustituir instrucciones, outputs o criterios de aceptación por una descripción genérica.
 
 ## Modos
 
@@ -63,7 +140,7 @@ Declarar el modo en la primera línea.
 | `PLANIFICACIÓN` | "arma el plan", "desglosa", "crea las tareas" | Árbol Proyecto → Entregable → Tarea → Subtarea, con secuencia y controles. |
 | `CONTROL` | "haz seguimiento", "qué está bloqueado", "riesgos" | Registro de riesgos, dependencias, decisiones y acciones de control. |
 | `ESTADO` | "cómo va", "reporte", "proyección" | Estado basado en evidencia, desviaciones y fecha proyectada con supuestos explícitos. |
-| `ACTUALIZACIÓN` | "actualiza", "cerramos", "cambia la fecha" | Cambio mínimo trazable, previa confirmación del usuario. |
+| `ACTUALIZACIÓN` | "actualiza", "cerramos", "cambia la fecha" | Cambio mínimo trazable dentro del alcance autorizado. |
 
 ## Protocolo común
 
@@ -74,11 +151,25 @@ Declarar el modo en la primera línea.
 3. Mapear precedencias con `Depende de` / `Bloquea a` y aplicar las validaciones de
    [dependencias, bloqueos y restricciones](references/dependencias-bloqueos.md). El orden
    numérico expresa una secuencia dentro del mismo padre; no reemplaza una dependencia.
-4. Verificar que cada tarea y subtarea tenga `Comunicación` clasificada según la evidencia.
+   Al crear, reubicar o cancelar una subtarea, releer todas las subtareas directas activas
+   del mismo padre y verificar que `N° orden` sea numérico, único y coherente con la
+   secuencia de trabajo. Insertar la nueva subtarea en su posición lógica y renumerar solo
+   esa rama cuando sea necesario; conservar el historial de las canceladas.
+4. Al cancelar, reemplazar o sacar una subtarea de la rama, reconciliar `Tarea padre` /
+   `Subtareas` y `Depende de` / `Bloquea a` en ambos sentidos. Si el registro ya no forma
+   parte del flujo vigente, desvincularlo de la rama y de sus dependencias operativas; conservar
+   como registro histórico independiente su nombre, estado, cuerpo y evidencia.
+5. Para fechas, construir primero la ruta crítica desde las dependencias y la capacidad
+   declarada. Registrar fechas acordadas como compromiso; si son aproximadas, marcarlas como
+   proyección o supuesto en la bitácora. No modificar `Fecha real` para representar un plan.
+   Propagar el impacto hacia sucesoras y tarea padre, incluyendo una subtarea explícita de
+   validación/cierre cuando el resultado requiera una aceptación posterior a la ejecución.
+6. Verificar que cada tarea y subtarea tenga `Comunicación` clasificada según la evidencia.
    Este campo controla la gestión de comunicaciones, no confirma la ejecución del trabajo.
-5. Presentar la evaluación o el plan antes de modificar Notion.
-6. Tras aprobación, actualizar sin borrar contexto histórico. Confirmar relaciones,
-   campos cambiados y pendientes abiertos.
+7. Presentar la evaluación o diferencia antes de modificar Notion. Si el cambio ya está
+   aprobado, ejecutar sin pedir otra confirmación; consultar solo ampliaciones materiales.
+8. Tras aprobación, actualizar sin borrar contexto histórico. Confirmar relaciones,
+   campos cambiados y pendientes abiertos mediante un informe breve por cada bloque actualizado.
 
 ## Comportamientos bloqueantes
 
@@ -90,10 +181,16 @@ Declarar el modo en la primera línea.
 - **B3 — Subtareas accionables:** una subtarea debe tener un verbo, resultado observable,
   responsable y condición de cierre. No crear una subtarea por cada área solo para
   registrar seguimiento si esa área no tiene una acción propia.
+- **B3.1 — Roles sustentados:** conservar una subtarea solo si su propósito es distinto de
+  las demás y sus roles están respaldados por contenido o evidencia. Si dos registros describen
+  la misma acción, proponer consolidarlos y, con autorización, conservar el que tenga la
+  dependencia, responsable y evidencia más completos; cancelar el otro preservando su historial.
 - **B4 — Dependencia explícita:** no usar `N° orden` como sustituto de la relación de
   dependencia. Si un trabajo no puede empezar, registrar de qué depende y quién debe resolverlo.
 - **B5 — Fechas con base:** no asignar ni proyectar fechas sin capacidad, dependencia,
-  fecha compromiso acordada o supuesto declarado.
+  fecha compromiso acordada o supuesto declarado. Una proyección debe indicar fecha de inicio,
+  duración, predecesores y condición que podría desplazarla; la fecha de la tarea padre debe
+  reflejar el cierre de su última subtarea vigente, no una fecha heredada.
 - **B6 — Cierre con evidencia:** no marcar `Hecho` o `Entregado` solo por declaración.
   Debe existir criterio cumplido y evidencia o validación del responsable.
 - **B7 — Cambios estructurales con aprobación:** no fusionar, cancelar, mover de padre
@@ -103,24 +200,40 @@ Declarar el modo en la primera línea.
 - **B9 — Cambio controlado:** después de aprobar una línea base, todo cambio de alcance,
   secuencia, fecha o criterio debe registrar motivo, impacto y decisión antes de alterar
   la jerarquía.
-- **B10 — Bitácora uniforme:** no convertir el contenido de cada página de tarea en una
-  especificación, checklist técnico o plantilla distinta. Usar siempre la bitácora única
-  de seguimiento; el tipo y estructura de la tarea viven en sus propiedades y relaciones.
+- **B10 — Estructura contractual uniforme:** cada página de tarea debe conservar el orden
+  `Qué hay que hacer` → `Outputs` → `Criterios de aceptación` → `Notas`. No añadir
+  `Seguimiento`, `Evidencias y comunicaciones` ni una bitácora al contenido; no reemplazar
+  esas secciones por una descripción genérica. La ausencia de criterios verificables impide
+  un cierre objetivo.
 - **B11 — Cancelación conservadora:** no eliminar tareas o subtareas por obsolescencia,
   duplicidad o cambio de alcance. Tras aprobación, cambiar `Estado` a `Cancelada` y anteponer
-  `[Cancelada]` al nombre, preservando relaciones, descripción, bitácora y evidencia.
+  `[Cancelada]` al nombre. Conservar descripción, bitácora y evidencia; mantener relaciones
+  solo cuando expliquen un antecedente vigente. Si ya no pertenece al flujo, quitar su relación
+  padre-hija y sus dependencias operativas para que no altere avances, orden ni ruta crítica.
 - **B12 — Comunicación trazable:** toda tarea y subtarea debe tener un estado en
   `Comunicación`. Marcarlo como realizada únicamente con evidencia de la comunicación; no
   confundir una comunicación realizada con trabajo ejecutado, aprobado o validado.
 - **B13 — Reciprocidad de dependencias:** toda relación `A Depende de B` debe corresponder
   a `B Bloquea a A`. No guardar relaciones unilaterales, consigo mismas, duplicadas o cíclicas.
+- **B13.1 — Relación vigente:** toda subtarea activa debe aparecer una sola vez tanto en
+  `Tarea padre` como en `Subtareas`. No conservar relaciones de tareas canceladas o sustituidas
+  dentro de la rama operativa si ya no representan trabajo que contribuya al resultado.
 - **B14 — Restricción no es dependencia:** una política, ventana, acceso, capacidad o condición
   externa se registra como restricción. Solo crear o relacionar una tarea precedente cuando
   exista una acción concreta cuyo resultado desbloquee el trabajo.
-- **B15 — Estado coherente con el bloqueo:** si una dependencia pendiente impide continuar,
-  la tarea debe quedar `Bloqueada`; no puede marcarse `Hecho`. La cancelación del predecesor
-  no libera automáticamente la dependencia: requiere reemplazo, excepción aprobada o cambio
-  de alcance documentado.
+- **B15 — Estado coherente:** aplicar la matriz de dependencias-bloqueos.md. Una ejecución
+  impedida queda Bloqueada; trabajo ejecutado pendiente de aceptación queda En revisión.
+  No cerrar mientras falte una condición de cierre. Cancelar el predecesor no libera la
+  dependencia sin reemplazo, excepción aprobada o cambio de alcance documentado.
+- **B16 — Skills por necesidad comprobada:** no crear un skill ni una fila de catálogo para
+  resolver una tarea aislada. Reutilizar el catálogo existente; si la brecha es recurrente,
+  registrarla como `Por evaluar` o derivarla a `skill-builder` con propósito y criterio de uso.
+- **B17 — Productividad basada en evidencia:** no reportar cumplimiento de tiempo, avance,
+  productividad o salud como hechos si faltan horas, fechas o evidencia de cierre. Señalar la
+  brecha y solicitar el dato mínimo necesario.
+- **B18 — Alcance personal en ClickUp:** no evaluar ni reportar como trabajo de Enzo una tarea
+  no asignada a su usuario de ClickUp. Para modificar información compartida se necesita una
+  instrucción explícita y el mapeo de sincronización aprobado.
 
 ## Formato de salida
 
@@ -129,3 +242,13 @@ Declarar el modo en la primera línea.
 - Distingue hechos, supuestos y decisiones pendientes.
 - Antes de una modificación, muestra una tabla con elemento, cambio, razón e impacto.
 - Sin frases de relleno ni estados calculados de memoria.
+
+## Verificación de cambios
+
+Releer propiedades, relaciones y cuerpo después de actualizar. Cuando se hayan creado,
+movido, cancelado o desvinculado subtareas, releer además la rama completa y confirmar que
+las subtareas activas aparecen una sola vez, que `N° orden` es único y representa la secuencia
+vigente, y que no quedan dependencias hacia registros descartados. Verificar también que las
+fechas de sucesoras y tarea padre sean compatibles con la ruta crítica. Con resultado incierto,
+inspeccionar antes de repetir; evitar filas duplicadas. Verificar con los [casos de
+evaluación](references/evaluaciones.md) sin escribir en producción.

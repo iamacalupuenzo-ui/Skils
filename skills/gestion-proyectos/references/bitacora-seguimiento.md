@@ -1,64 +1,39 @@
-# Bitácora única de seguimiento de tareas
+# Contenido contractual de tareas
 
 ## Principio
 
-El cuerpo de todas las páginas de la base **Tareas** tiene una sola función: registrar el
-seguimiento verificable. No documenta el requerimiento, el diseño técnico ni una lista de
-pasos de implementación. Esos elementos se vinculan desde `Referencias` o `Actas y evidencias`;
-el tipo, la jerarquía, el responsable, el estado, el criterio de cierre y las dependencias se
-mantienen en las propiedades de Notion.
+El contenido de cada página de la base **Tareas** define el contrato de ejecución y aceptación.
+Las propiedades y relaciones son la fuente de verdad para estado, fechas, esfuerzo, proyecto y
+dependencias. No agregar una bitácora, seguimiento, evidencias o comunicaciones al cuerpo de
+la tarea.
 
 Usar la misma estructura en tareas y subtareas, sin importar si son de análisis,
 configuración, ejecución, validación o comunicación.
 
-## Plantilla obligatoria
+## Estructura obligatoria
 
 ```markdown
-## Seguimiento
-- **Estado actual:** [hecho confirmado; no repetir el select sin aportar contexto]
-- **Último avance confirmado:** [fecha + hecho + fuente]
-- **Pendiente o bloqueo:** [qué falta y de quién depende; "ninguno confirmado" si aplica]
-- **Próxima acción:** [acción concreta + responsable + fecha, solo si está acordada]
+## Qué hay que hacer
 
-## Evidencias y comunicaciones
-| Fecha | Tipo | Hecho / decisión | Responsable o fuente | Evidencia / enlace |
-|---|---|---|---|---|
-| AAAA-MM-DD | Correo / reunión / prueba / aprobación / documento | [hecho verificable] | [nombre] | [URL o identificador] |
+[Instrucciones concretas, con verbos, decisiones y límites. No resumirlas como un tema.]
+
+## Outputs
+
+- [ ] [Artefacto o resultado verificable]
+
+## Criterios de aceptación
+
+- **CA-01 — [resultado]**
+  DADO [contexto verificable]
+  CUANDO [acción o condición]
+  ENTONCES [resultado observable].
+
+## Notas
+
+[Decisión, restricción o propósito que da contexto. Omitir si no existe una nota útil.]
 ```
 
-## Reglas de actualización
-
-1. Añadir una fila de evidencia por cada comunicación, acuerdo, prueba, decisión o resultado
-   que cambie el seguimiento. No reescribir ni borrar el historial.
-2. Actualizar `Estado actual`, `Pendiente o bloqueo` y `Próxima acción` para reflejar la
-   información más reciente confirmada. Cuando exista bloqueo, indicar causa, tipo, dueño,
-   impacto y condición objetiva de desbloqueo.
-3. Si no existe información, declarar el vacío de forma factual: no usar `Por definir` como
-   contenido de seguimiento y no inventar una próxima acción, responsable o fecha.
-4. Si el seguimiento revela que falta un requerimiento o aprobación, registrarlo como bloqueo
-   y enlazar la evidencia; no redactar el requerimiento dentro de la tarea.
-5. Los correos enviados son evidencia de gestión, no confirmación de ejecución. Diferenciar
-   claramente enviado, respondido, aprobado, implementado y validado.
-6. Mantener `Comunicación` coherente con la evidencia: toda tarea y subtarea debe tener un
-   valor. Usar `Comunicación realizada` solo cuando exista una comunicación fechada y
-   registrada; esta marca no equivale a que la tarea esté ejecutada ni cerrada.
-7. No insertar enlaces a tareas, subtareas o páginas relacionadas dentro del cuerpo para
-   representar jerarquía, dependencias o navegación. Esas relaciones se mantienen en las
-   propiedades de Notion. Incluir enlaces en la bitácora solo como evidencia concreta.
-8. Si una tarea queda cancelada, conservar la bitácora y añadir una fila con el motivo,
-   la decisión y la fuente; no borrar el historial.
-
-## Ejemplo aplicado a una restricción por IP
-
-```markdown
-## Seguimiento
-- **Estado actual:** Pendiente de definición funcional; la implementación no ha iniciado.
-- **Último avance confirmado:** 2026-08-28 — se solicitó a Gabriel remitir el requerimiento al área funcional.
-- **Pendiente o bloqueo:** Falta requerimiento funcional aprobado para que Desarrollo implemente.
-- **Próxima acción:** Esperar la respuesta de Gabriel; no hay fecha de compromiso confirmada.
-
-## Evidencias y comunicaciones
-| Fecha | Tipo | Hecho / decisión | Responsable o fuente | Evidencia / enlace |
-|---|---|---|---|---|
-| 2026-08-28 | Correo | Se solicitó remitir el requerimiento funcional y confirmar coordinación. | Gabriel Bustamante | Gmail: 1a048c948d5d8ee0 |
-```
+Los outputs describen lo que queda disponible; los criterios de aceptación prueban cuándo se
+puede cerrar. No usar como criterio "terminado", "revisado" o "documentado" sin una condición
+observable. Mantener exactamente ese orden. Los hechos de avance viven en las propiedades,
+comentarios, actas o evidencias relacionadas, no en el contenido contractual de la tarea.

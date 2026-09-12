@@ -12,7 +12,7 @@ el orden visual, una condición limitante y una relación de precedencia.
 | Jerarquía | El ítem forma parte del alcance de otro. | `Tarea padre` / `Subtareas`, Proyecto y Entregable. |
 | Dependencia | El resultado de un ítem es necesario para iniciar, continuar o cerrar otro. | `Depende de` y su relación inversa `Bloquea a`. |
 | Restricción | Condición que limita cómo o cuándo trabajar: política, acceso, capacidad, ventana, presupuesto o ambiente. | Bitácora y propiedad disponible en el schema vivo; no inventar una relación. |
-| Bloqueo | Dependencia o restricción materializada que impide el siguiente avance necesario. | `Estado = Bloqueada`, pendiente documentado, dueño y condición de desbloqueo. |
+| Bloqueo | Dependencia o restricción que impide un avance necesario. | Estado según matriz siguiente; pendiente, dueño y condición de desbloqueo. |
 | Riesgo | Evento futuro incierto que podría producir una restricción o bloqueo. | Registro de riesgo; todavía no marcar la tarea como bloqueada. |
 
 `Depende de` apunta desde el trabajo posterior hacia el predecesor. `Bloquea a` expresa la
@@ -67,8 +67,9 @@ Añadir la evidencia y la fecha compromiso cuando existan. Si un dato falta, dec
 - Una tarea cancelada no satisface una dependencia. Definir reemplazo, excepción aprobada o cambio
   de alcance antes de retirar la relación.
 - No cerrar una tarea mientras una dependencia de cierre o aceptación continúe pendiente.
-- Si el bloqueo impide cualquier siguiente avance necesario, usar `Estado = Bloqueada`. Si todavía
-  existe trabajo útil dentro del alcance, mantener el estado real y documentar la restricción y su impacto.
+- Si queda ejecución pendiente y no puede avanzar, usar `Bloqueada`. Si existe trabajo útil,
+  mantener `En progreso` con alcance bloqueado documentado. Si la ejecución terminó y solo
+  falta validar el resultado o recibir evidencia de aceptación, mantener `En revisión`.
 
 ## Coherencia temporal
 
@@ -112,3 +113,22 @@ pieza del material, documentar el alcance del bloqueo y mantener en progreso el 
 Las subtareas ejecutadas pueden quedar `Hecho`, pero la tarea principal permanece `En revisión`
 mientras falte el Excel de Ricardo y su validación. El archivo es un insumo/evidencia de cierre;
 si existe una acción explícita para solicitarlo y obtenerlo, esa acción puede bloquear el cierre.
+
+## Matriz de ejecución y aceptación
+
+| Situación comprobada | Estado | Control necesario |
+|---|---|---|
+| Trabajo no iniciado, sin bloqueo materializado | Pendiente | Próxima acción y responsable. |
+| Ejecución pendiente impedida por una entrada o aprobación | Bloqueada | Causa, dueño, impacto y condición de desbloqueo. |
+| Parte impedida, pero hay trabajo útil ejecutándose | En progreso | Alcance bloqueado separado del avance posible. |
+| Implementación lista para un ciclo de pruebas aún no iniciado | Listo para pruebas, si existe en el schema | Responsable y criterio de prueba. |
+| Ejecución reportada y confirmada; falta validar evidencia o aceptación | En revisión | Evidencia pendiente, solicitante y acción de validación. |
+| Criterio de cierre cumplido y evidencia o validación responsable | Hecho | Fuente de cierre y fecha real. |
+| Alcance cancelado por decisión autorizada | Cancelada | Conservar historial y revisar sucesores. |
+
+La relación pendiente se conserva aunque el padre esté En revisión; distingue dependencia
+de ejecución de dependencia de cierre. La etiqueta no sustituye el diagnóstico.
+No marcar subtareas Hecho solo para aumentar un porcentaje: cada una necesita ejecución
+confirmada según B6. La aceptación del padre no se deduce de que sus hijas estén Hecho.
+La reciprocidad se verifica leyendo ambos extremos; si Notion la mantiene automáticamente,
+no escribir dos veces ni reemplazar el conjunto de relaciones existentes.

@@ -1,12 +1,7 @@
 # Skill Builder — Checklist de calidad
 
-21 criterios organizados en 5 categorías. Verificar cada uno contra el contenido real
+23 criterios organizados en 6 categorías. Verificar cada uno contra el contenido real
 del skill — no marcar ✅ por intuición.
-
-**Antes de empezar, identificar la forma del skill** con `references/skill-shapes.md`.
-No todos los criterios aplican a las 4 formas: un ejecutor lineal no tiene tabla de modos
-ni carpeta de referencias. Lo que no aplica se marca como tal, con la razón, en vez de
-reprobarse.
 
 ---
 
@@ -17,26 +12,25 @@ El campo `name:` coincide exactamente con el nombre del directorio en `~/.claude
 ✅ `name: react-dev` + directorio `react-dev/`
 ❌ `name: ReactDev` o `name: react_dev`
 
-**C2 — Trigger phrases reales**
-El campo `description:` contiene frases entre comillas que un usuario real diría.
-✅ `"creá un componente", "necesito agregar el botón", "construí la feature de X"`
-❌ `"Usar cuando se requiere asistencia con el desarrollo de React"`
+**C2 — Activación discriminante**
+Description explica capacidad y cuándo usarla. No exige comillas ni una cuota de frases.
+✅ Documenta componentes existentes; no los implementa.
+❌ Ayuda con diseño: no distingue documentación de construcción.
 
-**C3 — Argument-hint específico**
-El campo `argument-hint:` describe el argumento esperado, no es genérico.
-✅ `"[componente o foundation a construir, o 'status']"`
-❌ `"[argumento]"` o ausente
+**C3 — Entradas explícitas y metadatos compatibles**
+Se entiende qué debe recibir el skill. Campos opcionales solo si los admite el cliente.
+✅ Ruta o identificador del componente, con salida cuando falta.
+❌ Exigir argument-hint en todos los agentes o inventar el objetivo.
 
-**C4 — Herramientas justificadas**
-Cada tool en `allowed-tools` es efectivamente usada en el SKILL.md.
-Verificar: ¿hay Bash? → ¿el skill ejecuta comandos de terminal?
-¿hay Write? → ¿el skill crea archivos?
-¿hay Agent? → ¿el skill lanza subagentes?
+**C4 — Capacidades y permisos comprobados**
+Cada operación tiene una capacidad disponible y un destino autorizado.
+✅ Consultar schema antes de escribir; declarar falta de acceso.
+❌ Suponer que allowed-tools instala el conector o concede permisos externos.
 
-**C5 — Effort coherente**
-`low` solo si: 1 modo + sin references + respuesta breve.
-`high` si: ≥3 modos + preflight + references + cierre estructurado.
-❌ `effort: high` en un auditor de 30 líneas.
+**C5 — Complejidad proporcional**
+Cada sección evita un error o cambia una decisión. No inferir effort por cantidad de modos.
+✅ Mantener ejemplos específicos y externalizar detalle condicional.
+❌ Agregar bloques para cumplir una cuota o recortar por cantidad de líneas.
 
 ---
 
@@ -47,10 +41,10 @@ Existe una sección GUARD que verifica contexto antes de actuar.
 El guard especifica qué hacer si falla (avisar al usuario + detenerse).
 ❌ Guard que solo verifica pero no tiene consecuencia.
 
-**C7 — Guard verifica el proyecto correcto**
-Para skills project-specific: el guard verifica ≥2 archivos que identifican el proyecto.
-✅ `Test-Path "astro.config.mjs"` + `Test-Path "src/styles/tokens.css"`
-❌ `Test-Path "package.json"` (demasiado genérico)
+**C7 — Identidad real del destino**
+Comprobar el proyecto, base o archivo solicitado, no un número arbitrario de archivos.
+✅ Leer identificador del manifiesto o destino de la relación.
+❌ Dar por correcto el proyecto porque existe package.json.
 
 **C8 — Modo declarado en primera línea**
 La sección de Detección de modo indica que se debe declarar el modo activo antes de actuar.
@@ -60,10 +54,10 @@ Verificar que el Formato de respuesta también lo requiere.
 Todo modo listado en la tabla tiene un bloque de protocolo con fases numeradas.
 ❌ Modo listado en la tabla pero sin protocolo → comportamiento indefinido.
 
-**C10 — Confirmación antes de ejecutar**
-Las fases de planificación (plan, arquitectura, spec) terminan con pausa explícita.
-✅ "Esperar confirmación antes de continuar."
-❌ Skill que pasa de planificar a ejecutar sin pausa.
+**C10 — Autorización proporcional**
+El diagnóstico aprobado permite corregir dentro de ese alcance sin otra confirmación rutinaria.
+✅ Consultar un borrado o destino nuevo no autorizado.
+❌ Publicar porque se pidió editar, o repetir la entrevista tras aprobar el cambio.
 
 **C11 — Cierre definido por modo**
 Cada modo tiene un bloque de cierre con formato fijo que define qué información entrega.
@@ -81,33 +75,29 @@ Test-Path "$env:USERPROFILE\.claude\skills\[nombre-skill]\references\[archivo].m
 ```
 ❌ Citar `references/inventory.md` sin que el archivo exista.
 
-**C13 — Conocimiento estático en references/, no en SKILL.md**
-SKILL.md no contiene tablas de tokens, listas de componentes, decisiones de diseño,
-patrones de código extensos, o cualquier contenido que no varía con el contexto.
-Señal de alerta: SKILL.md > 400 líneas → probablemente hay knowledge dump.
+**C13 — Conocimiento conservado y lectura progresiva**
+El principal contiene lo común; recursos condicionales conservan procedimientos y ejemplos.
+✅ Cada bloque movido tiene destino y momento de lectura.
+❌ Resumir las referencias hasta perder sus decisiones; las líneas no miden calidad.
 
-**C21 — Dependencias cruzadas verificadas**
-Si el SKILL.md cita la referencia de otro skill, la cita lleva la ruta completa
-(`otro-skill/references/archivo.md`) y ese archivo existe en el skill dueño.
-✅ `design-handoff/references/decisiones.md` citado, y el archivo está
-❌ Citar `references/tooling.md` de otro skill sin nombrarlo, o citar un archivo inexistente
-
-**C14 — References/ citadas en la sección de Referencias**
-La sección final "Referencias" lista todos los archivos de references/ con descripción.
-❌ Archivo en `references/` que no aparece en la sección de Referencias del SKILL.md.
+**C14 — Referencias alcanzables**
+Cada recurso mantenido tiene un consumidor y condición de lectura.
+✅ Índice al inicio o ruta desde el modo correspondiente.
+❌ Recurso importante aislado, sin forma de que el agente lo consulte.
 
 ---
 
 ## Categoría 4: Bloqueantes
 
-**C15 — Mínimo 5 bloqueantes**
-Skills `effort: high` tienen ≥7 bloqueantes.
-Skills `effort: medium` tienen ≥5 bloqueantes.
-Skills `effort: low` tienen ≥3 bloqueantes.
+**C15 — Riesgos cubiertos**
+Los controles responden a fallos concretos; no existe un mínimo universal de bloqueantes.
+✅ Conservación, aislamiento, datos incompletos y reintentos tratados cuando aplican.
+❌ Siete reglas de presentación pero ninguna protección ante borrado.
 
-**C16 — Bloqueantes numerados**
-Todos empiezan con `B[N] — Nombre:` para poder referenciarlos.
-❌ Lista sin numeración.
+**C16 — Reglas localizables y coherentes**
+Numerar cuando permita referenciarlas. Definición y ejemplos deben ser compatibles.
+✅ Una regla con condición, acción y consecuencia.
+❌ Añadir otra regla opuesta sin modificar la anterior.
 
 **C17 — Bloqueantes concretos y con consecuencia**
 Cada bloqueante describe una acción específica prohibida y qué pasaría si se viola.
@@ -124,39 +114,46 @@ Existe una sección "Formato de respuesta" que especifica:
 - Idioma y tono
 - Al menos una restricción específica (sin emojis, máximo N preguntas por turno, etc.)
 
-**C19 — Sección de Referencias al final**
-El SKILL.md termina con una sección "Referencias" que lista los archivos de references/.
+**C19 — Portabilidad y configuración**
+Separar convenciones generales de rutas, IDs y memorias del equipo.
+✅ Configuración con procedencia y verificación de vigencia.
+❌ Dependencia obligatoria de una memoria ausente en otra laptop.
 
-**C20 — Registro en Notion**
-El skill está registrado en la base de datos Skills & Marcos con:
-- Nombre, Comando, Tipo: Skill Claude, Status: Activo
-- Proceso asociado correcto
-- Rol correcto
-(Este criterio se verifica externamente, no en el archivo)
+**C20 — Distribución explícita**
+Editar, instalar, registrar y publicar son operaciones independientes.
+✅ Reportar qué destinos se verificaron y cuáles no fueron solicitados.
+❌ Dar por instalado por existir una fila en Notion, o registrar sin pedido.
+
+---
+
+## Categoría 6: Racionalización, alerta temprana y eficiencia de contexto
+
+**C21 — Casos positivos y recuperación de experiencia**
+Probar entradas realistas y comparar resultado observable con lo esperado.
+✅ Corrección aprobada, con alcance preservado y ejemplos vigentes.
+❌ Aprobar solo porque existe una tabla de racionalizaciones.
+
+**C22 — Casos negativos y alertas**
+Comprobar falta de acceso, ambigüedad, contradicciones y resultados inciertos cuando aplican.
+✅ Detener escritura ante destino incorrecto; inspeccionar antes de repetir tras timeout.
+❌ Datos ausentes convertidos en cero o éxito.
+
+**C23 — Ejecución y verificación honesta**
+Probar código nuevo en aislamiento; validar el paquete con el agente objetivo cuando sea posible.
+✅ Distinguir formato válido, pruebas locales e integración real pendiente.
+❌ Declarar compatibilidad total solo porque el archivo aparece en el inventario.
 
 ---
 
 ## Resultado
 
-```
-Auditoría — /nombre-del-skill
--------------------------------
-Categoría 1 — Frontmatter:       [N/5 ✅]
-Categoría 2 — Orquestación:      [N/6 ✅]
-Categoría 3 — Referencias:       [N/4 ✅]
-Categoría 4 — Bloqueantes:       [N/3 ✅]
-Categoría 5 — Formato:           [N/3 ✅]
+Para cada criterio: Cumple / Parcial / No cumple / No verificable / No aplica,
+más archivo/sección o resultado de prueba. No sumar convenciones como porcentaje de calidad.
 
-Total: [N/21] criterios cumplidos, sin contar los que no aplican por la forma
+- Listo para el alcance probado: pruebas aplicables satisfactorias, sin fallos críticos.
+- Listo con límites: comprobación local satisfactoria e integración pendiente identificada.
+- Requiere corrección: pérdida de información, escritura fuera de alcance, resultado incorrecto
+  o referencia indispensable irresoluble.
 
-APROBADO             → 19-21 ✅
-APROBADO CON OBS.    → 16-18 ✅ (ningún ❌ en C6, C7, C9, C10)
-RECHAZADO            → <16 ✅ o cualquier ❌ en criterios críticos (C6, C9, C12, C17, C21)
-```
-
-### Criterios críticos (❌ en cualquiera = RECHAZADO)
-- C6 — Guard presente
-- C9 — Cada modo tiene protocolo completo
-- C12 — References citadas existen en disco
-- C17 — Bloqueantes concretos
-- C21 — Dependencias cruzadas verificadas
+No verificable no equivale a Cumple. Los ejemplos no prueban ejecución por sí solos.
+En una modificación pequeña comprobar lo afectado; en una refactorización, lista completa.

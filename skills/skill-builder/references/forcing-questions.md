@@ -1,219 +1,179 @@
-# Skill Builder — Forcing Questions de entrevista
+# Preguntas que cambian decisiones
 
-8 preguntas para extraer el dominio completo antes de diseñar la arquitectura, más la
-forma del skill, que se decide entre Q1 y Q4.
-Una pregunta por turno. Esperar respuesta antes de la siguiente.
+Consulta esta guía al delimitar un skill o cuando una actualización encuentre vacíos.
+Las ocho dimensiones sirven para analizar el problema; no son ocho turnos obligatorios.
+Primero extrae las respuestas del pedido, la conversación, los archivos y los ejemplos existentes.
+Pregunta solo por información que cambie el alcance, el riesgo o el resultado.
+No pidas al usuario datos que puedes verificar mediante una lectura autorizada.
 
----
+## Q1 — Propósito y resultado
 
-## Q1 — Propósito y output
+**Pregunta útil:** ¿Qué recibe este skill y qué resultado debe entregar?
 
-**Pregunta:**
-> ¿Qué proceso orquesta este skill y cuál es su output esperado? Describilo en una frase: "Este skill toma [X] y produce [Y]."
+**Por qué importa:** distingue una necesidad concreta de un tema demasiado amplio.
+**Decisión que habilita:** propósito, frontera de responsabilidad y descripción de activación.
 
-**Por qué es la primera:** Define el núcleo. Sin esto, todo lo demás puede ser incorrecto.
+**Respuesta suficiente:**
+> Toma un componente existente y produce documentación de sus variantes, propiedades,
+> estados y ejemplos, basada en lo que realmente está implementado.
 
-**Decisión que habilita:** nombre del skill, primer párrafo del rol, description del frontmatter.
+**Respuesta insuficiente:**
+> Para trabajar con el sistema de diseño.
 
-**Respuesta buena:**
-> "Toma un componente React existente y produce una página de documentación completa con playground, variantes, Do/Don't y PropsTable."
+**Seguimiento si hace falta:** ¿necesitas construir componentes, documentarlos o evaluar su calidad?
+Si el usuario ya mostró un documento de salida, úsalo para precisar el resultado sin repetir la pregunta.
+No prometas documentación completa de estados que no se puedan inspeccionar.
 
-**Respuesta que necesita más:**
-> "Para trabajar con el design system."
-→ Preguntar: ¿construir componentes, documentarlos, auditarlos, o todo eso?
+## Q2 — Alcance y contexto de operación
 
----
+**Pregunta útil:** ¿Se usará en un proyecto específico o en distintos proyectos?
+¿Qué evidencia permite identificar el proyecto o destino correcto?
 
-## Q2 — Alcance: project-specific vs global
+**Por qué importa:** evita aplicar convenciones de un entorno a otro.
+**Decisión que habilita:** comprobación de identidad, configuración local y precondiciones.
 
-**Pregunta:**
-> ¿Este skill aplica a un proyecto específico o a cualquier proyecto? Si es project-specific, ¿qué archivo del proyecto confirma que estamos en el lugar correcto?
+**Caso específico:**
+> Solo en el repositorio del sistema de diseño; su manifiesto identifica el paquete
+> y su configuración señala la ruta de tokens.
 
-**Por qué importa:** define si hay guard de proyecto y qué verifica.
+**Caso reutilizable:**
+> En proyectos React; primero debe comprobar las dependencias y convenciones reales.
 
-**Decisión que habilita:** guard del SKILL.md, si va en `allowed-tools` Bash para verificación.
+No basta encontrar un archivo llamado package.json para identificar un proyecto particular.
+Tampoco exijas una carpeta de Claude para un uso exclusivo de Codex.
+Si no se conoce la ruta, intenta resolverla con los datos disponibles; pregunta si hay varios
+destinos válidos y elegir uno modificaría el alcance.
 
-**Respuesta project-specific:**
-> "Solo para lyse-ds. Se puede verificar con `astro.config.mjs` y `src/styles/tokens.css`."
+## Q3 — Activación y exclusiones
 
-**Respuesta global:**
-> "Para cualquier proyecto React/Next. El guard verifica que existe `package.json` con `react` o `next`."
+**Pregunta útil:** ¿Qué pedido real debería atender este skill y cuál debería quedar fuera?
 
-**Señal de que es global:** el dominio es una tecnología o metodología, no un proyecto.
-**Señal de que es project-specific:** el dominio involucra tokens, inventarios o decisiones de un proyecto concreto.
+**Por qué importa:** define cuándo usarlo y evita invocaciones por palabras demasiado generales.
+**Decisión que habilita:** description y ejemplos positivos, negativos y ambiguos de evaluación.
 
----
+**Ejemplos positivos para un documentador:**
+> Documenta las variantes del selector.
+> Actualiza el handoff de este componente.
 
-## Q3 — Trigger phrases
+**Ejemplo negativo:**
+> Implementa el selector en producción.
 
-**Pregunta:**
-> Dame 6 frases exactas que diría un usuario cuando necesita este skill. Pensá en cómo lo activarías vos en una conversación real, no en cómo describís el skill.
+Una descripción como “ayuda con diseño” no diferencia documentación, construcción y auditoría.
+No impongas un número fijo de frases ni prometas activación por coincidencia literal.
+Si el usuario no tiene ejemplos, deriva candidatos de sus peticiones anteriores y comprueba
+que representan la intención, sin inventar responsabilidades nuevas.
 
-**Por qué importa:** el campo `description` del frontmatter usa estas frases exactas. Sin ellas el sistema no va a sugerir el skill en el momento correcto.
+## Q4 — Variantes del trabajo y modos
 
-**Decisión que habilita:** `description` del frontmatter, `argument-hint`.
+**Pregunta útil:** ¿En qué situaciones cambia el proceso, el resultado o la autorización?
 
-**Respuesta buena:**
-> "creá el componente Radio", "falta documentar el Stepper", "agregá la foundation de Icons", "qué componentes faltan", "status del DS", "continuemos con el design system"
+**Por qué importa:** separa recorridos diferentes sin fragmentar cada paso en un modo.
+**Decisión que habilita:** flujo único o selección entre protocolos.
 
-**Respuesta que necesita más:**
-> "Cuando el usuario quiere trabajar con el design system."
-→ Traducir a frases reales: ¿qué *dice* exactamente?
+**Respuesta suficiente:**
+> Crear produce documentación nueva; actualizar modifica un documento identificado;
+> auditar produce un informe y no cambia el documento.
 
-**Tip:** si el usuario duda, pedir que recuerde la última vez que necesitó algo similar y qué escribió.
+**Respuesta insuficiente:**
+> Hace todo lo relacionado con documentación.
 
----
+Para resolverla, compara entrada, acciones y salida de cada caso.
+Dos títulos distintos con el mismo recorrido normalmente no justifican dos modos.
+“Revisa cómo está” no equivale a “corrígelo”; define cómo se resuelve esa diferencia.
+La selección del modo nunca concede permisos por sí sola.
 
-## Q3b — Forma del skill
+## Q5 — Herramientas, datos y permisos
 
-**Pregunta:**
-> ¿Este skill decide entre situaciones distintas, o corre siempre el mismo procedimiento? ¿Su peso está en conocimiento estático que no cambia, o en hablar con un sistema externo?
+**Pregunta útil:** ¿Qué información y capacidades son imprescindibles para completar el trabajo?
 
-**Por qué es acá:** la forma decide si la pregunta siguiente (modos) tiene sentido. Ver `references/skill-shapes.md` para las 4 formas y lo que exige cada una.
+**Por qué importa:** distingue lo deseable de lo necesario y permite una salida segura sin acceso.
+**Decisión que habilita:** precondiciones, mecanismo disponible y alcance no verificable.
 
-**Decisión que habilita:** si hay tabla de modos, si hace falta `references/`, qué tipo de GUARD, y qué criterios del checklist no aplican.
+| Necesidad | Capacidad que se debe comprobar | Si falta |
+|---|---|---|
+| Leer código o documentos | Lectura del archivo y su contexto | Pedir la fuente concreta; no inventar contenido. |
+| Modificar archivos | Edición en la ruta autorizada | Preparar el cambio y explicar el permiso faltante. |
+| Ejecutar validaciones | Runtime y dependencias requeridas | Reportar prueba pendiente y alternativa disponible. |
+| Consultar Notion o Figma | Conector o acceso autorizado al objeto | Diferenciar falta de herramienta de falta de permisos. |
+| Consultar documentación actual | Acceso web y fuentes primarias | Declarar lo que no pudo verificarse. |
 
-**Respuesta buena:**
-> "Siempre hace lo mismo: recibe un componente y devuelve un reporte con hallazgos." → ejecutor lineal, sin tabla de modos.
+Describe capacidades, no namespaces MCP históricos como si fueran universales.
+Una lista de herramientas en el archivo no instala conectores ni concede permisos del sistema.
+La necesidad de leer un sistema externo no autoriza escribir en él.
 
-**Respuesta que necesita más:**
-> "Depende de lo que necesite."
-→ Preguntar por el output: si el output cambia según la situación, hay modos; si es siempre el mismo, es lineal.
+## Q6 — Conocimiento que debe conservarse
 
-**Señal de constructor:** el valor está en tokens, inventarios o decisiones ya tomadas.
-**Señal de operador externo:** el skill escribe en Notion, ClickUp u otra base y necesita IDs y anti duplicado.
+**Pregunta útil:** ¿Qué decisiones, ejemplos o recursos no conviene redescubrir en cada uso?
 
----
+**Por qué importa:** recupera experiencia específica, incluidas correcciones del usuario.
+**Decisión que habilita:** qué queda en el principal, references, scripts o assets.
 
-## Q4 — Modos y sus señales
+**Respuesta suficiente:**
+> La estructura de seguimiento aprobada, un ejemplo correcto y uno incorrecto,
+> el mapa de relaciones y las reglas para cerrar una actividad.
 
-**Pregunta:**
-> ¿De cuántas formas distintas puede invocarse este skill? Para cada una, decime: ¿qué dice el usuario, qué hace el skill, y cuál es su output?
+**Clasificación:**
+- Procedimiento común y límite crítico: archivo principal.
+- Criterio detallado, caso de excepción o protocolo condicional: referencia.
+- Operación determinista repetida: script con contrato y pruebas.
+- Plantilla reutilizada para la salida: asset.
 
-**Por qué importa:** define la tabla de modos y cuántos protocolos hay que escribir.
+No clasifiques inventarios, IDs o esquemas externos como “información que nunca cambia”.
+Registra su procedencia, ámbito y cómo comprobar vigencia.
+No elimines ejemplos útiles solo porque la regla pueda resumirse en una frase.
 
-**Decisión que habilita:** tabla de Detección de modo, cantidad de bloques de protocolo en SKILL.md.
+## Q7 — Riesgos y límites
 
-**Respuesta con modos claros:**
-> "Tres modos: ADD para agregar un componente nuevo (output: 3 archivos + entrada en sidebar), STATUS para ver el inventario (output: tabla de estado), AUDIT para revisar accesibilidad de los componentes existentes (output: reporte con fixes)."
+**Pregunta útil:** ¿Qué error concreto ha ocurrido o debemos impedir, y cómo se detecta?
 
-**Respuesta que necesita aclaración:**
-> "Sirve para todo lo del design system."
-→ Preguntar: ¿puede crear componentes? ¿puede solo consultarlos? ¿puede auditarlos? → separar en modos.
+**Por qué importa:** convierte experiencia en controles operativos.
+**Decisión que habilita:** regla con condición, respuesta y caso negativo de evaluación.
 
-**Señal de modo nuevo:** cada vez que el output o el proceso cambia significativamente → modo nuevo.
+**Respuesta suficiente:**
+> Al cancelar una tarea debemos conservarla y cambiar su estado, no borrarla.
 
----
+**Respuesta insuficiente:**
+> Que el agente tenga cuidado.
 
-## Q5 — Herramientas y acceso externo
+**Seguimiento:** ¿qué acción sería incorrecta?, ¿cuál es la alternativa permitida?
+Distingue prohibición del sistema, política del proyecto y preferencia que el usuario puede cambiar.
+No conviertas un incidente aislado en una prohibición universal sin revisar su causa.
+Ejemplo: el recorte de un menú por overflow exige analizar su contenedor, no prohibir
+esa propiedad en todos los componentes de todos los proyectos.
 
-**Pregunta:**
-> ¿Qué herramientas necesita este skill? ¿Crea o edita archivos? ¿Ejecuta comandos de terminal? ¿Usa algún MCP server (Figma, Notion, etc.)? ¿Hace búsquedas web?
+## Q8 — Fuente, instalación y distribución
 
-**Por qué importa:** define `allowed-tools` en el frontmatter. Incluir tools innecesarias agrega ruido; omitir tools necesarias bloquea el skill.
+**Pregunta útil, solo cuando sea pertinente:** ¿Se requiere editar la fuente, instalarla
+en un agente, registrarla en un catálogo o publicarla?
 
-**Decisión que habilita:** `allowed-tools` en frontmatter.
+**Por qué importa:** son operaciones diferentes, con destinos y permisos diferentes.
+**Decisión que habilita:** alcance de entrega y comprobación específica de cada operación.
 
-**Mapeo de necesidades a tools:**
-| Necesidad | Tool |
-|-----------|------|
-| Leer archivos del proyecto | Read, Glob, Grep |
-| Crear archivos nuevos | Write |
-| Editar archivos existentes | Edit |
-| Ejecutar comandos PowerShell/bash | Bash |
-| Interactuar con Figma | `mcp__figma-console-local__*` |
-| Interactuar con Notion | `mcp__claude_ai_Notion__*` |
-| Buscar en la web | WebSearch |
-| Lanzar subagentes | Agent |
+**Respuesta suficiente:**
+> Actualiza la fuente compartida. Los enlaces existentes ya la utilizan. No publiques.
 
----
+**Si se solicita un catálogo:** confirma la base y sus propiedades reales.
+Proceso y rol pueden servir para clasificar, pero no son obligatorios para construir un skill.
+No uses el antiguo catálogo de Notion como requisito universal.
+Si el pedido es únicamente editar, no abras una conversación sobre publicación.
 
-## Q6 — Conocimiento estático para references/
+## Síntesis de alcance
 
-**Pregunta:**
-> ¿Qué información necesita este skill que nunca cambia entre sesiones? Por ejemplo: tokens de diseño, patrones de código, decisiones tomadas, inventarios, mapas de configuración, checklists.
+Usa esta plantilla cuando el trabajo necesite varias decisiones; omite campos irrelevantes.
 
-**Por qué importa:** todo lo que responda esta pregunta va en `references/`, no en SKILL.md. Define cuántos archivos de referencias crear y con qué contenido.
-
-**Decisión que habilita:** estructura de `references/` y sus nombres de archivo.
-
-**Respuesta buena:**
-> "Los tokens CSS (colores, tipografía, espaciado), las decisiones de diseño ya tomadas (radios, triggers, overflow), el inventario de componentes con su estado (✅/⏳), y el patrón DemoShell que se usa en todas las doc pages."
-
-→ Esto genera 4 archivos: tokens.md, decisions.md, inventory.md, patterns.md
-
-**Señal de que algo va en references/:** es una tabla, una lista de tokens, un inventario, o un patrón de código fijo.
-**Señal de que algo va en SKILL.md:** es un procedimiento, una fase, una decisión de flujo.
-
----
-
-## Q7 — Blocking behaviors / reglas no negociables
-
-**Pregunta:**
-> ¿Qué no puede hacer nunca este skill, aunque el usuario lo pida? ¿Qué errores cometería un Claude sin restricciones que este skill debe prevenir?
-
-**Por qué importa:** define los comportamientos bloqueantes (Bx). Sin ellos, el skill va a cometer exactamente los errores que el dominio tiene documentados.
-
-**Decisión que habilita:** sección "Comportamientos bloqueantes".
-
-**Respuesta buena:**
-> "Nunca usar overflow-hidden en containers con dropdowns — lo aprendimos a las malas. Nunca hardcodear colores, siempre tokens. Nunca saltarse la confirmación del plan. Nunca escribir código si el guard falla."
-
-**Forma de extraer si el usuario no recuerda bloqueantes:**
-> "¿Hubo alguna vez que Claude hizo algo que rompió el proyecto? ¿Qué fue? Eso es un bloqueante."
-> "¿Qué cosas siempre le aclarás a Claude antes de empezar? Eso también."
-
----
-
-## Q8 — Registro en Notion
-
-**Pregunta:**
-> ¿A qué proceso de Notion pertenece este skill y qué rol ejecuta?
-
-**Por qué importa:** define cómo se registra en la base de datos Skills & Marcos.
-
-**Decisión que habilita:** propiedades de Notion al crear el registro.
-
-**Procesos disponibles:** Discovery, Sprint, Handoff, Cliente, Transversal
-**Roles disponibles:** Desarrollador, Diseñador, Analista, Revisor, Investigador, Gestor, Operativo
-
-**Regla:** si el skill aplica a un proceso de diseño → Diseñador. Si ejecuta código → Desarrollador. Si audita/revisa → Revisor. Si es infraestructura/config → Operativo.
-
-**Skills que son Transversal:** los que no pertenecen a una fase específica del flujo (ej: notion-workspace, project-context, skill-builder).
-
----
-
-## Síntesis post-entrevista
-
-Después de las 8 preguntas, presentar este bloque para confirmación:
-
+```text
+Skill: [nombre]
+Recibe: [entrada]
+Entrega: [resultado verificable]
+Incluye / excluye: [frontera]
+Contexto y precondiciones: [destino, datos, capacidades]
+Recorrido o modos: [señal → acción → salida]
+Conocimiento que se conserva: [reglas, ejemplos, referencias]
+Riesgos y controles: [condición → respuesta]
+Pruebas previstas: [caso normal y fallo relevante]
+Operaciones autorizadas: [editar / instalar / registrar / publicar]
+Vacío material pendiente: [si realmente existe]
 ```
-Síntesis — /[nombre-propuesto]
--------------------------------
-Propósito:   [una línea]
-Alcance:     global | project-specific ([archivo de guard])
-Effort:      low | medium | high
 
-Frontmatter:
-  description: [3 trigger phrases de ejemplo]
-  allowed-tools: [lista]
-
-Modos ([N]):
-  [MODO_A]: [señal] → [output]
-  [MODO_B]: [señal] → [output]
-
-References/:
-  [archivo-1.md]: [contenido]
-  [archivo-2.md]: [contenido]
-
-Bloqueantes clave:
-  - [B1]
-  - [B2]
-  - [B3]
-
-Notion:
-  Proceso: [proceso(s)]
-  Rol:     [rol(es)]
-
-¿Continúo con esta base?
-```
+Con contexto y autorización suficientes, resume y ejecuta.
+Si queda una decisión material, explica su efecto y pregunta solo por ella.

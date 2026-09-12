@@ -85,13 +85,15 @@ export const textStyles = {
 };
 ```
 
-**Divergencia intencional respecto a React — NO revertir:** `family.secondary`
-usa `"Public Sans"` en vez de `"Inter"`. Decisión tomada en esta sesión
-(2026-09-06) comparando x-height/ancho de Public Sans, Inter, Geist, Inter
-Tight, IBM Plex Sans y Satoshi — Public Sans tiene x-height más baja (0.54
-contra 0.58 de Inter), se ve más compacta a igual tamaño en px. El resto de la
-escala (tamaños, pesos, ratios de interlineado, `family.primary`=Manrope) es
-idéntico a React.
+**Ya NO es una divergencia respecto a React — es tipografía compartida:**
+`family.secondary` usa `"Public Sans"`. Nació como excepción solo de Angular
+(2026-09-06, comparando x-height/ancho de Public Sans, Inter, Geist, Inter
+Tight, IBM Plex Sans y Satoshi — Public Sans tiene x-height más baja, 0.54
+contra 0.58 de Inter, se ve más compacta a igual tamaño en px), pero el
+usuario revirtió esa separación el 2026-09-07 y llevó Public Sans también al
+`typography.mjs` de React, para que ambas plataformas usen exactamente la
+misma tipografía. El resto de la escala (tamaños, pesos, ratios de
+interlineado, `family.primary`=Manrope) ya era idéntico a React.
 
 ### La función `textStyle(name, weight?)`
 
