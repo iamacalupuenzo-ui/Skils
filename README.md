@@ -8,6 +8,9 @@ Cada directorio dentro de `skills/` contiene el `SKILL.md` y sus referencias. La
 principal es la fuente única de verdad: los cambios se revisan y publican aquí antes de
 sincronizarlos con las instalaciones locales.
 
+La CLI `skils` instala o actualiza el catálogo en Codex y Claude Code. Consulta la guía
+completa en [docs/instalacion.md](docs/instalacion.md).
+
 ## Skills publicados
 
 | Skill | Estado | Entornos |

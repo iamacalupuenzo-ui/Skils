@@ -1,0 +1,24 @@
+{
+  "name": "skils",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cross-platform installer for the shared Codex and Claude Code skills catalog.",
+  "type": "module",
+  "bin": {
+    "skils": "bin/skils.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --check bin/skils.js"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "skills-manifest.json",
+    "README.md",
+    "docs/"
+  ],
+  "license": "UNLICENSED"
+}
