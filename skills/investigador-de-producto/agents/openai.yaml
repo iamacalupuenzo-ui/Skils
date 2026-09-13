@@ -1,0 +1,4 @@
+interface:
+  display_name: "Investigador de Producto"
+  short_description: "Evalúa herramientas y documenta decisiones"
+  default_prompt: "Usa $investigador-de-producto para evaluar esta herramienta y preparar una recomendación con evidencia."

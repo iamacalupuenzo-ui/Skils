@@ -8,7 +8,8 @@ del skill — no marcar ✅ por intuición.
 ## Categoría 1: Frontmatter
 
 **C1 — Nombre en kebab-case**
-El campo `name:` coincide exactamente con el nombre del directorio en `~/.claude/skills/`.
+El campo `name:` coincide exactamente con el nombre de su directorio en la instalación
+del agente que se está auditando (`~/.codex/skills/` o `~/.claude/skills/`).
 ✅ `name: react-dev` + directorio `react-dev/`
 ❌ `name: ReactDev` o `name: react_dev`
 
@@ -71,7 +72,13 @@ Cada modo tiene un bloque de cierre con formato fijo que define qué informació
 **C12 — SKILL.md cita referencias que existen**
 Para cada `references/nombre.md` citado en el SKILL.md:
 ```powershell
-Test-Path "$env:USERPROFILE\.claude\skills\[nombre-skill]\references\[archivo].md"
+$nombre = "[nombre-skill]"
+$roots = @(
+  (Join-Path $env:USERPROFILE ".codex\skills\$nombre"),
+  (Join-Path $env:USERPROFILE ".claude\skills\$nombre")
+)
+$skillRoot = $roots | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+Test-Path -LiteralPath (Join-Path $skillRoot "references\[archivo].md")
 ```
 ❌ Citar `references/inventory.md` sin que el archivo exista.
 

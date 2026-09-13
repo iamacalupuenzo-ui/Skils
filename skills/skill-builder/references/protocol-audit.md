@@ -8,11 +8,18 @@ actuar.
 
 ## Fase 0 — Localizar el skill
 
-Si da un nombre → resolver instalación del agente y fuente real; no asumir Claude.
+Si da un nombre → resolver la instalación disponible y fuente real; no asumir Claude ni Codex.
 Si da una ruta → leer directamente.
 
 ```powershell
-Get-ChildItem "$env:USERPROFILE\.claude\skills\[nombre]" -Recurse -File
+$nombre = "[nombre]"
+$roots = @(
+  (Join-Path $env:USERPROFILE ".codex\skills\$nombre"),
+  (Join-Path $env:USERPROFILE ".claude\skills\$nombre")
+)
+$skillRoot = $roots | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+if (-not $skillRoot) { throw "No se encontró el skill en Codex ni Claude Code." }
+Get-ChildItem -LiteralPath $skillRoot -Recurse -File
 ```
 
 ---
