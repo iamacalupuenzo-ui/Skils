@@ -10,7 +10,9 @@ Storybook ni CSS interno hacia una aplicación consumidora.
 Antes de elegir componentes, leer el `README.md` instalado en
 `node_modules/@iamacalupuenzo-ui/comsatel-ds/` o su fuente pública en
 `https://github.com/iamacalupuenzo-ui/Comsatel-DS`. Esa es la API vigente; no
-inventar imports ni mantener una lista duplicada dentro de este skill.
+inventar imports ni mantener una lista duplicada dentro de este skill. El
+consumidor se guía por esa superficie pública y sus tipos: no consulta fuentes
+privadas ni solicita un token con alcance `repo` para inferir una composición.
 
 ## Proyecto existente o nuevo
 
@@ -44,6 +46,11 @@ primera adopción:
 npm install @iamacalupuenzo-ui/comsatel-ds@<version>
 ```
 
+El token clásico de instalación requiere únicamente `read:packages`. Si el
+paquete no expone una API, estilo o ejemplo necesario, es un contrato faltante
+del DS: se registra la mejora; no se elevan permisos a `repo` ni se copian
+archivos internos.
+
 Importar los estilos oficiales una vez desde `src/styles.css`:
 
 ```css
@@ -53,6 +60,23 @@ Importar los estilos oficiales una vez desde `src/styles.css`:
 El punto de entrada incluye fuentes y tokens. No instala un reset, los estilos
 de demos ni una interfaz de producto. Los estilos encapsulados de cada
 componente viajan con el componente; la aplicación no los replica.
+
+## Receta de composición: contraseña con visibilidad
+
+Al construir autenticación, no asumir que todo control interactivo es un
+`cs-button`. Comsatel DS exporta `cs-password-input`, que ya compone el campo,
+el ícono `lock` opcional y el botón nativo eye/eye-off con sus etiquetas y
+`aria-pressed`. Importarlo desde el paquete público; no reconstruir el grupo ni
+copiar sus estilos.
+
+El formulario consumidor mantiene el valor, validación, error y etiqueta del
+campo. `PasswordInput` solo controla la revelación. No se envuelve en
+`cs-button`, pues ese componente está destinado a acciones generales y altera
+la geometría del control integrado.
+
+Usar `autocomplete="current-password"` para inicio de sesión o
+`autocomplete="new-password"` para alta/cambio. El correo no es un componente
+especializado: usar `cs-input type="email"` y `autocomplete="email"`.
 
 ## Comandos y dependencias
 

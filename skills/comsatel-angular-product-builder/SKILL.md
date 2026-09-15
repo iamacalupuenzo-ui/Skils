@@ -9,7 +9,7 @@ description: >
   “implementa alertas en esta plataforma”. No construye componentes dentro de
   Comsatel DS, no clona el repositorio del sistema y no copia sus demos.
 metadata:
-  version: "1.0.0"
+  version: "1.0.2"
 ---
 
 # Comsatel Angular Product Builder
@@ -33,7 +33,8 @@ investiga el comportamiento que resuelven y lo adapta con la librería pública.
 ## Referencias
 
 - `references/consumer-contract.md` — leer siempre antes de instalar, iniciar
-  o importar la librería.
+  o importar la librería. Incluye recetas de composición que no se deben
+  sustituir por inferencia.
 - `references/product-discovery.md` — leer siempre antes de planificar o
   construir una característica.
 - `references/feature-delivery.md` — leer en INICIAR y CONSTRUIR.
@@ -50,6 +51,8 @@ investiga el comportamiento que resuelven y lo adapta con la librería pública.
    base Angular limpia solo cuando el usuario pidió una pantalla/proyecto nuevo.
 3. Resolver la API desde el paquete instalado o el README público. Verificar
    que la versión esté fijada y que `styles.css` se importe desde la ruta pública.
+   `read:packages` es suficiente para instalar el paquete: nunca solicitar
+   alcance `repo` ni consultar fuentes privadas para deducir composiciones.
 4. Si falta una API, token o estilo público, detener esa pieza y reportar el
    contrato faltante para Comsatel DS. Nunca copiar archivos internos.
 5. Antes de investigar referentes actuales, comprobar acceso web y usar fuentes
@@ -121,6 +124,10 @@ evaluar, no se edita.
 - **B2 — Solo API y estilos públicos.** Si una solución requiere un archivo de
   `node_modules` no exportado, se detiene y se abre la mejora en DS; copiarlo
   rompe el contrato y la actualización futura.
+- **B2a — Sin privilegios de repositorio.** El token de consumo solo necesita
+  `read:packages`. La API pública instalada es la evidencia del consumidor; si
+  no documenta un patrón, se reporta un contrato faltante en vez de solicitar
+  `repo` para investigar archivos privados.
 - **B3 — Plan antes de interfaz.** Cada característica define actor, resultado,
   flujo, estados, errores, permisos y notificaciones; construir solo el estado
   feliz crea software operacionalmente incompleto.
