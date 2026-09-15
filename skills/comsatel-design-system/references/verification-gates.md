@@ -72,3 +72,40 @@ no sustituyen la evidencia de los tres gates. El informe final solo dice
 `Finalizado` cuando enumera las interacciones y estados realmente revisados.
 Si el navegador, la referencia o un estado necesario no estuvo disponible, el
 componente queda `Pendiente de verificación` con la causa concreta.
+
+## 4. Gate técnico de checkout limpio
+
+Cuando la aplicación consume la librería del mismo repositorio mediante un
+`paths` de TypeScript que apunta a `dist/` (por ejemplo,
+`@iamacalupuenzo-ui/comsatel-ds`), una
+prueba local puede pasar por un paquete construido en una sesión anterior. No
+es evidencia equivalente a CI.
+
+Antes de cerrar un cambio de librería o de sus consumidores, validar en este
+orden: `npm ci --legacy-peer-deps`, `npm run build:lib`, `npm run test:ci` y,
+si hay stories, `npm run build-storybook`. El workflow remoto debe conservar
+el mismo orden: nunca ejecutar los tests de la aplicación antes de construir
+la librería de la que importan.
+
+El reporte debe distinguir una prueba hecha sobre dependencias instaladas de
+una verificación de checkout limpio. Si CI falla, se revisa el log completo
+del job y no se declara el despliegue terminado hasta identificar y corregir
+el paso que falla.
+
+## 5. Gate de trazabilidad para versiones distribuibles
+
+Cuando un cambio modifica la API pública, el nombre/versión del paquete o su
+canal de distribución, la documentación de release es parte de la evidencia
+del cambio, no una tarea posterior. Antes de crear un tag `ds-v<versión>`:
+
+1. Crear o actualizar `docs/releases/<versión>.md`, donde `<versión>` coincide
+   exactamente con `projects/comsatel-ds/package.json`.
+2. Incluir las secciones `Resumen`, `Cambios`, `Impacto para consumidores` y
+   `Verificación`. Declarar de forma explícita si no hay migración; no dejar
+   ese impacto implícito.
+3. Ejecutar `npm run check:release-notes` y el resto de los gates técnicos.
+4. El workflow remoto debe repetir ese check antes de `npm publish`.
+
+Una nota inexistente, con otra versión o con marcadores pendientes deja la
+publicación **Pendiente**, aunque el paquete compile. El tag y la publicación
+son operaciones distintas de editar el código: nunca se crean por inferencia.

@@ -2,7 +2,8 @@
 name: comsatel-design-system
 description: >
   Auditor y reconstructor del Comsatel Design System en Angular (proyecto
-  activo, en D:\Investigacion\Comsatel-DS-Angular). Conoce la arquitectura
+  activo, normalmente en C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS
+  (con D:\Investigacion\Comsatel-DS-Angular como ruta alternativa de búsqueda). Conoce la arquitectura
   completa de tokens (color, tipografía, espaciado, radios, sombras, motion,
   z-index), el patrón de página Angular real (DemoShell/CodeBlock/doc-page.css)
   y los bugs de plataforma ya encontrados, y evalúa cualquier componente o
@@ -31,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.8.0"
+  version: "2.8.3"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)
@@ -48,7 +49,7 @@ se desincroniza el día que el token cambie. Ese tipo de diferencia no se ve
 en un screenshot — se ve leyendo el código fuente contra el estándar
 documentado acá.
 
-**El proyecto React (`Sistema-de-dise-o-Comsatel`) es referencia de
+**El proyecto React (`C:\Users\emacalupu\Documents\Boveda\Monday\Sistema-de-dise-o-Comsatel`) es referencia de
 ESTRUCTURA y comportamiento — nunca de valores de token ni de patrón de
 implementación Angular.** El usuario lo corrigió explícito a mitad de
 sesión: "estamos construyendo todo en Angular, olvídate de React, React era
@@ -164,18 +165,20 @@ Antes de aplicar cualquier criterio de este skill, confirmar que se está
 trabajando en el proyecto Angular correcto — los tokens y patrones acá
 documentados son específicos de este repositorio.
 
-1. Confirmar que el directorio activo (o el que se va a editar) es
-   `D:\Investigacion\Comsatel-DS-Angular` o un subdirectorio de ahí.
-2. Leer `projects/comsatel-ds/package.json` (o el `package.json` raíz) y
-   confirmar que el proyecto Angular referencia `comsatel-ds` como nombre
-   de librería.
+1. Confirmar que el directorio activo (o el que se va a editar) corresponde a una de estas rutas o a un subdirectorio:
+   `C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS` (ubicación actual conocida) o
+   `D:\Investigacion\Comsatel-DS-Angular` (ubicación alternativa histórica). Si ambas existen, validar identidad y trabajar en la que el usuario indique.
+2. Leer `projects/comsatel-ds/package.json` y `angular.json`: confirmar el
+   nombre distribuible configurado en el paquete y que el proyecto Angular
+   conserva `comsatel-ds` como identificador de build. No asumir que el
+   nombre publicado es no-scoped ni que coincide con el workspace.
 3. Confirmar que existe `projects/comsatel-ds/src/lib/tokens/typography.ts`
    y que exporta una función `textStyle`.
 4. Leer `references/project-resources.md` y cargar solo los recursos de
    proyecto que correspondan a la tarea. El mapa determina dónde se lee
    contexto; los archivos Angular reales siguen siendo la fuente de verdad.
 5. Si la tarea es PORTAR un componente desde React, confirmar además que
-   `D:\Investigacion\Sistema-de-dise-o-Comsatel` existe y contiene el
+   `C:\Users\emacalupu\Documents\Boveda\Monday\Sistema-de-dise-o-Comsatel` existe y contiene el
    `.tsx` del componente a portar — usarlo solo para leer estructura y
    comportamiento (ver la nota de GUARD arriba), nunca para copiar valores.
 6. Si algo no coincide, decirlo explícitamente y preguntar la ruta
@@ -494,6 +497,29 @@ lo son entre sí.
   Si el componente es interactivo, el click real debe actualizar el estado
   renderizado y el código mostrado, no solo cambiar el foco.
 
+- **B16 — Cada versión distribuible deja una nota de versión verificable.**
+  Si un cambio altera la API pública, el nombre/versión del paquete o el flujo
+  de distribución, crear o actualizar `docs/releases/<versión>.md` antes de
+  publicar. La nota debe incluir resumen, cambios, impacto para consumidores
+  (incluida migración o la confirmación explícita de que no existe) y evidencia
+  de verificación. Ejecutar `npm run check:release-notes`; nunca crear el tag
+  `ds-v<versión>` ni declarar una publicación preparada si esa evidencia falta.
+  La versión de la nota debe coincidir exactamente con
+  `projects/comsatel-ds/package.json`, para evitar que una plataforma adopte
+  un paquete sin conocer su contrato.
+
+- **B17 — Una aplicación consumidora no nace clonando el Design System.**
+  Si el pedido es construir una pantalla o flujo de producto (por ejemplo,
+  login), identificar primero el repositorio de la aplicación destino. Usar
+  `docs/consumer-angular.md` para crear una base Angular limpia solo cuando
+  no exista ese destino; instalar el paquete publicado y componer desde su
+  API pública. Nunca copiar `projects/comsatel-ds/`, las demos, Storybook ni
+  el `src/app/` de este workspace en una aplicación de negocio. La estructura
+  base de producto separa `core/` (sesión/guards), `layout/` (shell) y
+  `features/` (flujos como `auth/login`); una composición de login no se
+  agrega a la librería hasta que exista evidencia de reutilización entre
+  plataformas.
+
 ---
 
 ## Gate de cierre: referencia funcional, estructura y evidencia visual
@@ -620,6 +646,9 @@ Antes de cerrar cualquier modo, confirmar:
       coincide exacto sin declararlo
 - [ ] Si se tocó `projects/comsatel-ds/`, se hizo build + reinicio antes de
       verificar
+- [ ] Si la app consume `comsatel-ds` desde `dist/`, se validó el gate de
+      checkout limpio (`npm ci`, build de librería antes de tests de app) y
+      el workflow CI conserva ese orden — ver `verification-gates.md`
 - [ ] `references/component-inventory.md` quedó actualizado
 - [ ] Si el proyecto usa Storybook y se tocó un `.stories.ts`, cada story
       corresponde a un patrón ya verificado en `src/app/pages/*-demo/` (o
@@ -641,6 +670,12 @@ Antes de cerrar cualquier modo, confirmar:
 - [ ] Se completaron los tres gates de `verification-gates.md`: matriz de
       referencia funcional (PrimeNG si existe equivalente), árbol/semántica
       real y evidencia visual de todos los estados aplicables en un tab limpio
+- [ ] Si el cambio es distribuible, existe `docs/releases/<versión>.md` con
+      resumen, impacto y verificación; `npm run check:release-notes` pasó y
+      la nota coincide con `projects/comsatel-ds/package.json` (B16)
+- [ ] Si se construyó una pantalla de producto, se trabajó en el repositorio
+      consumidor, no se clonó este workspace y la composición quedó en
+      `core/`, `layout/` o `features/` según su responsabilidad (B17)
 
 Si algún ítem falla, no cerrar como completo — decir explícitamente qué
 falta.
