@@ -8,6 +8,25 @@ proyecto `D:\Investigacion\Comsatel-DS-Angular`. A diferencia del proyecto
 React (Astro, puerto 4321, servidor manejado por el usuario en su propia
 terminal), en Angular el servidor SÍ se maneja desde la sesión — ver punto 1.
 
+## 0 — Assets públicos de una librería ESM y pre-bundling Vite
+
+**Síntoma:** un componente de la librería compila y los PNG aparecen en
+`npm pack --dry-run`, pero una aplicación Angular consumidora solicita la
+imagen desde una carpeta de caché de Vite o recibe 404.
+
+**Causa:** `new URL()` recibió una ruta dinámica, por ejemplo
+``new URL(`../assets/${name}`, import.meta.url)``. Vite no puede descubrir y
+reescribir un asset cuyo nombre se decide en runtime; `import.meta.url` pasa a
+referir el módulo pre-empaquetado.
+
+**Regla:** declarar una constante por asset con una ruta literal y seleccionar
+las constantes después: `const ICON = new URL('../assets/icon.png',
+import.meta.url).toString()`. No usar rutas absolutas `/assets/...`: rompen
+`baseHref` y despliegues bajo subruta. Antes de publicar, instalar o empaquetar
+la versión en una aplicación Angular consumidora y probar Vite con prebundle
+activo. `ng serve --prebundle=false` solo sirve para diagnosticar, nunca como
+instrucción permanente.
+
 ## 1 — La librería (`projects/comsatel-ds`) NO hace hot-reload
 
 **Síntoma:** se edita cualquier archivo dentro de
