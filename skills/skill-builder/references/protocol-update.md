@@ -16,6 +16,7 @@ No editar sin leer. Leer SKILL.md + references/ afectadas.
 
 ```
 Cambio solicitado: [descripción]
+Fuente canónica: Skils/skills/[nombre]
 Archivos afectados:
   SKILL.md → sección [X]: [qué cambia exactamente]
   references/[archivo].md → [qué cambia]
@@ -23,6 +24,7 @@ Archivos afectados:
 Lo que NO cambia: [resto del skill]
 
 Autorización: [diagnóstico aprobado; consultar solo ampliaciones]
+Distribución: [no solicitada / publicación solicitada / instalación solicitada]
 ```
 
 ---
@@ -31,6 +33,7 @@ Autorización: [diagnóstico aprobado; consultar solo ampliaciones]
 
 Usar la herramienta de edición indicada por el entorno. Preservar el resto intacto.
 Resolver enlaces y respaldar antes de cambios amplios. Corregir regla, ejemplos y llamadas.
+Editar la fuente canónica en `Skils/skills/<nombre>/`, no una instalación local del agente.
 
 ---
 
@@ -38,6 +41,8 @@ Resolver enlaces y respaldar antes de cambios amplios. Corregir regla, ejemplos 
 
 En cambios pequeños validar lo afectado; en refactorización amplia aplicar el checklist
 completo y references/evaluaciones.md. Distinguir pruebas locales de integración real.
+Ejecutar `npm test`; si se alteró el catálogo o el contenido instalado, ejecutar además
+la CLI con `--dry-run` antes de proponer publicación o instalación.
 
 ---
 
@@ -51,4 +56,6 @@ Cambios:
   references/[archivo]:[línea] — [descripción]
 
 Criterios re-validados: [lista] — ✅
+Publicación: [no solicitada / commit y push verificados]
+Instalación: [no solicitada / doctor verificado]
 ```

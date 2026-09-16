@@ -11,6 +11,10 @@ sincronizarlos con las instalaciones locales.
 La CLI `skils` instala o actualiza el catálogo en Codex y Claude Code. Consulta la guía
 completa en [docs/instalacion.md](docs/instalacion.md).
 
+Para crear o actualizar un skill reutilizable, seguir el
+[flujo canónico del catálogo](docs/sistema-skills-notion.md): fuente central, validación,
+registro opcional en Notion, publicación explícita e instalación verificada.
+
 La decisión y evidencia que justifican la CLI están documentadas en
 [research/2026-09-cli-instalacion-directa-de-skills.md](research/2026-09-cli-instalacion-directa-de-skills.md).
 

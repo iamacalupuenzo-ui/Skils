@@ -9,7 +9,7 @@ description: >
   en un skill", "haz un skill de", "el skill de X necesita actualizarse",
   "audita el skill de Y", "qué le falta al skill de Z".
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Skill Builder — Arquitectura para Codex y Claude Code
@@ -38,7 +38,7 @@ Editar un skill no autoriza instalar, registrar ni publicar.
 - `references/protocol-migrate.md` — protocolo completo del modo MIGRATE
 - `references/protocol-audit.md` — protocolo completo del modo AUDIT
 - `references/protocol-update.md` — protocolo completo del modo UPDATE
-- `../../docs/sistema-skills-notion.md` — destino canónico, schema y reglas de sincronización del catálogo de Skills
+- `references/catalog-flow.md` — fuente canónica, validación, Notion y distribución del catálogo de Skills
 
 ---
 
@@ -50,10 +50,23 @@ Editar un skill no autoriza instalar, registrar ni publicar.
 4. Si falta acceso, detener solo la operación afectada e informar lo pendiente.
 5. Conservar respaldo antes de refactorizar y no sobrescribir cambios ajenos.
 
-En este equipo, verificar los enlaces individuales de Codex y Claude hacia
-D:/Investigacion/Skills/e-skills/skills. Esa ruta es configuración local, no universal.
-Para crear o actualizar un skill reutilizable, leer también
-`../../docs/sistema-skills-notion.md` antes de cerrar.
+Para crear o actualizar un skill reutilizable, resolver primero el repositorio central
+**Skils** y editar `skills/<nombre>/` dentro de él. Las instalaciones de Codex y Claude
+son destinos de despliegue, nunca la fuente editable. Leer
+`references/catalog-flow.md` antes de cerrar: allí están la resolución de la
+fuente, el manifiesto, la validación, Notion y los comandos de distribución.
+
+## Ciclo canónico de distribución
+
+1. Crear o editar en `Skils/skills/<nombre>/`.
+2. Incluir el nombre exacto en `skills-manifest.json` si es nuevo.
+3. Validar contenido y ejecutar `npm test` más una instalación con `--dry-run`.
+4. Sincronizar el índice de Notion cuando el alcance autorice el registro.
+5. Publicar con Git solo si el usuario pide publicar.
+6. Instalar o actualizar con `skils` solo si el usuario pide desplegar.
+
+Un cambio en la fuente no queda disponible en otros equipos hasta que se publique y se
+ejecute la instalación o actualización. Cada etapa se reporta por separado.
 
 ---
 
@@ -99,7 +112,7 @@ actuar. No improvisar el protocolo de memoria ni saltear fases.
 - **B9 — Portabilidad**: verificar soporte de metadatos y herramientas por agente; descubrimiento no prueba ejecución.
 - **B10 — Operaciones separadas**: editar, instalar, registrar y publicar requieren su propio alcance y resultado verificado.
 - **B11 — Lectura progresiva**: externalizar cuando los procedimientos se usen por separado; conservar decisiones, ejemplos y llamadas.
-- **B12 — Registro canónico de skills**: al cerrar CREATE, MIGRATE o una actualización material,
+- **B12 — Registro canónico de skills**: cuando el alcance autorice registrar en Notion,
   buscar la fila existente en Sistema de Skills y crearla o sincronizarla en la misma fila.
   Clasificarla con una `Capacidad` existente o crear una solo si falta un ámbito fiel; no usar
   `Skills & Marcos` como destino de skills nuevos.

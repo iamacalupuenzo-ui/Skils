@@ -121,6 +121,10 @@ Reglas de escritura:
 - Las racionalizaciones son específicas al dominio del skill, no genéricas
 - El formato de respuesta incluye idioma, tono, posición del modo y formato de cierre
 
+Guardar todos los archivos creados en `Skils/skills/<nombre-del-skill>/`. Si es un skill
+nuevo, agregar su nombre exacto a `Skils/skills-manifest.json`. No escribir primero en
+`~/.codex/skills` ni `~/.claude/skills`: son copias instaladas.
+
 ---
 
 ## Fase 4 — Validación
@@ -147,17 +151,18 @@ Ejecutar los casos de references/evaluaciones.md y pruebas aisladas de código n
 
 ## Fase 5 — Registrar en Notion (opcional y autorizado)
 
-Omitir esta fase si no se pidió registro. Verificar base y propiedades reales.
-Ejemplo histórico de Skills & Marcos, no schema universal:
-- `Nombre`: /nombre-del-skill
-- `Comando`: /nombre-del-skill
-- `Tipo`: Skill Claude
-- `Status`: Activo
-- `Descripción`: una línea del propósito
-- `Proceso asociado`: [según lo acordado en la entrevista]
-- `Rol`: [según lo acordado]
+Omitir esta fase si no se pidió registro. Verificar base y propiedades reales en
+`references/catalog-flow.md`. Usar la base **Skills**, buscar primero una fila
+existente y mantener: `Skill`, estado, descripción, cuándo usarlo, disparadores,
+entornos verificados, tipo, prioridad, repositorio fuente, ruta fuente y última revisión.
 
 Confirmar con el ID de Notion y la URL de la página creada.
+
+## Fase 6 — Preparar distribución
+
+Ejecutar `npm test` y `node bin/skils.js install --target all --skill <nombre> --dry-run`
+desde la raíz de `Skils`. Informar que publicar con Git e instalar con la CLI son pasos
+pendientes, a menos que el usuario los haya solicitado explícitamente.
 
 ## Cierre obligatorio
 
@@ -165,13 +170,15 @@ Confirmar con el ID de Notion y la URL de la página creada.
 Skill creado — /nombre-del-skill
 ----------------------------------
 Archivos:
-  ✅ [fuente autorizada]/nombre/SKILL.md
-  ✅ [fuente autorizada]/nombre/references/archivo-1.md
-  ✅ [fuente autorizada]/nombre/references/archivo-2.md
+  ✅ Skils/skills/nombre/SKILL.md
+  ✅ Skils/skills/nombre/references/archivo-1.md
+  ✅ Skils/skills/nombre/references/archivo-2.md
   [...]
 
 Validación: APROBADO / APROBADO CON OBSERVACIONES
 Registro:   [no solicitado / realizado y verificado → URL / pendiente]
+Publicación: [no solicitada / commit y URL verificados]
+Instalación: [no solicitada / destinos y doctor verificados]
 
 Para usar: /nombre-del-skill [argumento]
 Triggers:  [3 frases clave del frontmatter]

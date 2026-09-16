@@ -58,8 +58,9 @@ Para migración solo se necesitan las preguntas que el archivo original no respo
 
 ## Fase 3 — Construir
 
-Seguir Fases 2, 3 y 4 de `references/protocol-create.md`; fase 5 solo con registro solicitado.
-Comparar capacidades y ejemplos con el origen; probar antes de activar.
+Seguir Fases 2, 3, 4 y 6 de `references/protocol-create.md`; fase 5 solo con registro
+solicitado. La versión migrada vive en `Skils/skills/<nombre>/` y se agrega al manifiesto
+si es nueva. Comparar capacidades y ejemplos con el origen; probar antes de activar.
 
 ---
 
