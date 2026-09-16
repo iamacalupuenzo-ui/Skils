@@ -6,6 +6,9 @@
   esa adopción; no hay fuentes internas copiadas.
 - `styles.css` se importa una sola vez y los componentes se importan desde la
   API pública.
+- El `body` usa `--font-family-content` y los tokens tipográficos públicos; se
+  comprueba en el navegador la familia computada de texto fuera de componentes.
+  No hay `@font-face`, URL de fuentes ni familias propias agregadas por la app.
 - La ruta se abre, el flujo principal completa y cada estado del plan se
   verifica: carga, vacío, error, permisos, responsive y recuperación aplicable.
 - La navegación por teclado conserva orden y foco; controles tienen nombre;
@@ -26,3 +29,4 @@
 | “Haz un mapa de unidades” | Lista equivalente, dato fresco/obsoleto y estados de mapa. | Mapa visual sin alternativa ni error. |
 | “Actualiza la librería” | Cambio explícito de versión y lockfile, pruebas de regresión. | `latest` o CSS copiado. |
 | API pública insuficiente | Bloqueo documentado y propuesta para DS. | Acceder a `node_modules` interno. |
+| Pantalla con texto propio | Base tipográfica desde tokens públicos y familia computada verificada. | Heredar la serif del navegador o cargar una fuente ajena. |

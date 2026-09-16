@@ -9,7 +9,7 @@ description: >
   “implementa alertas en esta plataforma”. No construye componentes dentro de
   Comsatel DS, no clona el repositorio del sistema y no copia sus demos.
 metadata:
-  version: "1.0.2"
+  version: "1.0.3"
 ---
 
 # Comsatel Angular Product Builder
@@ -50,7 +50,9 @@ investiga el comportamiento que resuelven y lo adapta con la librería pública.
 2. Si no existe, confirmar la ruta donde se creará la aplicación. Crear una
    base Angular limpia solo cuando el usuario pidió una pantalla/proyecto nuevo.
 3. Resolver la API desde el paquete instalado o el README público. Verificar
-   que la versión esté fijada y que `styles.css` se importe desde la ruta pública.
+   que la versión esté fijada, que `styles.css` se importe desde la ruta pública
+   y que el `body` establezca la tipografía mediante los tokens públicos; no
+   agregar familias ni importaciones tipográficas ajenas a la librería.
    `read:packages` es suficiente para instalar el paquete: nunca solicitar
    alcance `repo` ni consultar fuentes privadas para deducir composiciones.
 4. Si falta una API, token o estilo público, detener esa pieza y reportar el
@@ -89,7 +91,9 @@ evaluar, no se edita.
 1. Leer `consumer-contract.md` y `feature-delivery.md`.
 2. Crear Angular 22 limpio en la ruta aprobada; no clonar Comsatel DS.
 3. Configurar el registro sin secretos, instalar una versión explícita e
-   importar `@iamacalupuenzo-ui/comsatel-ds/styles.css` una vez.
+   importar `@iamacalupuenzo-ui/comsatel-ds/styles.css` una vez. Establecer la
+   base tipográfica global con sus tokens públicos; no cargar fuentes externas
+   ni declarar una familia propia como sustituto.
 4. Crear la estructura `core/`, `layout/`, `features/` y una ruta mínima de la
    pantalla solicitada; no simular una app completa si el usuario pidió una sola.
 5. Ejecutar build y pruebas disponibles; verificar que el import público se

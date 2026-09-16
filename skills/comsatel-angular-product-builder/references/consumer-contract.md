@@ -51,15 +51,32 @@ paquete no expone una API, estilo o ejemplo necesario, es un contrato faltante
 del DS: se registra la mejora; no se elevan permisos a `repo` ni se copian
 archivos internos.
 
-Importar los estilos oficiales una vez desde `src/styles.css`:
+Importar los estilos oficiales una vez desde `src/styles.css` y establecer la
+base tipográfica global. El punto de entrada aporta las fuentes oficiales y los
+tokens, pero intencionalmente no resetea el `body` de la aplicación consumidora:
 
 ```css
 @import '@iamacalupuenzo-ui/comsatel-ds/styles.css';
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-family-content);
+  font-size: var(--font-size-content-body);
+  line-height: var(--font-line-height-content-body);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--font-letter-spacing-content);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 ```
 
 El punto de entrada incluye fuentes y tokens. No instala un reset, los estilos
 de demos ni una interfaz de producto. Los estilos encapsulados de cada
-componente viajan con el componente; la aplicación no los replica.
+componente viajan con el componente; la aplicación no los replica. Nunca
+agregar `@font-face`, una URL de fuentes ni una familia tipográfica propia para
+reemplazar los tokens: el consumidor solo usa la tipografía publicada por el DS.
 
 ## Receta de composición: contraseña con visibilidad
 
