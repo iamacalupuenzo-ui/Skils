@@ -78,6 +78,50 @@ componente viajan con el componente; la aplicación no los replica. Nunca
 agregar `@font-face`, una URL de fuentes ni una familia tipográfica propia para
 reemplazar los tokens: el consumidor solo usa la tipografía publicada por el DS.
 
+## Tipografía en formularios
+
+Clasificar cada texto antes de aplicar estilos: título de pantalla,
+introducción, etiqueta de campo, etiqueta de control de elección, ayuda y
+estado. La jerarquía intencional no se elimina haciendo que todos usen el mismo
+tamaño.
+
+Los labels de campos equivalentes compuestos por la aplicación —por ejemplo un
+`<label>` para `cs-input` y el label de un `cs-select`— deben compartir el rol
+de etiqueta de campo. No asumir una escala por costumbre: medir en el navegador
+el label encapsulado del componente publicado en la versión instalada y usar
+ese mismo rol en la etiqueta externa.
+
+En la versión actual `0.1.4`, `cs-select` publica su etiqueta de campo como
+`content/note` con peso `accent` (12px/18px/500). Cuando una aplicación usa
+esa versión y necesita una etiqueta externa para `cs-input`, aplicarla de forma
+acotada al campo con esos tokens públicos:
+
+```css
+.form-field > label {
+  color: var(--color-text-base-default);
+  font-family: var(--font-family-content);
+  font-size: var(--font-size-content-note);
+  line-height: var(--font-line-height-content-note);
+  font-weight: var(--font-weight-accent);
+  letter-spacing: var(--font-letter-spacing-content);
+}
+```
+
+No declarar una regla global para `label`: afectaría la etiqueta interna de
+Checkbox y otros componentes. Un Checkbox usa una etiqueta de opción y ayuda
+propias; esa anatomía encapsulada se conserva. Verificar en el navegador la
+familia, tamaño, interlineado y peso computados de labels equivalentes, no solo
+su apariencia en una captura.
+
+Evaluar también el texto dentro del control. En `0.1.4`, `cs-input` y
+`cs-select` `md` usan una altura de 32px y texto `content/ui`
+(13px/19.5px); `lg` usa 40px y `content/body` (16px/24px). Para una pantalla
+con menor densidad o mayor exigencia de legibilidad, usar `fieldSize="lg"` en
+`cs-input` y `size="lg"` en `cs-select` de manera consistente. Si la
+investigación concluye que la etiqueta de 12px debe crecer, es una decisión de
+Comsatel DS: se cambia el patrón del componente y se verifica transversalmente,
+no se crea una excepción visual en una sola aplicación.
+
 ## Receta de composición: contraseña con visibilidad
 
 Al construir autenticación, no asumir que todo control interactivo es un

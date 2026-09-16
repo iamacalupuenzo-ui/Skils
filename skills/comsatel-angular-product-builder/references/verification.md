@@ -9,6 +9,15 @@
 - El `body` usa `--font-family-content` y los tokens tipográficos públicos; se
   comprueba en el navegador la familia computada de texto fuera de componentes.
   No hay `@font-face`, URL de fuentes ni familias propias agregadas por la app.
+- En formularios, los labels de campos equivalentes tienen la misma familia,
+  tamaño, interlineado y peso computados. La diferencia entre etiqueta de campo,
+  etiqueta de opción y ayuda solo se conserva cuando responde a la anatomía del
+  componente publicado; no se imponen reglas globales sobre `label`.
+- La auditoría diferencia el label del texto escrito o placeholder dentro del
+  control. El tamaño de `cs-input` y `cs-select` es consistente en el mismo
+  formulario; si `md` no aporta legibilidad suficiente para el contexto, se
+  adopta `lg` en ambos. Un cambio del tamaño estándar de labels se deriva al DS,
+  nunca se resuelve con una excepción de una sola pantalla.
 - La ruta se abre, el flujo principal completa y cada estado del plan se
   verifica: carga, vacío, error, permisos, responsive y recuperación aplicable.
 - La navegación por teclado conserva orden y foco; controles tienen nombre;
@@ -30,3 +39,5 @@
 | “Actualiza la librería” | Cambio explícito de versión y lockfile, pruebas de regresión. | `latest` o CSS copiado. |
 | API pública insuficiente | Bloqueo documentado y propuesta para DS. | Acceder a `node_modules` interno. |
 | Pantalla con texto propio | Base tipográfica desde tokens públicos y familia computada verificada. | Heredar la serif del navegador o cargar una fuente ajena. |
+| Formulario con Input y Select | Labels de campos equivalentes comparten tokens y valores computados. | Dejar un label nativo heredando el cuerpo o sobrescribir Checkbox globalmente. |
+| Formulario con baja densidad | Labels y texto interno se miden por separado; Input y Select usan `lg` de forma consistente si el contexto requiere más legibilidad. | Aumentar solo un label local o mezclar `md` y `lg` sin jerarquía. |

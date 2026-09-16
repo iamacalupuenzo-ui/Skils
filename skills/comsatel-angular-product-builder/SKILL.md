@@ -9,7 +9,7 @@ description: >
   “implementa alertas en esta plataforma”. No construye componentes dentro de
   Comsatel DS, no clona el repositorio del sistema y no copia sus demos.
 metadata:
-  version: "1.0.3"
+  version: "1.0.5"
 ---
 
 # Comsatel Angular Product Builder
@@ -53,6 +53,11 @@ investiga el comportamiento que resuelven y lo adapta con la librería pública.
    que la versión esté fijada, que `styles.css` se importe desde la ruta pública
    y que el `body` establezca la tipografía mediante los tokens públicos; no
    agregar familias ni importaciones tipográficas ajenas a la librería.
+   Antes de escribir un formulario, clasificar título, introducción, etiqueta
+   de campo, etiqueta de opción, ayuda y estado; los campos equivalentes deben
+   usar exactamente el mismo rol tipográfico público. Medir por separado el
+   label y el valor del control: que el texto de un campo sea compacto no
+   autoriza a cambiar solo su label con CSS local.
    `read:packages` es suficiente para instalar el paquete: nunca solicitar
    alcance `repo` ni consultar fuentes privadas para deducir composiciones.
 4. Si falta una API, token o estilo público, detener esa pieza y reportar el
@@ -104,6 +109,11 @@ evaluar, no se edita.
 1. Leer `product-discovery.md`, elaborar y comunicar el plan antes de código.
 2. Leer `consumer-contract.md` y `feature-delivery.md`; reutilizar componentes
    públicos primero y componer semánticamente lo específico del producto.
+   Para formularios, alinear los labels de campos equivalentes con los tokens
+   publicados y preservar la anatomía tipográfica encapsulada de cada control.
+   Elegir un tamaño de control coherente para todo el grupo según densidad y
+   legibilidad; no mezclar escalas ni aumentar solo un label para compensar un
+   control demasiado compacto.
 3. Construir flujo principal y todos los estados aplicables antes de declarar
    finalizado: carga, vacío, error, permisos, offline, recuperación y móvil.
 4. Para mapas o notificaciones, aplicar `logistics-patterns.md`; su ausencia
