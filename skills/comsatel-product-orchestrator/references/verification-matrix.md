@@ -6,6 +6,7 @@ producto, una API del DS o un cambio de Angular está terminado.
 | Ruta | Evidencia mínima antes de cerrar | Declarar pendiente si |
 | --- | --- | --- |
 | Orientación sin edición | Destino identificado, skill recomendado y límite explícito | Falta acceso al repositorio o hay dos destinos plausibles |
+| Épica o historias como origen | Plan versionado con módulos, flujos, historias INVEST, Given/When/Then, dependencias y supuestos marcados por `epica-a-plan-desarrollo` | Solo existe una URL o falta el texto/export legible de la épica; no se hace fetch automático |
 | Aplicación consumidora | Build real, flujo crítico, control por teclado/foco, estado de error relevante, responsive y uso exclusivo de API pública | No hay runtime o datos para observar una interacción |
 | Dirección visual | Propósito, audiencia, tono, jerarquía del primer viewport, contraste y ajuste de texto en tamaños relevantes | No existe actor, tarea o contenido real para evaluar |
 | Comsatel DS | Validación que exige `comsatel-design-system`: contrato de API, pruebas afectadas, documentación y publicación solo si se autorizó | Cambiaría una API pública sin versión o sin evidencia de consumidores |

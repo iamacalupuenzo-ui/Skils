@@ -2,12 +2,13 @@
 name: comsatel-product-orchestrator
 description: >
   Clasifica y coordina solicitudes de producto Angular que usan Comsatel DS.
-  Úsalo cuando una necesidad requiera decidir entre planificación de producto,
-  dirección visual, consulta del Design System o trabajo interno de Angular.
+  Úsalo cuando una necesidad requiera decidir entre segmentación de una épica,
+  planificación de producto, dirección visual, consulta del Design System o
+  trabajo interno de Angular.
   Deriva al skill especializado con el contexto y límites preservados; no
   implementa componentes del DS ni reemplaza los skills que coordina.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Comsatel Product Orchestrator
@@ -20,7 +21,9 @@ y con una evidencia que permita saber qué se ejecutó realmente.
 
 **Es:** el punto de entrada para necesidades ambiguas o transversales de una
 aplicación Angular consumidora: identifica el destino, decide la secuencia de
-skills y escala los contratos que faltan.
+skills y escala los contratos que faltan. Cuando la entrada es una épica o un
+conjunto de historias ya redactadas, organiza primero su segmentación antes de
+planificar o construir producto.
 
 **No es:** un constructor de pantallas, un mantenedor del Design System, un
 generador de identidad visual ni un sustituto de la arquitectura interna de
@@ -38,6 +41,9 @@ con los de una aplicación consumidora.
   escalar. Define datos mínimos y formatos de handoff.
 - `references/verification-matrix.md` — leer antes de cerrar una coordinación
   que incluya construcción, auditoría o validación.
+- `epica-a-plan-desarrollo` — activar antes de Product Builder cuando exista
+  una épica, historia o export legible de GitLab/GitHub que deba convertirse en
+  módulos, flujos e historias ejecutables.
 
 ## GUARD — destino, capacidad y autorización
 
@@ -53,7 +59,11 @@ con los de una aplicación consumidora.
 4. Separa las autorizaciones: orientar, editar, instalar, registrar y publicar
    son operaciones distintas. La coordinación no concede permisos de escritura
    ni de publicación a los skills derivados.
-5. Si el trabajo afecta una API, token, asset o componente del DS, deriva a
+5. Si la solicitud parte de una épica, issue o historias de GitLab/GitHub,
+   comprobar que el contenido llegó como texto, archivo o export legible. Una
+   URL por sí sola no autoriza fetch automático: solicitar su export o el texto
+   y derivar a `epica-a-plan-desarrollo` antes de construir.
+6. Si el trabajo afecta una API, token, asset o componente del DS, deriva a
    `comsatel-design-system`. Si es una aplicación consumidora, usa solamente
    el contrato público de `@iamacalupuenzo-ui/comsatel-ds`.
 
@@ -86,20 +96,25 @@ que no estén bloqueadas.
 
 1. Lee las tres referencias. Obtén los datos mínimos de entrada sin repetir
    información que ya proporcionó el usuario.
-2. Para una app o característica consumidora, deriva primero a
+2. Si la entrada contiene una épica o historias ya redactadas, deriva primero
+   a `epica-a-plan-desarrollo`. Entrega al siguiente skill el plan resultante,
+   con sus supuestos, módulos, flujos, historias, criterios de aceptación y
+   dependencias. Si solo existe un enlace a GitLab/GitHub, detén esa rama hasta
+   recibir texto o export; no intentes leerlo ni inventes su contenido.
+3. Para una app o característica consumidora, deriva a continuación a
    `comsatel-angular-product-builder` para que defina actor, objetivo, reglas,
    estados, errores, permisos y evidencia de éxito.
-3. Si el trabajo requiere una interfaz nueva o una mejora visual, deriva luego
+4. Si el trabajo requiere una interfaz nueva o una mejora visual, deriva luego
    a `frontend-design-direction`. Su salida debe fijar propósito, audiencia,
    tono, jerarquía, densidad, responsive y el detalle distintivo; no puede
    anular los componentes, tokens ni accesibilidad del DS.
-4. Si hay duda sobre una API pública o una composición canónica, consulta
+5. Si hay duda sobre una API pública o una composición canónica, consulta
    `comsatel-design-system`. Si la capacidad falta, usa ESCALAR; no deduzcas
    internals desde `node_modules`.
-5. Si el destino verificado es `packages/core/**` de Angular, activa
+6. Si el destino verificado es `packages/core/**` de Angular, activa
    `reference-core` antes de planificar cambios. No combines ese recorrido con
    una tarea de aplicación salvo que el usuario haya autorizado ambos destinos.
-6. Consolida únicamente la evidencia recibida: decisiones, archivos, comandos,
+7. Consolida únicamente la evidencia recibida: decisiones, archivos, comandos,
    resultados y pendientes. Lee `verification-matrix.md` antes de cerrar.
 
 ## Protocolo ESCALAR
@@ -127,6 +142,11 @@ que no estén bloqueadas.
   `frontend-design-direction` no decide reglas de negocio, permisos, errores
   ni notificaciones. Aplicarlo antes de conocer la tarea convierte la UI en
   decoración y deja casos operativos sin resolver.
+- **B3a — Épica antes de planificación de producto.** Si existe una épica o
+  historias fuente, `epica-a-plan-desarrollo` determina módulos, flujos,
+  criterios de aceptación y dependencias antes de Product Builder. Saltarlo
+  deja al constructor inventar o perder alcance; una URL no sustituye esa
+  evidencia legible.
 - **B4 — Solo contrato público del DS.** No copiar CSS, fuentes, assets ni
   componentes de rutas internas de la librería para resolver una falta. La
   salida segura es una composición pública o un handoff al DS.
@@ -144,6 +164,7 @@ que no estén bloqueadas.
 | “Puedo revisar `node_modules` para saber cómo armarlo.” | El consumidor depende de la API pública; los internals no son contrato y no se copian. |
 | “La pantalla luce bien, por lo que ya está lista.” | La dirección visual no verifica flujo crítico, errores, foco, teclado ni responsive. |
 | “Angular es Angular; `reference-core` puede ayudar en cualquier app.” | Ese skill explica el runtime de `packages/core`, no la construcción de aplicaciones. |
+| “El título de una issue ya permite empezar a desarrollar.” | Una épica requiere texto/export y segmentación trazable; el título no contiene reglas, flujos ni criterios de aceptación. |
 | “Ya sé qué componente falta; lo agrego en este repositorio.” | El cambio requiere el ciclo independiente del DS, sus pruebas y publicación versionada. |
 
 ## Señales de alerta
