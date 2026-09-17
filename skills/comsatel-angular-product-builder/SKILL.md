@@ -9,7 +9,7 @@ description: >
   “implementa alertas en esta plataforma”. No construye componentes dentro de
   Comsatel DS, no clona el repositorio del sistema y no copia sus demos.
 metadata:
-  version: "1.0.5"
+  version: "1.0.6"
 ---
 
 # Comsatel Angular Product Builder

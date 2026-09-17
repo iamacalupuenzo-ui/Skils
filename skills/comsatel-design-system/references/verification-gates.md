@@ -103,9 +103,16 @@ del cambio, no una tarea posterior. Antes de crear un tag `ds-v<versión>`:
 2. Incluir las secciones `Resumen`, `Cambios`, `Impacto para consumidores` y
    `Verificación`. Declarar de forma explícita si no hay migración; no dejar
    ese impacto implícito.
-3. Ejecutar `npm run check:release-notes` y el resto de los gates técnicos.
-4. El workflow remoto debe repetir ese check antes de `npm publish`.
+3. Ejecutar `npm run check:release-notes`, los gates técnicos y el preflight
+   del registro: identidad npm, permisos de escritura y ausencia de la versión
+   objetivo. Un token de lectura permite instalar, no publicar.
+4. Después de `npm publish`, consultar la versión exacta y el dist-tag `latest`
+   desde GitHub Packages. Solo esa respuesta demuestra que una aplicación puede
+   instalar la versión; un commit en `main` no la sustituye.
+5. Crear y publicar `ds-v<versión>` después de la comprobación del registro.
+   El workflow remoto debe repetir los pasos 3 y 4 antes de etiquetar.
 
-Una nota inexistente, con otra versión o con marcadores pendientes deja la
-publicación **Pendiente**, aunque el paquete compile. El tag y la publicación
-son operaciones distintas de editar el código: nunca se crean por inferencia.
+Una nota inexistente, con otra versión, un token sin escritura, o un artefacto
+ausente del registro deja la publicación **Pendiente**, aunque el paquete
+compile. El tag y la publicación son operaciones distintas de editar el código:
+nunca se crean por inferencia.

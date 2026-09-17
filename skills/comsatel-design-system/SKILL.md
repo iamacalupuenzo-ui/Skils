@@ -32,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.8.3"
+  version: "2.8.4"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)
@@ -156,6 +156,9 @@ hace respetar de ahí en adelante.
   externos al skill: workspace Angular, decisión PrimeNG, referencia React,
   inventario de brechas y C-Locater. **Leer al inicio** para resolver qué
   fuente corresponde al modo y al componente.
+- `references/package-release.md` — protocolo para publicar una versión del
+  paquete en GitHub Packages. **Leer antes de cualquier `npm publish`, tag o
+  afirmación de que una versión ya puede instalarse.**
 
 ---
 
@@ -502,11 +505,14 @@ lo son entre sí.
   de distribución, crear o actualizar `docs/releases/<versión>.md` antes de
   publicar. La nota debe incluir resumen, cambios, impacto para consumidores
   (incluida migración o la confirmación explícita de que no existe) y evidencia
-  de verificación. Ejecutar `npm run check:release-notes`; nunca crear el tag
-  `ds-v<versión>` ni declarar una publicación preparada si esa evidencia falta.
-  La versión de la nota debe coincidir exactamente con
+  de verificación. Ejecutar `npm run check:release-notes` y el protocolo de
+  `package-release.md`. Un commit o un `package.json` con una versión nueva NO
+  prueba que el artefacto exista en GitHub Packages: comprobar la versión en el
+  registro antes y después de `npm publish`. Nunca crear el tag
+  `ds-v<versión>` ni declarar disponible una versión que falle esa comprobación.
+  La nota y el artefacto deben coincidir exactamente con
   `projects/comsatel-ds/package.json`, para evitar que una plataforma adopte
-  un paquete sin conocer su contrato.
+  una versión inexistente o sin contrato conocido.
 
 - **B17 — Una aplicación consumidora no nace clonando el Design System.**
   Si el pedido es construir una pantalla o flujo de producto (por ejemplo,
@@ -671,8 +677,11 @@ Antes de cerrar cualquier modo, confirmar:
       referencia funcional (PrimeNG si existe equivalente), árbol/semántica
       real y evidencia visual de todos los estados aplicables en un tab limpio
 - [ ] Si el cambio es distribuible, existe `docs/releases/<versión>.md` con
-      resumen, impacto y verificación; `npm run check:release-notes` pasó y
-      la nota coincide con `projects/comsatel-ds/package.json` (B16)
+  resumen, impacto y verificación; `npm run check:release-notes` pasó y
+  la nota coincide con `projects/comsatel-ds/package.json` (B16)
+- [ ] Si se publica un paquete, `package-release.md` confirmó autenticación,
+      scopes mínimos, versión ausente antes del publish, versión y `latest`
+      visibles después; el tag se creó solo tras esa evidencia (B16)
 - [ ] Si se construyó una pantalla de producto, se trabajó en el repositorio
       consumidor, no se clonó este workspace y la composición quedó en
       `core/`, `layout/` o `features/` según su responsabilidad (B17)

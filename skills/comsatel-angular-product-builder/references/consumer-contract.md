@@ -31,11 +31,18 @@ privadas ni solicita un token con alcance `repo` para inferir una composición.
 
 ## Instalación permitida
 
-Crear o actualizar `.npmrc` solo en el repositorio consumidor, sin escribir ni
-mostrar tokens:
+El repositorio consumidor solo declara qué scope usa GitHub Packages. Este
+archivo se versiona porque no contiene secretos:
 
 ```ini
 @iamacalupuenzo-ui:registry=https://npm.pkg.github.com
+```
+
+La credencial se configura una vez por usuario de Windows en `~/.npmrc` y
+referencia una variable de entorno, sin guardar el valor del token en ningún
+repositorio:
+
+```ini
 //npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
 ```
 
@@ -91,17 +98,29 @@ de etiqueta de campo. No asumir una escala por costumbre: medir en el navegador
 el label encapsulado del componente publicado en la versión instalada y usar
 ese mismo rol en la etiqueta externa.
 
-En la versión actual `0.1.4`, `cs-select` publica su etiqueta de campo como
-`content/note` con peso `accent` (12px/18px/500). Cuando una aplicación usa
-esa versión y necesita una etiqueta externa para `cs-input`, aplicarla de forma
-acotada al campo con esos tokens públicos:
+En la versión `0.2.0`, las etiquetas encapsuladas de Select, InputDropdown y
+los selectores de fecha siguen la escala pública `fieldLabelTypography`:
+`sm` y `md` usan `content/note` con peso `accent` (12px/18px/500), mientras
+`lg` usa `content/caption` con peso `accent` (14px/21px/500). `cs-input` y
+`cs-password-input` mantienen la etiqueta externa; cuando una aplicación
+necesita una, debe derivarla del tamaño del campo y aplicarla de forma acotada:
 
 ```css
-.form-field > label {
+.form-field[data-size='sm'] > label,
+.form-field[data-size='md'] > label {
   color: var(--color-text-base-default);
   font-family: var(--font-family-content);
   font-size: var(--font-size-content-note);
   line-height: var(--font-line-height-content-note);
+  font-weight: var(--font-weight-accent);
+  letter-spacing: var(--font-letter-spacing-content);
+}
+
+.form-field[data-size='lg'] > label {
+  color: var(--color-text-base-default);
+  font-family: var(--font-family-content);
+  font-size: var(--font-size-content-caption);
+  line-height: var(--font-line-height-content-caption);
   font-weight: var(--font-weight-accent);
   letter-spacing: var(--font-letter-spacing-content);
 }
@@ -113,14 +132,14 @@ propias; esa anatomía encapsulada se conserva. Verificar en el navegador la
 familia, tamaño, interlineado y peso computados de labels equivalentes, no solo
 su apariencia en una captura.
 
-Evaluar también el texto dentro del control. En `0.1.4`, `cs-input` y
+Evaluar también el texto dentro del control. En `0.2.0`, `cs-input` y
 `cs-select` `md` usan una altura de 32px y texto `content/ui`
 (13px/19.5px); `lg` usa 40px y `content/body` (16px/24px). Para una pantalla
 con menor densidad o mayor exigencia de legibilidad, usar `fieldSize="lg"` en
 `cs-input` y `size="lg"` en `cs-select` de manera consistente. Si la
-investigación concluye que la etiqueta de 12px debe crecer, es una decisión de
-Comsatel DS: se cambia el patrón del componente y se verifica transversalmente,
-no se crea una excepción visual en una sola aplicación.
+investigación concluye que la escala pública no resuelve una necesidad, es una
+decisión de Comsatel DS: se cambia el patrón y se verifica transversalmente, no
+se crea una excepción visual en una sola aplicación.
 
 ## Receta de composición: contraseña con visibilidad
 
