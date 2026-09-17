@@ -46,6 +46,22 @@ repositorio:
 //npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
 ```
 
+Si el usuario aún no creó la variable persistente, indicarle este único comando
+con un placeholder, sin pedir ni repetir el secreto. `"User"` es literal; no
+se reemplaza por el nombre de Windows:
+
+```powershell
+[Environment]::SetEnvironmentVariable("GITHUB_PACKAGES_TOKEN", "<token>", "User")
+```
+
+Una terminal, Codex u otra aplicación que ya estuviera abierta conserva el
+valor anterior. Tras cambiar la variable, reiniciar el proceso que ejecutará
+`npm` y verificar la cuenta sin imprimir el token:
+
+```powershell
+npm whoami --registry=https://npm.pkg.github.com
+```
+
 Instalar una versión explícita, nunca `latest` ni un rango automático en la
 primera adopción:
 
