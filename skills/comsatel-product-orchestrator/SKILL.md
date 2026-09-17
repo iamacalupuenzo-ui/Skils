@@ -8,7 +8,7 @@ description: >
   Deriva al skill especializado con el contexto y límites preservados; no
   implementa componentes del DS ni reemplaza los skills que coordina.
 metadata:
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Comsatel Product Orchestrator
@@ -47,7 +47,10 @@ con los de una aplicación consumidora.
   módulos, flujos e historias ejecutables.
 - `references/notion-traceability.md` — leer únicamente si el usuario pide
   guardar, estructurar o seguir el plan en Notion. Define el contrato
-  Proyecto → Épica → Historia de usuario → Tarea / Validación.
+  Proyecto → Épica → Historia de usuario → Caso de uso.
+- `references/gitlab-source.md` — leer únicamente cuando el usuario autoriza
+  consultar una issue o tablero de GitLab. Define la ruta de solo lectura por
+  API corporativa y sus límites.
 
 ## GUARD — destino, capacidad y autorización
 
@@ -64,17 +67,23 @@ con los de una aplicación consumidora.
    son operaciones distintas. La coordinación no concede permisos de escritura
    ni de publicación a los skills derivados.
 5. Si la solicitud parte de una épica, issue o historias de GitLab/GitHub,
-   comprobar que el contenido llegó como texto, archivo o export legible. Una
-   URL por sí sola no autoriza fetch automático: solicitar su export o el texto
-   y derivar a `epica-a-plan-desarrollo` antes de construir.
+   comprueba que existe una fuente legible antes de segmentar. Si el usuario
+   pidió expresamente consultar GitLab y `GITLAB_TOKEN` está disponible, lee
+   la fuente por la API corporativa de solo lectura según `gitlab-source.md`;
+   esa lectura produce la fuente legible. Sin autorización explícita o sin la
+   capacidad API, solicita export o texto. Una URL no es por sí sola un
+   requerimiento de negocio ni autoriza modificar issues.
 6. Si el trabajo afecta una API, token, asset o componente del DS, deriva a
    `comsatel-design-system`. Si es una aplicación consumidora, usa solamente
    el contrato público de `@iamacalupuenzo-ui/comsatel-ds`.
 7. Si se pidió registrar o reestructurar trabajo en Notion, lee
-   `notion-traceability.md`, confirma que el conector y la página compartida
-   están disponibles, y consulta el schema vivo antes de proponer o escribir.
-   Una URL de Notion identifica el destino, pero no sustituye la validación de
-   sus bases, relaciones y registros existentes.
+   `notion-traceability.md`. Si el modelo ya fue creado y validado en el
+   contexto, reanuda desde sus bases, relaciones y registros existentes; no
+   vuelve a llamar a `gestor-notion` en modo MODELO ni rediseña la página
+   principal. Consulta el schema vivo mediante el conector antes de escribir.
+   Si el conector no está disponible en esta sesión, detén únicamente la
+   escritura de Notion: no abras el navegador ni pidas inicio de sesión como
+   sustituto del conector.
 
 ## Detección de modo
 
@@ -109,8 +118,9 @@ que no estén bloqueadas.
 2. Si la entrada contiene una épica o historias ya redactadas, deriva primero
    a `epica-a-plan-desarrollo`. Entrega al siguiente skill el plan resultante,
    con sus supuestos, módulos, flujos, historias, criterios de aceptación y
-   dependencias. Si solo existe un enlace a GitLab/GitHub, detén esa rama hasta
-   recibir texto o export; no intentes leerlo ni inventes su contenido.
+   dependencias. Si solo existe un enlace, solicita texto/export salvo que el
+   usuario haya autorizado una consulta GitLab y la API corporativa esté
+   disponible; en ese caso, sigue `gitlab-source.md` y no inventes contenido.
 3. Para una app o característica consumidora, deriva a continuación a
    `comsatel-angular-product-builder` para que defina actor, objetivo, reglas,
    estados, errores, permisos y evidencia de éxito.
@@ -131,15 +141,19 @@ que no estén bloqueadas.
 
 1. Lee `notion-traceability.md`, `routing-map.md` e
    `intake-and-escalation.md`. Identifica si existe una fuente legible de la
-   épica; si no existe, registra únicamente un borrador o solicita el dato que
-   falta. No convierte un repositorio o una URL en requerimiento de negocio.
+   épica; si no existe, solicita el dato o, cuando el usuario lo autorizó y la
+   capacidad existe, usa `gitlab-source.md`. No convierte una URL en
+   requerimiento de negocio sin leer su contenido.
 2. Deriva la operación a `gestion-proyectos` para validar el proyecto, las
-   dependencias, el criterio de cierre y la evidencia. Para cambios de modelo,
-   bases, propiedades o vistas, usa también `gestor-notion` en modo MODELO.
-3. Conserva la cadena exacta: Proyecto → Épica → Historia de usuario → Tarea
-   / Validación. No omite la historia ni crea una base separada para casos de
-   uso o validaciones salvo que su independencia, responsables o reutilización
-   lo justifiquen con evidencia.
+   dependencias, el criterio de cierre y la evidencia. Usa `gestor-notion` en
+   modo MODELO solo para un cambio explícitamente autorizado de bases,
+   propiedades, relaciones o vistas. Si el modelo ya está validado, crea o
+   actualiza únicamente los registros operativos afectados.
+3. Conserva la cadena exacta: Proyecto → Épica → Historia de usuario → Caso
+   de uso. La historia conserva la fuente y alcance oficial; cada caso cubre
+   un flujo o regla verificable. Relee la historia y sus casos relacionados
+   antes de crear otro, mejora el existente cuando cubra el mismo flujo y no
+   lo presenta como una historia de usuario nueva.
 4. Guarda en el cuerpo de la épica la fuente y el plan versionado que produjo
    `epica-a-plan-desarrollo`; las relaciones y estados se guardan como
    propiedades. No reemplaza una versión anterior del plan sin conservar su
@@ -191,10 +205,16 @@ que no estén bloqueadas.
 - **B7 — Notion no reemplaza la fuente ni Git.** No inferir requisitos desde
   código ni declarar un cambio de repositorio ejecutado porque un registro de
   Notion fue actualizado. El resultado sería una trazabilidad ficticia.
-- **B8 — Trazabilidad sin duplicación.** No crear bases de Casos de uso o
-  Validaciones para cada proyecto. Primero usar contenido versionado en la
-  épica y tareas tipadas de validación; duplicar entidades rompe los estados y
-  el seguimiento entre agentes.
+- **B8 — Casos de uso sin duplicación.** Cuando el workspace ya tiene una base
+  canónica de Casos de uso, debe usarse como cuarto nivel de la cadena. Cada
+  caso tiene una sola historia padre y relación inversa verificable; no se
+  crean historias hijas ficticias, tablas por proyecto ni duplicados para
+  representar el mismo flujo.
+- **B9 — Reentrada sin rehacer el workspace.** Cuando la configuración de
+  Notion ya está verificada, no reescribir la página principal, recrear bases
+  ni solicitar autenticación de navegador para suplir un conector ausente. El
+  plan vive en la épica y la ausencia del conector bloquea solo esa escritura;
+  repetir el modelo destruye la continuidad del trabajo.
 
 ## Racionalizaciones comunes
 
@@ -204,6 +224,7 @@ que no estén bloqueadas.
 | “La pantalla luce bien, por lo que ya está lista.” | La dirección visual no verifica flujo crítico, errores, foco, teclado ni responsive. |
 | “Angular es Angular; `reference-core` puede ayudar en cualquier app.” | Ese skill explica el runtime de `packages/core`, no la construcción de aplicaciones. |
 | “El título de una issue ya permite empezar a desarrollar.” | Una épica requiere texto/export y segmentación trazable; el título no contiene reglas, flujos ni criterios de aceptación. |
+| “Una URL de GitLab siempre obliga a pedir capturas.” | Si el usuario autorizó la consulta y el entorno ya tiene API corporativa, se debe leer la fuente por API de solo lectura; pedir la misma información de nuevo desperdicia el flujo configurado. |
 | “Marcar la épica hecha en Notion prueba que ya se implementó.” | Notion coordina; el cierre exige evidencia de tareas y validaciones, y el cambio de código conserva su propia evidencia en Git. |
 | “Ya sé qué componente falta; lo agrego en este repositorio.” | El cambio requiere el ciclo independiente del DS, sus pruebas y publicación versionada. |
 
@@ -215,8 +236,12 @@ que no estén bloqueadas.
 - Se invoca un skill externo que no está instalado o cuyo alcance no coincide.
 - La implementación usa una fuente o token local para suplir un export público
   inexistente.
-- Una relación de Notion apunta a un padre distinto o falta uno de los cuatro
-  niveles de trazabilidad.
+- Una relación de Notion apunta a un padre distinto, un caso no tiene historia
+  padre o falta un nivel de la cadena de trazabilidad.
+- Se propone modificar la portada de Notion cuando el pedido solo afecta
+  registros de Proyecto, Épica, Historia o Caso de uso.
+- Se solicita iniciar sesión en Notion porque no aparece el conector, en vez de
+  declarar ese límite y conservar el plan listo para persistir.
 - El cierre enumera skills, pero no aclara qué se observó ni quién debe continuar.
 
 ## Formato de respuesta
@@ -235,3 +260,4 @@ que no estén bloqueadas.
 - `references/intake-and-escalation.md`
 - `references/verification-matrix.md`
 - `references/notion-traceability.md`
+- `references/gitlab-source.md`

@@ -2,7 +2,7 @@
 name: epica-a-plan-desarrollo
 description: Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias de usuario más chicas (INVEST) con criterios de aceptación, y arma el plan de testing y el orden de implementación. Úsalo cuando el usuario ya tiene la épica escrita y necesita saber en qué módulos y flujos se divide antes de construir. No redacta historias de usuario desde cero ni implementa código.
 metadata:
-  version: "1.0.0"
+  version: "1.3.1"
 ---
 
 # Épica a plan de desarrollo
@@ -12,7 +12,9 @@ un plan de desarrollo ejecutable: qué módulos contempla, qué flujos tiene cad
 en qué historias más chicas se desglosa cada flujo, y qué hay que testear antes de
 dar cada módulo por terminado. El resultado es un archivo autocontenido que un
 agente de desarrollo (Claude Code u otro) puede tomar como input para implementar,
-sin depender de esta conversación.
+sin depender de esta conversación. Cuando el usuario autoriza un mapeo en Notion,
+conserva además la trazabilidad entre la épica, cada historia de usuario y sus casos
+de uso; lee esa cadena completa antes de concluir que el alcance está cubierto.
 
 ## Lo que ES y NO ES
 
@@ -23,6 +25,7 @@ sin depender de esta conversación.
 | Arma el plan de testing por módulo | Ejecuta los tests — solo los enumera como parte del plan |
 | Marca explícitamente los supuestos que la épica no cubre | Decide por el usuario un supuesto de negocio sin marcarlo como tal |
 | Deja el documento listo para que un agente de desarrollo lo ejecute | Coordina o dispara la ejecución de ese agente |
+| Mapea Épica → historia de usuario → casos de uso en Notion y audita su cobertura cuando ese destino fue solicitado | Modifica GitLab |
 
 ## Referencias disponibles
 
@@ -32,12 +35,17 @@ sin depender de esta conversación.
   salida con un ejemplo relleno. Leer antes de armar el documento.
 - `references/protocolo-analizar.md` — protocolo completo del modo ANALIZAR.
 - `references/protocolo-actualizar.md` — protocolo completo del modo ACTUALIZAR.
+- `references/trazabilidad-notion.md` — protocolo condicional para leer, relacionar,
+  auditar y mejorar la cadena Épica → historia de usuario → casos de uso en Notion.
 
 ## GUARD
 
-1. **Entrada legible**: la épica debe llegar como texto (pegado, archivo, o
-   export/captura de Notion o Figma). Si el usuario solo trae un link, pedir
-   captura o export — no hacer fetch automático de la URL.
+1. **Entrada legible**: la épica debe llegar como texto, archivo, export/captura o
+   contenido leído desde Notion cuando el usuario autorizó esa consulta y el conector
+   está disponible. GitLab es una fuente opcional: se consulta solo si la API
+   corporativa ya está disponible en ese equipo, normalmente mediante VPN. Su ausencia
+   no bloquea un plan basado en Notion. Si no hay ninguna fuente legible, pedir
+   captura o export; no solicitar credenciales ni acceso VPN.
 2. **Proyecto identificable**: determinar a qué proyecto pertenece esta épica
    (nombre explícito del usuario, o inferible del contexto de trabajo actual).
    Si no es identificable, preguntar solo eso.
@@ -47,6 +55,10 @@ sin depender de esta conversación.
 4. **Repo opcional**: si el proyecto tiene código accesible localmente, se puede
    usar como contexto para no duplicar módulos ya construidos — no es un
    requisito para completar el skill.
+5. **Destino Notion opcional**: solo si el usuario pidió registrar, mapear o revisar
+   el plan en Notion, leer `references/trazabilidad-notion.md`, consultar el schema
+   vivo y, por cada historia afectada, leer su contenido y todos los casos de uso
+   asociados antes de proponer una mejora. La ausencia de Notion no bloquea el plan local.
 
 ## Detección de modo
 
@@ -66,8 +78,10 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
   incremental. No se edita ni se reemplaza un plan anterior.
 - **B3 — Criterio de aceptación obligatorio**: ninguna historia se cierra sin al
   menos un criterio Given/When/Then verificable.
-- **B4 — Sin fetch automático**: links de Notion, Figma u otras fuentes se piden
-  como captura o export, nunca se intenta leer el link directamente.
+- **B4 — Fuente autorizada y verificable**: Notion puede leerse mediante su conector
+  cuando el usuario lo autorizó. Un enlace de GitLab puede leerse por API solo cuando
+  la capacidad corporativa ya está disponible en ese equipo; nunca pedir credenciales,
+  VPN ni usar esa excepción para modificar GitLab.
 - **B5 — Contraste con código existente declarado**: si hay repo accesible, se
   contrasta contra módulos ya construidos antes de proponerlos como nuevos; si no
   hay acceso, el documento declara explícitamente "no verificado contra código
@@ -76,6 +90,15 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
   debe ser ejecutable sin contexto adicional de esta conversación.
 - **B7 — No implementa**: este skill entrega el plan; no escribe código de
   producción ni ejecuta los tests que enumera.
+- **B8 — Fuente no equivale a desglose**: cuando una historia fuente contiene más de
+  un flujo de valor independiente, se conserva como fuente y se crean historias
+  derivadas INVEST relacionadas. Omitir esta relación pierde trazabilidad y mezcla
+  alcances.
+- **B9 — GitLab solo lectura**: aun cuando el token permita escritura, este skill
+  nunca modifica issues, labels, estados, comentarios, relaciones, responsables ni fechas.
+- **B10 — Cobertura antes de completar**: no declarar una historia lista ni crear una
+  casuística por intuición. Debe contrastar cada flujo, regla y criterio de la historia
+  contra sus casos de uso vinculados; un hueco queda como propuesta o decisión pendiente.
 
 ## Racionalizaciones comunes
 
@@ -84,9 +107,11 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 | "La épica ya sugiere los roles, puedo asumir cuáles son" | Si no están enumerados explícitamente, es `[SUPUESTO]` marcado, no un hecho (B1) |
 | "Es más rápido sobreescribir el archivo anterior" | Cada corrida es una versión nueva; el historial es parte del valor del documento (B2) |
 | "El criterio de aceptación se entiende del nombre de la historia" | Cada historia necesita su Given/When/Then explícito antes de cerrarse (B3) |
-| "Puedo abrir el link de Figma o Notion directo" | Pedir export o captura — nunca fetch automático (B4) |
+| "Sin GitLab no puedo continuar" | Si Notion contiene la épica, historia y casos autorizados, se planifica y audita desde esa cadena; GitLab es evidencia opcional (B4). |
+| "Hay un token GitLab, entonces puedo editar la issue." | El token solo habilita obtener evidencia para este plan; cambios en GitLab requieren una solicitud separada. |
 | "No tengo acceso al repo, asumo que no hay nada construido todavía" | Declarar "no verificado", nunca asumir que está vacío (B5) |
 | "El plan quedó claro en la charla, no hace falta que el archivo lo repita todo" | El documento debe bastarle a un agente que no vio esta conversación (B6) |
+| "Los casos existentes cubren la historia porque sus títulos se parecen" | Hay que leer el contenido de la historia y de cada caso, contrastar cobertura y registrar huecos o contradicciones (B10). |
 
 ## Señales de alerta
 
@@ -95,6 +120,8 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - Un supuesto mezclado con los hechos de la épica sin la marca `[SUPUESTO]`.
 - Un archivo de salida que reemplaza una versión anterior en vez de crear una nueva.
 - Un módulo propuesto que ya existe en el código sin que se haya señalado el contraste.
+- Una historia fuente amplia con varios flujos pero sin historias derivadas vinculadas.
+- Una historia sin casos de uso asociados, un caso sin historia padre o un flujo de la historia sin caso que lo cubra.
 
 ## Formato de respuesta
 
@@ -104,6 +131,9 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - El documento de salida completo vive en el archivo, no se pega entero en el chat —
   en la respuesta se resume: módulos encontrados, cantidad de historias, supuestos
   marcados, y la ruta del archivo.
+- Si hubo mapeo en Notion, informar historias revisadas, casos asociados, cobertura,
+  mejoras propuestas o aplicadas, relaciones y decisiones pendientes; no afirmar que
+  GitLab fue actualizado.
 - Cierre con el formato de `references/protocolo-analizar.md` o
   `references/protocolo-actualizar.md` según el modo usado.
 
@@ -113,3 +143,4 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - `references/plantilla-plan-desarrollo.md`
 - `references/protocolo-analizar.md`
 - `references/protocolo-actualizar.md`
+- `references/trazabilidad-notion.md`

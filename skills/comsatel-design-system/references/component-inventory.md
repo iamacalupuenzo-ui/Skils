@@ -1,5 +1,17 @@
 # Inventario de estado — Comsatel Design System (Angular)
 
+Actualización: 2026-09-17, reconstrucción de la marca de Flotas. Se reemplazó la
+identidad visual aislada de C-Locater Flotas por el sistema C-Flotas: wordmark
+`C-Flotas by Comsatel` e isotipo `CF`, ambos SVG embebidos como data URL para
+evitar rutas internas y el fallo de pre-bundling de Vite. El API canónico es
+`CFlotasLogo` / `cs-c-flotas-logo`, con `variant="wordmark" | "isotype"`;
+`CLocaterFlotasLogo`, `cs-c-locater-flotas-logo`, `full` e `icon` se conservan
+como compatibilidad no rompiente. Se actualizaron la página de Logos, guía,
+README, nota de release y Storybook. Verificación: `npm run build`,
+`npm run check:docs`, `npm run test:ci`, `npm run build-storybook`, reinicio de
+`ng serve` y revisión visual de `/foundations/logos` con ambos recursos cargados
+desde `data:image/svg+xml`.
+
 Actualización: 2026-09-10, reconstrucción de `AppLayout` y navegación. Se
 tokenizaron bordes, motion y tipografía; se agregaron landmarks y estados ARIA
 (`aria-expanded`, `aria-controls`, `aria-current`), nombres accesibles en rail,

@@ -6,9 +6,12 @@ proyecto/épica. Produce la versión 1 del documento.
 ## Fase 0 — Confirmar entrada
 
 La épica debe llegar como texto legible: pegada en el chat, en un archivo que se
-pueda leer directo, o como export/captura de Notion o Figma. Si el usuario solo
-pasó un link, pedir captura o export antes de seguir — no hacer fetch automático
-de la URL (regla global de Enzo).
+pueda leer directo, como export/captura, o como contenido obtenido desde Notion
+cuando el usuario autorizó la consulta y el conector está disponible. GitLab es
+opcional: solo se consulta por API corporativa cuando esa capacidad ya existe en
+el equipo, normalmente mediante VPN. La falta de VPN o API de GitLab no bloquea
+un plan cuya épica, historias y casos están disponibles en Notion. Si no hay una
+fuente legible, pedir captura o export; no solicitar credenciales ni VPN.
 
 Identificar el proyecto asociado (nombre explícito del usuario, o inferible del
 directorio de trabajo actual). Si no es identificable con lo disponible, preguntar
@@ -68,6 +71,14 @@ C:\Users\Enzo Macalupu\Documents\Proyectos\<proyecto>\epica-a-plan-desarrollo-<p
 Si la carpeta del proyecto no existe todavía, crearla (`<proyecto>\_proyecto.md`
 sigue la convención general de outputs de Enzo si el proyecto es nuevo del todo;
 si ya existe la carpeta, usarla tal cual está).
+
+## Fase 8.1 — Mapear en Notion cuando fue solicitado
+
+Si el usuario autorizó expresamente el mapeo en Notion, leer `trazabilidad-notion.md`
+y crear o actualizar la cadena Épica → Historia de usuario → Caso de uso. Antes de
+crear un caso, leer la historia padre y todos sus casos existentes para evitar
+duplicar alcance. El plan local sigue siendo obligatorio. GitLab se usa solo como
+evidencia de lectura.
 
 ## Fase 9 — Cierre
 

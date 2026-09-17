@@ -11,21 +11,20 @@ fuente técnica, commits, ramas, merge requests e incidencias externas.
 Proyecto
 └── Épica
     └── Historia de usuario
-        └── Tarea / Validación
+        └── Caso de uso
 ```
 
 | Entidad | Propósito | Mínimo verificable |
 | --- | --- | --- |
 | Proyecto | Resultado de negocio o producto | Objetivo, criterio de cierre, responsable, estado, salud y fechas si están acordadas |
 | Épica | Alcance que debe segmentarse | Proyecto, fuente, versión del plan, estado, responsable, criterio de cierre e historias relacionadas |
-| Historia de usuario | Valor entregable y verificable | Épica, actor/resultado en el contenido, criterios de aceptación, prioridad, estado, responsable y tareas relacionadas |
-| Tarea | Trabajo ejecutable | Historia, tipo, estado, ejecutor, criterio de cierre, dependencia, evidencia y fecha si está acordada |
-| Validación | Tarea con `Tipo de trabajo = Validación` | Mismo contrato de tarea, con criterio de validación y evidencia de resultado |
+| Historia de usuario | Alcance funcional y fuente oficial | Épica, actor/resultado en el contenido, criterios de aceptación, prioridad, estado, responsable y casos relacionados |
+| Caso de uso | Flujo, regla o interacción verificable dentro de una historia | Una historia padre, flujo end-to-end, casuísticas, criterios Given/When/Then, recomendación de interfaz, pruebas y dependencias |
 
-No crear una base independiente de Casos de uso: los flujos normales, alternos,
-errores, permisos, notificaciones y decisiones viven en el plan Markdown de la
-épica. No crear una base de Validaciones mientras las validaciones pertenezcan a
-una historia y tengan el mismo ciclo de vida que una tarea.
+Cuando el workspace ya tiene una base canónica de Casos de uso, se usa para
+preservar los flujos normales, alternos, errores, permisos, notificaciones y
+decisiones dentro de la historia correspondiente. No crear una tabla paralela
+por proyecto ni usar una historia hija para representar un caso de uso.
 
 ## Protocolo de escritura
 
@@ -36,9 +35,10 @@ una historia y tengan el mismo ciclo de vida que una tarea.
    páginas hijas y datos no relacionados.
 3. Si el usuario autorizó una modificación del modelo, crea primero las bases y
    relaciones. No migres ni borres registros sin releer la rama afectada.
-4. Crea o vincula el proyecto. Después crea la épica, las historias y las
-   tareas; establece ambas direcciones de cada relación y verifica que no haya
-   vínculos duplicados, cíclicos o con padres equivocados.
+4. Crea o vincula el proyecto. Después crea la épica, las historias y los
+   casos de uso; establece ambas direcciones de cada relación y verifica que
+   no haya vínculos duplicados, cíclicos o con padres equivocados. Cada caso
+   se vincula a exactamente una historia padre.
 5. Para una épica segmentada, añade al cuerpo de la página el plan Markdown con
    este orden:
 
@@ -57,14 +57,72 @@ una historia y tengan el mismo ciclo de vida que una tarea.
 
    Si se replantea el alcance, agrega `Plan de desarrollo vN+1`; no sobrescribas
    la versión anterior.
-6. Crea tareas solo cuando haya resultado y criterio de cierre. Usa
-   `Bloqueada por` / `Bloquea a` para precedencias; el orden numérico no es una
-   dependencia. Define el `Tipo de trabajo` y usa `Validación` para pruebas,
-   QA, revisión funcional o verificación de accesibilidad.
-7. Antes de cerrar, relee el proyecto, la épica, la historia y las tareas
-   afectadas. Una tarea hecha requiere evidencia; una historia o épica cerrada
-   requiere que todas las validaciones relacionadas estén hechas o que exista
-   una excepción aprobada y documentada.
+6. Antes de crear un caso, relee el contenido de la historia y todos sus casos
+   asociados. Mejora primero el caso existente cuando cubra el mismo flujo;
+   crea uno nuevo solo si hay un flujo independiente. Documenta flujo normal,
+   alternos, errores, permisos, estados, criterios Given/When/Then,
+   recomendación UI/UX, pruebas y dependencias que la fuente sustente.
+7. Antes de cerrar, relee el proyecto, la épica, la historia y los casos
+   afectados. Una historia o épica no se declara terminada por esta
+   trazabilidad: el mapeo solo confirma cobertura analizada y conserva los
+   pendientes o decisiones abiertas como tales.
+
+## Reentrada en un modelo ya configurado
+
+Una configuración verificada de bases, relaciones y vistas es una línea base,
+no un paso que se repite ante cada épica.
+
+1. Reconoce si el contexto ya declara el modelo como creado y validado. En ese
+   caso, localiza el Proyecto, la Épica, la Historia o el Caso de uso objetivo y
+   modifica solo esos registros.
+2. La página principal sirve como navegación o tablero. No agregues instrucciones
+   de proceso, planes extensos ni vistas nuevas allí salvo que el usuario pida
+   expresamente editar la página principal. El plan versionado se guarda en el
+   cuerpo de la Épica.
+3. No ejecutes `gestor-notion` en modo MODELO, no recrees bases y no cambies
+   propiedades/vistas cuando la solicitud consiste en registrar o actualizar
+   trabajo dentro del modelo existente.
+4. Si el conector de Notion no existe en la sesión, no uses un navegador como
+   reemplazo ni solicites un nuevo inicio de sesión. Declara la escritura como
+   pendiente por capacidad de integración, conserva el plan local versionado y
+   reanuda desde los mismos registros cuando el conector vuelva a estar
+   disponible.
+5. No confundas “no hay conector en esta sesión” con “el usuario no tiene acceso
+   a Notion” ni con una autorización para volver a modelar el workspace.
+
+## Contenido mínimo de un caso de uso
+
+```markdown
+## Caso de uso
+
+Como [rol], quiero [acción], para [beneficio].
+
+## Flujo end-to-end
+
+1. [disparador]
+2. [pasos y decisiones]
+3. [resultado observable]
+
+## Casuísticas
+
+- [normal, alterna, borde, permiso, dato ausente o fallo relevante]
+
+## Criterios de aceptación
+
+- **CA-01** DADO [contexto], CUANDO [acción], ENTONCES [resultado observable].
+
+## Recomendaciones de interfaz
+
+- [jerarquía, feedback, accesibilidad y componentes del sistema de diseño]
+
+## Pruebas y evidencia
+
+- [funcionales, borde y no funcionales pertinentes]
+
+## Dependencias y límites
+
+- [contrato, decisión o restricción verificable]
+```
 
 ## Trabajo desde dos computadoras
 

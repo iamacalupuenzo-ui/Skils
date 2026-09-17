@@ -25,9 +25,10 @@ sus permisos.
    activar `epica-a-plan-desarrollo` y usar su documento de salida como entrada
    del flujo de producto.
 2. Si el usuario pidió registrar o gestionar el plan en Notion, aplica primero
-   el contrato Proyecto → Épica → Historia → Tarea / Validación mediante
+   el contrato Proyecto → Épica → Historia de usuario → Caso de uso mediante
    `gestion-proyectos`; si cambia el schema, invoca `gestor-notion` en modo
-   MODELO. Esa persistencia no autoriza ni reemplaza trabajo de código.
+   MODELO. La historia conserva el alcance oficial y sus casos detallan los
+   flujos; esa persistencia no autoriza ni reemplaza trabajo de código.
 3. Identifica el destino real leyendo el manifiesto, las rutas y el estado Git.
    Un directorio que contiene `package.json` no identifica por sí solo un
    proyecto consumidor, Comsatel DS ni Angular.

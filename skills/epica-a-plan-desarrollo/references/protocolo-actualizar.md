@@ -43,6 +43,11 @@ Guardar como archivo nuevo, nunca sobreescribir el anterior:
 C:\Users\Enzo Macalupu\Documents\Proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v[N+1]-<YYYY-MM-DD>.md
 ```
 
+Si el usuario solicitó actualizar Notion, leer `trazabilidad-notion.md` después de
+guardar el plan y reconciliar solamente las historias y casos de uso afectados.
+Debe releer la historia padre y todos sus casos relacionados antes de concluir la
+cobertura. GitLab se conserva como fuente de lectura.
+
 ## Fase 4 — Cierre
 
 ```
