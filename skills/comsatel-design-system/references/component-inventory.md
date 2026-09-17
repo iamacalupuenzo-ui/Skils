@@ -218,6 +218,19 @@ DropdownItem). Se cerraron los criterios C1–C13, los patrones de menú y
 combobox/listbox, la navegación por teclado, la paridad documental con React y
 la verificación visual/interactiva del conjunto el 2026-09-10.
 
+Última actualización: 2026-09-16, escala de etiquetas de campo. Se publica
+`fieldLabelTypography` desde `lib/input/input-tokens.ts`: `xs` usa
+`label/small`; `sm` y `md`, `content/note`; y `lg`, `content/caption`, siempre
+con peso `accent`. `Select`, `InputDropdown`, `DateTimePicker` y
+`DateTimeRangePicker` derivan su etiqueta encapsulada de ese mapa y conservan
+los spacers del rango en la misma altura. `Input`, `InputGroupInput` y
+`PasswordInput` mantienen intencionalmente una etiqueta externa; la guía de
+Input documenta la receta pública `textStyle(fieldLabelTypography[size],
+'accent')`. No añadir un input `label` a esos controles sin diseñar primero un
+`FormField` que resuelva toda la anatomía. Verificado con build de librería y
+app, tests de librería/aplicación, controles de documentos, Storybook y la ruta
+local `/components/select` en tamaño `lg`, además de `/components/datetime-picker`.
+
 Última actualización: 2026-09-10, quinta ronda (cierre de la lista completa
 del usuario: Mapa y Animaciones). Se investigaron primero las páginas reales
 de React (`MapThemePageContent.tsx`, `MarkersPageContent.tsx`,
