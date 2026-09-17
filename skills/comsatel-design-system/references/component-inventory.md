@@ -2,7 +2,8 @@
 
 Actualización: 2026-09-17, reconstrucción de la marca de Flotas. Se reemplazó la
 identidad visual aislada de C-Locater Flotas por el sistema C-Flotas: wordmark
-`C-Flotas by Comsatel` e isotipo `CF`, ambos SVG embebidos como data URL para
+`C-` + cápsula negra `FLOTAS` + firma `by COMSATEL`, e isotipo `C-` + cápsula
+negra `FL`. Ambos SVG embebidos como data URL para
 evitar rutas internas y el fallo de pre-bundling de Vite. El API canónico es
 `CFlotasLogo` / `cs-c-flotas-logo`, con `variant="wordmark" | "isotype"`;
 `CLocaterFlotasLogo`, `cs-c-locater-flotas-logo`, `full` e `icon` se conservan
