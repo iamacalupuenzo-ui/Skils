@@ -12,6 +12,8 @@ sus permisos.
 | `epica-a-plan-desarrollo` | Segmentar una épica ya redactada en módulos, flujos, historias INVEST, criterios y plan de pruebas | La entrada incluye una épica, historias o export legible de GitLab/GitHub antes de construir | Leer enlaces automáticamente, crear épicas desde cero o implementar código |
 | `comsatel-angular-product-builder` | Planificar y construir una aplicación Angular que consume el paquete publicado | Pantallas, flujos, formularios, alertas, mapas o una aplicación nueva | Modificar componentes o archivos internos de Comsatel DS |
 | `frontend-design-direction` | Definir dirección visual y revisar jerarquía, tono, densidad y consistencia | La petición construye o mejora una interfaz y requiere una decisión visual explícita | Reemplazar investigación de producto, flujos o contratos de componentes |
+| `gestion-proyectos` | Validar y operar la trazabilidad de proyecto, entregables, tareas, dependencias, riesgos y cierre en Notion | La planificación o el seguimiento deben persistir en Notion | Inventar requisitos de producto o implementar código |
+| `gestor-notion` | Operar el schema, bases, relaciones y vistas del workspace | El usuario autorizó crear o modificar el modelo de Notion | Decidir por sí solo la política de gestión de proyecto |
 | `comsatel-design-system` | Auditar o cambiar componentes, tokens, documentación, pruebas y publicación del DS | La petición toca el repositorio del DS o falta/cambia una API pública | Construir una aplicación consumidora como si fuera parte del DS |
 | `reference-core` | Guiar cambios al runtime interno de Angular | El destino verificado es `packages/core` de un checkout de Angular | Aplicaciones Angular, librerías de negocio, componentes Comsatel o documentación de producto |
 
@@ -22,22 +24,26 @@ sus permisos.
    y detener esa rama; no se hace fetch automático. Con contenido legible,
    activar `epica-a-plan-desarrollo` y usar su documento de salida como entrada
    del flujo de producto.
-2. Identifica el destino real leyendo el manifiesto, las rutas y el estado Git.
+2. Si el usuario pidió registrar o gestionar el plan en Notion, aplica primero
+   el contrato Proyecto → Épica → Historia → Tarea / Validación mediante
+   `gestion-proyectos`; si cambia el schema, invoca `gestor-notion` en modo
+   MODELO. Esa persistencia no autoriza ni reemplaza trabajo de código.
+3. Identifica el destino real leyendo el manifiesto, las rutas y el estado Git.
    Un directorio que contiene `package.json` no identifica por sí solo un
    proyecto consumidor, Comsatel DS ni Angular.
-3. Si el destino es un checkout de Angular y el cambio afecta
+4. Si el destino es un checkout de Angular y el cambio afecta
    `packages/core/**`, activa `reference-core`. Ese skill es obligatorio para
    ese alcance y el orquestador permanece como coordinador.
-4. Si el destino es Comsatel DS o la petición solicita crear, modificar,
+5. Si el destino es Comsatel DS o la petición solicita crear, modificar,
    documentar, probar o publicar un componente/tokens/export público, deriva a
    `comsatel-design-system` y no construye producto en ese mismo recorrido.
-5. Si el destino es una aplicación consumidora o se pidió iniciar una nueva,
+6. Si el destino es una aplicación consumidora o se pidió iniciar una nueva,
    deriva a `comsatel-angular-product-builder`.
-6. Durante una pantalla o flujo consumidor, activa
+7. Durante una pantalla o flujo consumidor, activa
    `frontend-design-direction` después de que Product Builder haya definido
    actor, tarea, estados y restricciones, y antes de cerrar decisiones de
    jerarquía, densidad, tono y responsive.
-7. Si el consumidor necesita una API, token, asset o comportamiento público
+8. Si el consumidor necesita una API, token, asset o comportamiento público
    inexistente, detén esa pieza. Produce un handoff para Comsatel DS; no copies
    CSS, assets o archivos internos y no inventes una variante local.
 

@@ -4,11 +4,11 @@ description: >
   Clasifica y coordina solicitudes de producto Angular que usan Comsatel DS.
   Úsalo cuando una necesidad requiera decidir entre segmentación de una épica,
   planificación de producto, dirección visual, consulta del Design System o
-  trabajo interno de Angular.
+  trabajo interno de Angular o trazabilidad aprobada en Notion.
   Deriva al skill especializado con el contexto y límites preservados; no
   implementa componentes del DS ni reemplaza los skills que coordina.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Comsatel Product Orchestrator
@@ -23,7 +23,8 @@ y con una evidencia que permita saber qué se ejecutó realmente.
 aplicación Angular consumidora: identifica el destino, decide la secuencia de
 skills y escala los contratos que faltan. Cuando la entrada es una épica o un
 conjunto de historias ya redactadas, organiza primero su segmentación antes de
-planificar o construir producto.
+planificar o construir producto. Si el usuario autorizó persistir la planificación,
+coordina su trazabilidad en Notion mediante el skill de gestión correspondiente.
 
 **No es:** un constructor de pantallas, un mantenedor del Design System, un
 generador de identidad visual ni un sustituto de la arquitectura interna de
@@ -44,6 +45,9 @@ con los de una aplicación consumidora.
 - `epica-a-plan-desarrollo` — activar antes de Product Builder cuando exista
   una épica, historia o export legible de GitLab/GitHub que deba convertirse en
   módulos, flujos e historias ejecutables.
+- `references/notion-traceability.md` — leer únicamente si el usuario pide
+  guardar, estructurar o seguir el plan en Notion. Define el contrato
+  Proyecto → Épica → Historia de usuario → Tarea / Validación.
 
 ## GUARD — destino, capacidad y autorización
 
@@ -66,6 +70,11 @@ con los de una aplicación consumidora.
 6. Si el trabajo afecta una API, token, asset o componente del DS, deriva a
    `comsatel-design-system`. Si es una aplicación consumidora, usa solamente
    el contrato público de `@iamacalupuenzo-ui/comsatel-ds`.
+7. Si se pidió registrar o reestructurar trabajo en Notion, lee
+   `notion-traceability.md`, confirma que el conector y la página compartida
+   están disponibles, y consulta el schema vivo antes de proponer o escribir.
+   Una URL de Notion identifica el destino, pero no sustituye la validación de
+   sus bases, relaciones y registros existentes.
 
 ## Detección de modo
 
@@ -75,6 +84,7 @@ Declara el modo en la primera línea antes de actuar.
 | --- | --- | --- | --- |
 | ORIENTAR | “qué skill uso”, “cómo abordamos”, “a dónde va esto” | Clasifica, explica la ruta y no edita | Derivación verificable |
 | COORDINAR | “planifica y construye”, “crea esta pantalla”, “implementa este flujo” | Ordena los skills, preserva el contexto y consolida la evidencia | Plan o implementación derivada |
+| TRAZAR | “guarda la épica en Notion”, “estructura este proyecto”, “da seguimiento” | Coordina el modelo de trabajo en Notion después de verificar schema y autorización | Registros relacionados y estado verificable |
 | ESCALAR | “falta este componente”, “la librería no expone”, “cambiar el DS” | Prepara handoff para el mantenedor del DS; no cambia la librería | Solicitud de contrato clara |
 
 Si una construcción revela una falta de contrato, cambia a ESCALAR solamente
@@ -117,6 +127,28 @@ que no estén bloqueadas.
 7. Consolida únicamente la evidencia recibida: decisiones, archivos, comandos,
    resultados y pendientes. Lee `verification-matrix.md` antes de cerrar.
 
+## Protocolo TRAZAR
+
+1. Lee `notion-traceability.md`, `routing-map.md` e
+   `intake-and-escalation.md`. Identifica si existe una fuente legible de la
+   épica; si no existe, registra únicamente un borrador o solicita el dato que
+   falta. No convierte un repositorio o una URL en requerimiento de negocio.
+2. Deriva la operación a `gestion-proyectos` para validar el proyecto, las
+   dependencias, el criterio de cierre y la evidencia. Para cambios de modelo,
+   bases, propiedades o vistas, usa también `gestor-notion` en modo MODELO.
+3. Conserva la cadena exacta: Proyecto → Épica → Historia de usuario → Tarea
+   / Validación. No omite la historia ni crea una base separada para casos de
+   uso o validaciones salvo que su independencia, responsables o reutilización
+   lo justifiquen con evidencia.
+4. Guarda en el cuerpo de la épica la fuente y el plan versionado que produjo
+   `epica-a-plan-desarrollo`; las relaciones y estados se guardan como
+   propiedades. No reemplaza una versión anterior del plan sin conservar su
+   historial.
+5. Después de escribir, relee los registros y ambos extremos de cada relación.
+   Reporta URLs, campos modificados, evidencia disponible y cualquier condición
+   que siga bloqueada. No marca una historia o épica como hecha por el estado de
+   una sola tarea.
+
 ## Protocolo ESCALAR
 
 1. Lee `intake-and-escalation.md` y confirma que el contrato faltante fue
@@ -156,6 +188,13 @@ que no estén bloqueadas.
 - **B6 — Sin efectos laterales implícitos.** Una solicitud de orquestación no
   autoriza instalar, actualizar, registrar ni publicar skills. Ejecutar esas
   acciones sin alcance explícito altera otros agentes o destinos compartidos.
+- **B7 — Notion no reemplaza la fuente ni Git.** No inferir requisitos desde
+  código ni declarar un cambio de repositorio ejecutado porque un registro de
+  Notion fue actualizado. El resultado sería una trazabilidad ficticia.
+- **B8 — Trazabilidad sin duplicación.** No crear bases de Casos de uso o
+  Validaciones para cada proyecto. Primero usar contenido versionado en la
+  épica y tareas tipadas de validación; duplicar entidades rompe los estados y
+  el seguimiento entre agentes.
 
 ## Racionalizaciones comunes
 
@@ -165,6 +204,7 @@ que no estén bloqueadas.
 | “La pantalla luce bien, por lo que ya está lista.” | La dirección visual no verifica flujo crítico, errores, foco, teclado ni responsive. |
 | “Angular es Angular; `reference-core` puede ayudar en cualquier app.” | Ese skill explica el runtime de `packages/core`, no la construcción de aplicaciones. |
 | “El título de una issue ya permite empezar a desarrollar.” | Una épica requiere texto/export y segmentación trazable; el título no contiene reglas, flujos ni criterios de aceptación. |
+| “Marcar la épica hecha en Notion prueba que ya se implementó.” | Notion coordina; el cierre exige evidencia de tareas y validaciones, y el cambio de código conserva su propia evidencia en Git. |
 | “Ya sé qué componente falta; lo agrego en este repositorio.” | El cambio requiere el ciclo independiente del DS, sus pruebas y publicación versionada. |
 
 ## Señales de alerta
@@ -175,16 +215,18 @@ que no estén bloqueadas.
 - Se invoca un skill externo que no está instalado o cuyo alcance no coincide.
 - La implementación usa una fuente o token local para suplir un export público
   inexistente.
+- Una relación de Notion apunta a un padre distinto o falta uno de los cuatro
+  niveles de trazabilidad.
 - El cierre enumera skills, pero no aclara qué se observó ni quién debe continuar.
 
 ## Formato de respuesta
 
-- Primera línea: `Modo: ORIENTAR`, `COORDINAR` o `ESCALAR`.
+- Primera línea: `Modo: ORIENTAR`, `COORDINAR`, `TRAZAR` o `ESCALAR`.
 - Español neutro latinoamericano, directo y sin emojis decorativos.
 - Muestra la ruta elegida antes de iniciar trabajo especializado e identifica
   toda hipótesis que pueda cambiar el destino o los permisos.
 - En ORIENTAR, cierra con la derivación y ninguna edición.
-- En COORDINAR y ESCALAR, cierra con el bloque `Coordinación cerrada` de
+- En COORDINAR, TRAZAR y ESCALAR, cierra con el bloque `Coordinación cerrada` de
   `verification-matrix.md`, incluyendo evidencia y pendiente real.
 
 ## Referencias
@@ -192,3 +234,4 @@ que no estén bloqueadas.
 - `references/routing-map.md`
 - `references/intake-and-escalation.md`
 - `references/verification-matrix.md`
+- `references/notion-traceability.md`
