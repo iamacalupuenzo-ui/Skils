@@ -723,6 +723,11 @@ navegador con interacción real:
   placement "top" confirmado abriendo arriba del trigger
   (`getBoundingClientRect()` del panel vs. del trigger), `matchTriggerWidth`
   confirmado con `getComputedStyle` (280px exacto) — sin errores de consola.
+  **Actualización 2026-09-17:** cuando el trigger pertenece a un modal, el
+  portal ya no conserva su contexto de apilamiento. `Popover` detecta ese
+  caso y usa la capa semántica `overlay` (400) en vez de `dropdown` (100),
+  para que los listbox de Select e InputDropdown permanezcan interactivos
+  sobre la máscara modal; fuera de un modal conserva la capa dropdown.
 
 - **Select (2026-09-10)** — `projects/comsatel-ds/src/lib/select/`.
   **Hallazgo real antes de construir:** el archivo `select.tsx` suelto en

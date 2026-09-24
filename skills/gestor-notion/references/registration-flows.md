@@ -7,29 +7,30 @@ Nunca usar el flujo genérico — siempre el específico por tipo.
 
 ## Flujo 1 — Registrar o sincronizar un Skill
 
-**BD destino:** Sistema de Skills → Skills (`collection://e0e1a7d0-6388-8289-a285-8778cc0a69a9`)
+**BD destino:** Herramientas de IA → Skills (`collection://e0e1a7d0-6388-8289-a285-8778cc0a69a9`)
 **Cuándo:** "registra el skill X", "agrega este skill a Notion", "guarda /nombre-skill"
 
 ### Paso 0 — Verificar fuente, schema y duplicado (obligatorio)
 
-Antes de crear la fila, resuelve la fuente configurada. En este equipo, observado el 2026-09-03:
+Antes de crear la fila, resolver la fuente canónica: el repositorio Skils (ver
+`skill-builder/references/catalog-flow.md`). Comprobar que el skill está declarado:
 
 ```powershell
-Test-Path "D:\Investigacion\Skills\e-skills\skills\<nombre-skill>\SKILL.md"
+npx --yes github:iamacalupuenzo-ui/Skils#main list
 ```
 
-Codex y Claude usan enlaces individuales hacia la fuente indicada; `.agents/skills` estaba
-vacío al observarse. Verificar de nuevo en otra laptop. Si el skill no existe en la fuente
-acordada, no registrarlo; la ausencia no autoriza archivar una fila histórica o de sistema.
+Si el skill no está en el catálogo, no registrarlo; la ausencia no autoriza archivar una
+fila histórica o de sistema.
 
 Antes de escribir, leer `../../../docs/sistema-skills-notion.md` y hacer `notion_fetch` de
-Skills y Capacidades. Buscar por `Skill` y `Ruta local`; si existe una fila, actualizarla.
+Skills y Capacidades. Buscar por `Skill`; si existe una fila, actualizarla.
 Nunca crear un duplicado.
 
 ### Clasificación vigente
 
-Extraer del `SKILL.md` todo lo verificable: `Skill`, `Descripción`, `Disparadores`, `Tipo`,
-`Ruta local`, `Repositorio fuente` y entornos instalados comprobados. Preguntar únicamente
+Extraer del `SKILL.md` todo lo verificable: `Skill`, `Qué hace`, `Tipo`, las frases que lo
+activan (van al final de `Cuándo usarlo`), `Versión` (`metadata.version` publicada en
+`main`), `Repositorio fuente` (`Skils`) y entornos instalados comprobados con `doctor`. Preguntar únicamente
 por vacíos materiales, una pregunta por turno:
 
 1. **Cuándo usarlo:** situación concreta y resultado esperado.
@@ -45,9 +46,9 @@ No usar `Skills & Marcos` de Process OS para skills nuevos: es una base históri
 prueba instalación, disponibilidad ni estado actual.
 
 > El bloque que sigue conserva preguntas de la base histórica solo como antecedente. No se
-> ejecuta para el Sistema de Skills y no prevalece sobre esta clasificación vigente.
+> ejecuta para la base Skills y no prevalece sobre esta clasificación vigente.
 
-### Preguntas históricas (no aplicar al Sistema de Skills)
+### Preguntas históricas (no aplicar a la base Skills)
 
 **P1 — Nombre y comando**
 > ¿Cuál es el nombre del skill y su slash command?
@@ -104,7 +105,7 @@ agrega el paso al array existente. Ese error produjo 15 pares de nombre idéntic
 ### Cierre
 ```
 Skill sincronizado — [nombre]
-  BD:          Skills (Sistema de Skills)
+  BD:          Skills (Herramientas de IA)
   URL:         [URL]
   Cuándo usarlo: [texto]
   Capacidad:   [relación]

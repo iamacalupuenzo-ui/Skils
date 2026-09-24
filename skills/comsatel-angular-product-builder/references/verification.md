@@ -2,6 +2,28 @@
 
 ## Antes de cerrar
 
+### Playground del producto
+
+Para todo cambio que afecte una interfaz, abrir la ruta real de la aplicación
+en el navegador de validación local. No cerrar solo con build, pruebas o
+inspección de código.
+
+- Revisar el estado en reposo y el estado que cambia con la interacción
+  (por ejemplo: foco, menú abierto, selección, error, carga o cierre).
+- Cuando dos controles deban ser equivalentes, comparar su altura, bordes,
+  tipografía y alineación del ícono directamente en el navegador. Para una
+  discrepancia visual sutil, medir estilos computados y
+  `getBoundingClientRect()` antes de declarar que comparten tamaño.
+- Ejecutar el recorrido real con mouse y teclado, y revisar el árbol de
+  accesibilidad tras la acción. Una captura de estado base no prueba un
+  overlay ni una selección.
+- El playground del producto es el navegador que sirve la aplicación que se
+  está construyendo. Storybook, una página de documentación del DS o una
+  referencia externa pueden usarse como contraste, pero no reemplazan esta
+  evidencia.
+- Si la ruta local no puede abrirse, declarar la verificación pendiente con
+  la causa concreta; no afirmar conformidad visual.
+
 - La aplicación usa una versión explícita de la librería y el lockfile refleja
   esa adopción; no hay fuentes internas copiadas.
 - `styles.css` se importa una sola vez y los componentes se importan desde la

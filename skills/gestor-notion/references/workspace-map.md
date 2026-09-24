@@ -3,7 +3,7 @@
 6 ambientes principales. Cada uno es un hub page que contiene una o más BDs.
 Este archivo es una instantánea para routing; el schema vivo es la fuente de verdad.
 
-> Para el registro de skills nuevos, el destino canónico es el **Sistema de Skills**,
+> Para el registro de skills nuevos, el destino canónico es la base Skills de **Herramientas de IA**,
 > documentado en `../../../docs/sistema-skills-notion.md`. `Skills & Marcos` de Process OS
 > se conserva como base histórica y no recibe nuevos registros.
 
@@ -394,7 +394,7 @@ cada hábito es una columna). Agregar un hábito = agregar una columna checkbox.
 | El usuario quiere guardar... | Ambiente | BD | Collection ID |
 |------------------------------|----------|----|--------------|
 | Un proyecto nuevo | Proyectos | Projects | `c18a01dc-169a-82c8-90d0-07edc4821769` |
-| Un skill reutilizable nuevo o actualizado | Sistema de Skills | Skills | `e0e1a7d0-6388-8289-a285-8778cc0a69a9` |
+| Un skill reutilizable nuevo o actualizado | Herramientas de IA | Skills | `e0e1a7d0-6388-8289-a285-8778cc0a69a9` |
 | Un proceso / SOP | Process OS | Procesos & SOPs | `86266c47-dec5-47c4-81b1-2ed3467090ac` |
 | Un flujo / ruta de trabajo | Process OS | Flujos | `bbe77287-00eb-438f-bceb-24d4d791a4ee` |
 | Un paso dentro de un flujo | Process OS | Sub-procesos & Pasos | `786b6518-9d98-46cc-beff-997a1dd19598` |

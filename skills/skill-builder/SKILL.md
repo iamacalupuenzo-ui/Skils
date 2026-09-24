@@ -9,7 +9,7 @@ description: >
   en un skill", "haz un skill de", "el skill de X necesita actualizarse",
   "audita el skill de Y", "qué le falta al skill de Z".
 metadata:
-  version: "1.2.1"
+  version: "1.2.2"
 ---
 
 # Skill Builder — Arquitectura para Codex y Claude Code
@@ -113,7 +113,7 @@ actuar. No improvisar el protocolo de memoria ni saltear fases.
 - **B10 — Operaciones separadas**: editar, instalar, registrar y publicar requieren su propio alcance y resultado verificado.
 - **B11 — Lectura progresiva**: externalizar cuando los procedimientos se usen por separado; conservar decisiones, ejemplos y llamadas.
 - **B12 — Registro canónico de skills**: cuando el alcance autorice registrar en Notion,
-  buscar la fila existente en Sistema de Skills y crearla o sincronizarla en la misma fila.
+  buscar la fila existente en la base Skills de Herramientas de IA y crearla o sincronizarla en la misma fila.
   Clasificarla con una `Capacidad` existente o crear una solo si falta un ámbito fiel; no usar
   `Skills & Marcos` como destino de skills nuevos.
 - **B13 — Estado y compatibilidad verificables**: marcar `Activo` y declarar entornos solo con

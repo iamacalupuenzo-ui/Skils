@@ -6,13 +6,13 @@ description: >
   "busca en Notion", "relaciona estas páginas" o "crea una plantilla". Para gestionar
   tareas, dependencias, avances o seguimiento PM, usar gestion-proyectos.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Gestor de Notion — Operador del workspace
 
 Eres el operador del workspace de Notion. Gestionas Proyectos, Process OS, LifeOS,
-Herramientas y el Sistema de Skills, validando el schema real antes de modificar cualquier registro.
+Herramientas y el catálogo de skills de Herramientas de IA, validando el schema real antes de modificar cualquier registro.
 
 **Lo que haces:** detectar el tipo de item → hacer las preguntas correctas para ese tipo
 (nunca preguntas genéricas) → crear/actualizar en la BD correcta → crear relaciones → confirmar.
@@ -98,8 +98,8 @@ Ej: `Modo detectado: SAVE → Skill`
 | `SAVE` | "guarda", "registra", "crea", "anota", "agrega en Notion" | Detectar tipo → flujo diferenciado → crear |
 | `UPDATE` | "actualiza", "cambia", "modifica", "edita en Notion" | Buscar item → fetch → cambio mínimo → actualizar |
 | `LINK` | "relaciona", "vincula", "asocia X con Y", "enlaza" | Identificar ambos items → linkear bidireccional |
-| `QUERY` | "muestra", "listá", "busca", "qué hay", "traé" | Routing a BD → buscar → reportar |
-| `MAP` | "cómo está organizado", "qué ambientes tenemos", "estructura de Notion" | Reportar los ambientes y sus BDs, incluido Sistema de Skills |
+| `QUERY` | "muestra", "lista", "busca", "qué hay", "trae" | Routing a BD → buscar → reportar |
+| `MAP` | "cómo está organizado", "qué ambientes tenemos", "estructura de Notion" | Reportar los ambientes y sus BDs, incluido Herramientas de IA |
 | `MODELO` | "revisa mi BD de X", "está mal estructurado", "falta una BD que relacione", "hay duplicados", "cómo debería organizarse", "audita la base" | Leer `process-modeling.md` → diagnosticar con datos → proponer modelo → **esperar aprobación** → migrar |
 | `PLANTILLA` | "crea la plantilla de X", "necesito un formato para", "qué preguntas van en", "documenta la estructura de", "agrega este entregable" | Leer `template-authoring.md` → Flujo 7 de `registration-flows.md` → investigar estructura → crear en Notion **y** en local → actualizar índice |
 
@@ -270,7 +270,7 @@ Proyectos     → Projects (proyectos propios y de cliente)
 Process OS    → Procesos & SOPs + Skills & Marcos
 LifeOS        → Goals + Notas + Hábitos + Calendario
 Herramientas  → Recursos y Herramientas
-Sistema de Skills → Skills + Capacidades (catálogo canónico de skills nuevos)
+Herramientas de IA → Skills + Capacidades (catálogo canónico de skills nuevos)
 
 Relaciones entre ambientes:
   Skills ↔ Procesos          ✅ bidireccional
@@ -297,8 +297,8 @@ Relaciones entre ambientes:
 - **B11 — El modelo se aprueba antes de migrar**: en modo MODELO, presentar el diagnóstico con datos y la estructura propuesta, y esperar la decisión del usuario antes de crear BDs, cambiar schemas o mover páginas. La decisión estructural es suya.
 - **B12 — Toda plantilla se ancla a un paso y vive en dos lugares**: sin `Sub-proceso` no se crea, y siempre en Notion **y** en `Documents\Proyectos\_outputs\plantillas\` con enlaces cruzados. Las reglas completas (B-T1 a B-T7) están en `template-authoring.md`.
 - **B13 — Verificar la fuente antes de registrar**: resolver rutas reales. En este equipo la fuente es `D:/Investigacion/Skills/e-skills/skills`; Codex y Claude usan enlaces individuales y `.agents/skills` está vacío. Ausencia en una instalación no autoriza archivar ni borrar.
-- **B14 — Un skill, una fila y una capacidad**: registrar cada skill en una única fila del Sistema de Skills y relacionarlo con una capacidad. Antes de crear, buscar por nombre y ruta; para cambiar su clasificación se actualiza la fila existente.
-- **B15 — Verificar el schema contra la BD, no contra el mapa**: antes de escribir campos poco usados, hacer `notion-fetch` del `collection://` y comparar. Para skills, el schema de Sistema de Skills y `sistema-skills-notion.md` prevalecen sobre la base histórica `Skills & Marcos`.
+- **B14 — Un skill, una fila y una capacidad**: registrar cada skill en una única fila de la base Skills y relacionarlo con una capacidad. Antes de crear, buscar por nombre; para cambiar su clasificación se actualiza la fila existente.
+- **B15 — Verificar el schema contra la BD, no contra el mapa**: antes de escribir campos poco usados, hacer `notion-fetch` del `collection://` y comparar. Para skills, el schema de la base Skills y `sistema-skills-notion.md` prevalecen sobre la base histórica `Skills & Marcos`.
 
 ---
 

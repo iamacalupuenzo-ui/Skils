@@ -32,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.8.4"
+  version: "2.8.5"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)

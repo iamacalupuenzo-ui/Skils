@@ -9,7 +9,7 @@ description: >
   “implementa alertas en esta plataforma”. No construye componentes dentro de
   Comsatel DS, no clona el repositorio del sistema y no copia sus demos.
 metadata:
-  version: "1.0.6"
+  version: "1.0.7"
 ---
 
 # Comsatel Angular Product Builder
@@ -118,8 +118,11 @@ evaluar, no se edita.
    finalizado: carga, vacío, error, permisos, offline, recuperación y móvil.
 4. Para mapas o notificaciones, aplicar `logistics-patterns.md`; su ausencia
    de requisitos es una decisión pendiente, no licencia para inventar alertas.
-5. Leer `verification.md`, ejecutar los comandos reales y probar el recorrido
-   crítico con teclado, foco y mensajes accesibles.
+5. Leer `verification.md`, abrir el playground de la aplicación en el
+   navegador de validación y ejecutar los comandos reales. Revisar el
+   recorrido crítico con teclado, foco y mensajes accesibles; una demo del DS
+   o Storybook puede informar una composición, pero no sustituye la evidencia
+   visual e interactiva en el producto consumidor.
 
 ## Protocolo ACTUALIZAR
 

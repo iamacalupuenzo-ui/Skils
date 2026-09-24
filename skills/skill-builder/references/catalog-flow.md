@@ -63,18 +63,58 @@ una sesión nueva.
 
 ## Registro en Notion
 
-Destino: base [Skills](https://app.notion.com/p/baa1a7d0638883f3b83d81e8697cc2b7).
+Destino: espacio **Herramientas de IA** → base [Skills](https://app.notion.com/p/baa1a7d0638883f3b83d81e8697cc2b7).
 
 Propiedades que se mantienen para un skill reutilizable:
 
 - `Skill`: nombre exacto en kebab-case.
+- `Versión`: la de `metadata.version` del `SKILL.md` **publicado en `main`**. Se actualiza
+  en el mismo cierre en que se publica; un cambio local sin publicar no cambia la versión
+  en Notion. Para ver qué versión tiene instalada un equipo, leer `metadata.version` en
+  su carpeta de skills: `doctor` solo confirma que el skill existe, no su versión.
 - `Estado del skill`: usar `Activo` solo tras validar su disponibilidad.
-- `Descripción`, `Cuándo usarlo` y `Disparadores`.
+- `Qué hace`: una o dos frases tomadas del frontmatter del `SKILL.md`.
+- `Cuándo usarlo`: situación concreta y, al final, `Frases que lo activan: …`. Desde el
+  2026-09-24 ya no existen las propiedades `Descripción` (ahora `Qué hace`) ni
+  `Disparadores` (fusionada aquí).
 - `Entornos compatibles`: declarar únicamente ambientes verificados.
 - `Tipo`, `Prioridad de construcción`, `Capacidades` si corresponde.
-- `Repositorio fuente`: `agent-skills` para este catálogo compartido.
-- `Ruta local`: ruta fuente del directorio dentro de `Skils/skills/`.
+- `Repositorio fuente`: `Skils` para este catálogo compartido.
 - `Última revisión`.
+
+No existe `Ruta local`: cambia en cada computador. La fuente es siempre
+`Skils/skills/<nombre>/` y se enlaza en el contenido de la página.
+
+Contenido de la página del skill: una guía de uso que se lee en menos de 5 minutos,
+escrita para la persona que lo va a usar, no para el agente. En este orden, con
+encabezado 2:
+
+1. Pregunta previa en una cita (`>`), con la respuesta en la página.
+2. `## En 30 segundos`: qué hace, cómo trabaja y qué **no** hace, en tres líneas.
+3. `## Cuándo usarlo y para qué`: tabla de hasta tres columnas (si necesitas… / pídelo
+   así / obtienes), un renglón por modo, y a qué skill derivar lo que no le corresponde.
+4. `## Cómo llamarlo`: en Claude Code, `/<nombre>` o una frase que lo active; en Codex,
+   mencionarlo por su nombre o con una de sus frases. Dónde abrir la sesión y los
+   requisitos previos (tokens, accesos), sin pedir nunca un secreto en el chat.
+5. `## Cómo funciona por dentro`: un diagrama `mermaid` con el recorrido real del skill
+   (guard, modos, fases y cierre) y un paso a paso en palabras simples.
+6. `## Sus guías internas`: tabla de sus referencias (guía / cuándo la lee / para qué).
+7. `## Cómo no perder el contexto`: prácticas concretas para sesiones largas o que se
+   retoman: alcance por pedido, dónde queda guardado el plan o el estado, cómo retomarlo.
+8. `## Recursos operativos`: fuente canónica enlazada a GitHub y dependencias con otros
+   skills.
+9. `## Versión operativa`: qué cambió en la versión actual y la última verificación (por
+   ejemplo, `doctor` con OK y su fecha). El número vive en la propiedad `Versión`; no
+   repetirlo aquí, porque dos copias del número terminan contradiciéndose.
+10. `## Comprueba`: una pregunta de comprobación.
+
+Todo lo que la página afirma sale del `SKILL.md` y sus referencias. Una recomendación de
+uso que el skill no ejecuta por sí mismo (por ejemplo, guardar un plan en un archivo) se
+escribe como práctica para la persona, no como comportamiento del skill. Ejemplo de
+referencia: la página de `comsatel-angular-product-builder`.
+
+Ícono: nativo de Notion, `icons/code_blue` para skills y `icons/tag_blue` para
+capacidades. Nunca emojis. Encabezados 2 y 3; nunca encabezado 1.
 
 No registrar una instalación como si fuera una creación y no crear una fila duplicada por
 cambiar de computador. El repositorio conserva el historial; Notion conserva el índice

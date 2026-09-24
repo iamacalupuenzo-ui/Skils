@@ -10,7 +10,7 @@ description: >
   herramienta", "registra lo que probamos".
 argument-hint: "[producto, herramienta o método a investigar, o 'registro' para documentar uno ya probado]"
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   entornos: "Codex, Claude Code"
 ---
 
@@ -46,7 +46,7 @@ la investigación.
 
 ## Referencias disponibles
 
-- `references/estructura-de-informe.md` — las 9 secciones del informe, las etiquetas de evidencia y la tabla de clasificación de activos. **Leer antes de escribir cualquier informe.**
+- `references/estructura-de-informe.md` — las dos capas del informe (lectura arriba, registro técnico abajo), la guía paso a paso, el formato en Notion, las etiquetas de evidencia y la tabla de clasificación de activos. **Leer antes de escribir cualquier informe.**
 - `references/evaluacion-en-uso.md` — protocolo para probar un producto sobre algo nuestro: línea base, revisión de seguridad previa, rondas, verificación independiente y veredicto. **Leer completo antes de ejecutar el producto.**
 - `references/notion-research.md` — esquema de la base Investigaciones. Leer solo cuando el usuario pide guardar o actualizar en Notion.
 - `references/casos/` — registros de investigaciones anteriores. Consultar antes de abrir una nueva, para no repetir trabajo y para reusar el método que ya funcionó.
@@ -59,7 +59,7 @@ la investigación.
 $skillRoots = @(
   (Join-Path $env:USERPROFILE '.codex\skills\investigador-de-producto'),
   (Join-Path $env:USERPROFILE '.claude\skills\investigador-de-producto'),
-  'D:\Investigacion\Skills\e-skills\skills\investigador-de-producto'
+  'D:\Investigacion\Skills\Skils\skills\investigador-de-producto'
 ) | Where-Object { Test-Path -LiteralPath $_ }
 $skillRoot = $skillRoots | Select-Object -First 1
 Test-Path -LiteralPath (Join-Path $skillRoot 'references\evaluacion-en-uso.md')
@@ -83,7 +83,7 @@ Declarar el modo en la primera línea antes de cualquier acción.
 | Modo | Señales | Acción |
 |------|---------|--------|
 | `DOCUMENTAL` | "investiga esta herramienta", "¿nos sirve esto?", "compara estas dos opciones", "¿qué tan confiable es" | Fuentes primarias, clasificación del activo, comparación, informe |
-| `EN_USO` | "probemos esto sobre nuestro proyecto", "corré esto acá", "¿qué encuentra en nuestro sistema?" | Línea base, revisión de seguridad, rondas medidas, verificación propia |
+| `EN_USO` | "probemos esto sobre nuestro proyecto", "corre esto aquí", "¿qué encuentra en nuestro sistema?" | Línea base, revisión de seguridad, rondas medidas, verificación propia |
 | `REGISTRO` | "documenta la investigación", "registra lo que probamos", "guárdalo en Notion" | Escribir el caso en disco y, si lo piden, en Notion |
 | `REVISION` | "retomemos la investigación de", "¿cambió algo desde que lo probamos?", "actualiza el caso" | Releer el caso, verificar qué caducó, actualizar |
 
@@ -109,8 +109,11 @@ Usar la tabla de `references/estructura-de-informe.md`. Declarar qué partes cor
 modelo y cuáles necesitan uno.
 
 ### Fase 3 — Informe
-Las 9 secciones de `references/estructura-de-informe.md`, con cada afirmación etiquetada
-(B5).
+Las dos capas de `references/estructura-de-informe.md`: primero la capa de lectura
+(pregunta previa, Recursos, En 30 segundos, la historia, lo que no sabemos, qué sigue y
+comprueba), después las nueve secciones del registro técnico. Cada afirmación va
+etiquetada (B5). Si la investigación termina en una acción que el lector ejecutará, crear
+la guía paso a paso como subpágina y enlazarla en Recursos.
 
 ### Cierre
 ```
@@ -203,8 +206,9 @@ Pendiente:     [experimento o verificación que quedó abierta]
 2. Verificar qué caducó: versión del producto, precios, límites, la vigencia de cada
    hecho verificado.
 3. Volver a medir solo lo que cambió de estado.
-4. Actualizar el caso conservando la cronología anterior: un registro se acumula, no se
-   reescribe. Agregar fecha a lo nuevo.
+4. Actualizar el caso conservando la cronología anterior: el registro técnico se acumula,
+   no se reescribe. Agregar fecha a lo nuevo.
+5. Reescribir la capa de lectura con el estado actual (B14) y actualizar `Última revisión`.
 
 ---
 
@@ -223,6 +227,8 @@ Pendiente:     [experimento o verificación que quedó abierta]
 - **B11 — Skill solo con evidencia**: no proponer convertir la investigación en skill o capacidad antes de que los hechos verificados lo sostengan. Si se decide, el trabajo es de `skill-builder`.
 - **B12 — Casos anteriores primero**: leer `references/casos/` antes de abrir uno nuevo. Dos registros del mismo objeto fragmentan la evidencia.
 - **B13 — Capacidades verificadas antes de actuar**: no asumir conectores de Notion, búsqueda web ni permisos por el frontmatter. Confirmar la capacidad disponible antes de usarla; si falta, conservar el caso local y declarar la sincronización como pendiente.
+- **B14 — La capa de lectura refleja el estado actual**: toda actualización reescribe "En 30 segundos", la historia y "Qué sigue". Cerrar una actualización dejando arriba una conclusión vieja hace que el lector decida con información vencida, porque no va a llegar al registro de abajo.
+- **B15 — Guía probada o no es guía**: cada comando y fragmento de código de una guía paso a paso se ejecuta antes de publicarse, y la salida que muestra la guía es la observada. Los errores no reproducidos se etiquetan como probables. Una guía sin probar deja al lector bloqueado en el primer fallo.
 
 ---
 
@@ -235,14 +241,17 @@ Pendiente:     [experimento o verificación que quedó abierta]
 - Bloques de cierre: texto plano, formato fijo, el del modo correspondiente.
 - Los límites y la evidencia contradictoria se nombran; no se omiten para que el relato
   cierre mejor.
-- Sin emojis decorativos. Sin "¡Perfecto!" ni "¡Excelente!".
+- Sin emojis decorativos. Sin "¡Perfecto!" ni "¡Excelente!". En Notion, íconos nativos,
+  nunca emojis, y encabezados 2 y 3, nunca 1.
+- En el chat, respuesta corta: qué se hizo, para qué sirve y qué falta. El detalle vive
+  en el informe.
 - Cuando algo corresponde a otro skill, decirlo y rutear.
 
 ---
 
 ## Referencias
 
-- `references/estructura-de-informe.md` — las 9 secciones del informe, etiquetas de evidencia, clasificación de activos y reglas de métricas
+- `references/estructura-de-informe.md` — las dos capas del informe, la guía paso a paso, el formato en Notion, etiquetas de evidencia, clasificación de activos y reglas de métricas
 - `references/evaluacion-en-uso.md` — protocolo de prueba sobre un sistema propio: preparación, seguridad previa, rondas, verificación, veredicto y trampas conocidas
 - `references/notion-research.md` — destino, propiedades y plantilla de la base Investigaciones
 - `references/casos/` — registros de investigaciones anteriores, uno por objeto estudiado

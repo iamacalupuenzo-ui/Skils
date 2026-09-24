@@ -1,44 +1,45 @@
-# Notion research schema
+# Esquema de Investigaciones en Notion
 
-Use this reference only when the user asks to save or update research in Notion.
+Leer esta referencia solo cuando el usuario pide guardar o actualizar una investigación en Notion.
 
-## Destination
+## Destino
 
-- Hub: `Sistema de Skills` → `Investigaciones`
-- Database: [Investigaciones](https://app.notion.com/p/f481a7d063888272bc7f01197d112886)
+- Espacio: `Herramientas de IA` → pestaña `Investigaciones` (antes se llamaba "Sistema de Skills")
+- Base: [Investigaciones](https://app.notion.com/p/f481a7d063888272bc7f01197d112886)
 - Data source: `collection://a6a1a7d0-6388-823a-a499-074ba7226336`
-- Template: [Nueva investigación](https://app.notion.com/p/a051a7d063888244a242814a0b68933c)
+- Plantilla: [Nueva investigación](https://app.notion.com/p/a051a7d063888244a242814a0b68933c)
 
-## Required properties
+## Propiedades
 
-| Property | Purpose | Allowed values / format |
+| Propiedad | Para qué | Valores / formato |
 |---|---|---|
-| Investigacion | Title of the object studied | Title |
-| Fase | Where the research is in its decision lifecycle | Propuesta, En investigacion, En validacion, Aprobada, Descartada, Archivada |
-| Enfoque | Nature of the object studied | Herramienta, Metodo, Producto, Benchmark |
-| Prioridad | Attention level | Alta, Media, Baja |
-| Capacidades | Capabilities supported by the evidence | Relation; optional until identified |
-| Skills derivados | Skills justified by an approved decision | Relation; leave empty during exploration |
-| Ultima revision | Freshness of the record | Date |
+| Investigación | Título del objeto estudiado | Título |
+| Fase | Dónde está la investigación en su ciclo de decisión | Propuesta, En investigación, En validación, Aprobada, Descartada, Archivada |
+| Enfoque | Naturaleza del objeto estudiado | Herramienta, Método, Producto, Benchmark |
+| Prioridad | Nivel de atención | Alta, Media, Baja |
+| Capacidades | Capacidades que la evidencia sostiene | Relación; opcional hasta identificarla |
+| Skills derivados | Skills justificados por una decisión aprobada | Relación; vacía durante la exploración |
+| Última revisión | Frescura del registro | Fecha; actualizarla cada vez que se reescribe la capa de lectura |
 
-## Content template
+## Contenido de la página
 
-Use the page structure in `Nueva investigación`:
+Seguir las dos capas de `estructura-de-informe.md`:
 
-1. Decision that the research must inform
-2. Context and problem
-3. Hypothesis and scope
-4. Evidence and sources table
-5. Plain-language explanation of how it works
-6. Technical and operational anatomy
-7. Comparison and evaluation
-8. Executable improvement plan, if the product provides commands or fixes
-9. Validation experiment and metrics
-10. Recommendation and relationship to capabilities/skills
+1. **Capa de lectura** arriba: pregunta previa, `## Recursos`, `## En 30 segundos`,
+   `## La historia`, `## Lo que todavía no sabemos`, `## Qué sigue`, `## Comprueba`.
+2. Divisor `---` y `## Detalle técnico y registro completo`, con las nueve secciones del
+   método como `## 1. …` a `## 9. …` y sus subsecciones en encabezado 3.
 
-## Notion rules
+Las guías paso a paso se crean como **subpáginas** de la investigación y el bloque de la
+subpágina se ubica bajo `## Recursos` (al crearse queda al final: moverlo con
+`update_content`, quitando la línea `<page …>` del final y agregándola bajo Recursos en la
+misma operación).
 
-- Use `notion_fetch` on the database and on an existing record before editing it.
-- If AI search is unavailable, use regular Notion search.
-- Preserve page content unrelated to the requested update.
-- Include direct links to external sources. Use native relations for Notion capabilities and skills.
+## Reglas de Notion
+
+- Hacer `fetch` de la base y del registro existente antes de editarlo.
+- Si la búsqueda con IA no está disponible, usar la búsqueda normal.
+- Conservar el contenido de la página que no forma parte del cambio pedido.
+- Íconos nativos de Notion (`icons/drafts_blue` para investigaciones), nunca emojis.
+- Encabezado 2 y 3; nunca encabezado 1.
+- Enlaces directos a las fuentes externas. Relaciones nativas para capacidades y skills.

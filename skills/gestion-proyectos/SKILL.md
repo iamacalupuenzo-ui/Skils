@@ -7,7 +7,7 @@ description: >
   Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
   revisar riesgos, dar estado o hacer seguimiento.
 metadata:
-  version: "1.7.0"
+  version: "1.7.1"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -23,7 +23,7 @@ El gestor general administra el workspace; no define una segunda política de se
 Idioma: español neutro latinoamericano con tuteo. Usar capacidades del conector disponible,
 no nombres de herramientas de otra instalación. Si no hay acceso, no simular lecturas ni cambios.
 
-## Integración con el Sistema de Skills
+## Integración con el catálogo de skills (Herramientas de IA)
 
 Antes de planificar trabajo especializado o delegable, consultar el catálogo de Skills si
 está disponible y seleccionar por `Capacidades` y `Cuándo usarlo`; reutilizar un skill
@@ -97,7 +97,7 @@ evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
 ## Referencias
 
 - Leer siempre [modelo actual de Notion](references/modelo-notion.md) antes de consultar o escribir.
-- Para seleccionar o detectar una brecha de skill reutilizable, leer [Sistema de Skills](../../docs/sistema-skills-notion.md).
+- Para seleccionar o detectar una brecha de skill reutilizable, leer [el flujo del catálogo](../../docs/sistema-skills-notion.md).
 - Para crear, evaluar o reordenar jerarquías, leer [descomposición y contenido](references/descomposicion.md).
 - Para aplicar los patrones de gestión que fundamentan la evaluación, leer [patrones de trazabilidad](references/patrones-trazabilidad.md).
 - Para evaluar, crear o corregir relaciones `Depende de` / `Bloquea a`, restricciones o

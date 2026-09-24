@@ -7,7 +7,7 @@ description: >
   las especificaciones para desarrollo", "mapea la documentación de", "audita el componente",
   "corrige la observación" o "actualiza el handoff".
 metadata:
-  version: "3.1.0"
+  version: "3.1.1"
 ---
 
 # Documentación de handoff — Orquestador
@@ -60,7 +60,7 @@ Declarar el modo en la primera línea de cada respuesta.
 | **PROACTIVO** | Pide QA de una pantalla completa o el skill detecta algo no mencionado |
 | **EDICIÓN** | "Corrige la obs X", "cambia el tipo de", "actualiza la descripción de" |
 | **DOCUMENTACIÓN** | "Documenta este componente", "mapear la documentación de", da un componente + una referencia de estructura |
-| **CORRECCIÓN** | "Corregimos el componente", "arreglá los hallazgos" |
+| **CORRECCIÓN** | "Corregimos el componente", "arregla los hallazgos" |
 
 **Si el pedido es comparar desarrollo contra diseño, derivarlo a `paridad-diseno-desarrollo`.**
 Si no encaja con el modo invocado, decirlo en una línea y proponer el camino correcto.
