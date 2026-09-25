@@ -2,7 +2,7 @@
 name: epica-a-plan-desarrollo
 description: Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias de usuario más chicas (INVEST) con criterios de aceptación, y arma el plan de testing y el orden de implementación. Úsalo cuando el usuario ya tiene la épica escrita y necesita saber en qué módulos y flujos se divide antes de construir. No redacta historias de usuario desde cero ni implementa código.
 metadata:
-  version: "1.3.2"
+  version: "1.4.0"
 ---
 
 # Épica a plan de desarrollo

@@ -16,7 +16,41 @@ Notion es una fuente suficiente para planificar y auditar la cadena autorizada.
 Épicas, Historias de usuario y Casos de uso viven en **Gestión de producto**. Los
 proyectos y las tareas viven en **Minimalist Project Manager**: la épica se relaciona con
 su proyecto por `Proyecto` (base Project) y las historias y casos con sus tareas por
-`Tareas` (base Tasks Manager). No crear proyectos ni tareas dentro de Gestión de producto.
+`Tareas` (base Tareas). No crear proyectos ni tareas dentro de Gestión de producto.
+
+Una sola fuente por dato: la épica se relaciona solo con sus historias y la historia con sus
+casos. No relacionar la épica directamente con los casos, porque la cadena ya lo resuelve y
+una segunda relación se desincroniza.
+
+## Íconos por tipo
+
+Cada registro lleva un ícono nativo de Notion en azul, nunca un emoji. El ícono identifica
+el tipo, no el contenido:
+
+| Tipo | Ícono |
+|---|---|
+| Épica | `icons/flag_blue` |
+| Historia de usuario | `icons/bookmark_blue` |
+| Caso de uso | `icons/list_blue` |
+
+## Estructura de la épica
+
+La épica describe **qué se quiere construir**. Solo lleva lo necesario y se entiende sin
+abrir las historias.
+
+**Propiedades:** `Épica` (título `EP-<n> — <resultado>`, sin mezclar el nombre de una
+historia), `Estado`, `Prioridad`, `Objetivo`, `Criterio de cierre`, `Proyecto`,
+`Historias de usuario`, `Fuente`, `Versión del plan`, `Inicio`, `Fin objetivo` y
+`Responsable`. No agregar propiedades que repitan el cuerpo (por ejemplo, riesgos).
+
+**Cuerpo, en este orden y con encabezado 2:**
+1. `Qué se construye`: un párrafo con el actor, el resultado y para qué, y una lista numerada
+   de las partes, una por historia, con lo que entrega cada una.
+2. `Alcance`: incluye (filtro o etiquetas de la fuente), no incluye y límites conocidos.
+3. `Historias`: vista enlazada de la base Historias filtrada por esta épica. Nunca menciones
+   escritas a mano: se rompen cuando una página cambia.
+4. `Riesgos y decisiones pendientes`: contradicciones de la fuente y dependencias, cada una
+   con un rótulo corto en negrita.
 
 La historia de usuario conserva el alcance funcional y su fuente. Un caso de uso
 expresa un flujo, una regla o una interacción verificable dentro de esa historia.
@@ -48,7 +82,7 @@ separada.
    asignarle identificador `CU-<historia>-<correlativo>` y relacionarlo con una sola
    historia padre. No modificar la historia fuente ni GitLab para resolver una
    ambigüedad.
-7. Conservar la URL de fuente y la relación a la épica. No asignar responsables,
+7. Conservar la URL de fuente y la relación con la historia padre. No asignar responsables,
    fechas, estimaciones ni estados de ejecución sin evidencia. Registrar una regla
    contradictoria como decisión pendiente, no como comportamiento implementable.
 8. Releer historia, casos y épica después de actualizar. Validar que cada caso tiene
