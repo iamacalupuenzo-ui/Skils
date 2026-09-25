@@ -126,7 +126,7 @@ filtrada agrupada por estado) y `Riesgos y decisiones`. Lo que no se sabe queda 
 *Pendiente*.
 
 **Tarea** (base `Tareas`, ex Tasks Manager; depurada el 2026-09-24): `Nombre`, `Estado`,
-`Prioridad`, `Fecha límite`, `Proyecto`, `Ámbito` (rollup desde Proyecto), `Historia`,
+`Prioridad`, `Inicio`, `Fecha límite` (obligatoria), `Proyecto`, `Ámbito` (rollup desde Proyecto), `Historia`,
 `Caso de uso`, `Horas estimadas`, `Horas reales`, `Criterio de cierre`, `Fecha real de cierre`,
 `Resultado` (`Pendiente` / `Listo`), `Alerta de cierre` (fórmula: "Cerrada sin resultado"),
 `Issue`, `Solicitado por`, `Bloqueada por` y `Bloquea a`. `Progreso (%)` se eliminó: el

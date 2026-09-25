@@ -7,7 +7,7 @@ description: >
   Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
   revisar riesgos, dar estado o hacer seguimiento.
 metadata:
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -60,7 +60,47 @@ operativo. Antes de actuar, consultar el schema vivo de `Project` y `Tasks Manag
 5. Registrar una precedencia con `Bloqueada por` / `Bloquea a`, nunca solo en texto. Revisar
    ambos extremos antes de actualizar para conservar las dependencias existentes.
 6. En una revisión semanal, entregar: avance real, horas estimadas versus reales disponibles,
-   tareas vencidas, bloqueos, riesgos, decisiones pendientes y el foco de la siguiente semana.
+   tareas vencidas, tareas sin fecha límite, tareas con `Alerta de cierre`, bloqueos, riesgos,
+   decisiones pendientes y el foco de la siguiente semana.
+
+### Alta de una tarea: entrevista breve
+
+Cuando el usuario pida agregar una tarea, no crearla con lo primero que diga. Completar
+primero estos datos, preguntando solo lo que no se pueda sacar de lo que ya dijo:
+
+| Dato | Pregunta si falta | Regla |
+|---|---|---|
+| Qué y para qué | ¿Qué hay que lograr y para qué sirve? | El título queda como verbo en infinitivo + resultado. |
+| Proyecto | ¿A qué proyecto pertenece? | Sin proyecto solo si el usuario lo confirma (va a Bandeja). |
+| Resultado esperado | ¿Qué va a quedar al terminar? ¿Dónde va a vivir? | Da los encabezados de la sección Resultado. |
+| Termina cuando | ¿Cómo sabremos que está terminada? | Al menos una condición observable. |
+| Fecha límite | ¿Para cuándo tiene que estar? | **Obligatoria.** No se crea la tarea sin ella. |
+| Inicio | ¿Cuándo empieza? | Se pregunta siempre; si no se sabe, queda vacía. |
+| Dependencias | ¿Depende de algo o bloquea algo? | Solo si el usuario menciona otra tarea. |
+
+- Máximo tres preguntas por turno. Mejor proponer un borrador para confirmar ("Te propongo:
+  termina cuando X; fecha límite el viernes 2. ¿Va?") que hacer preguntas abiertas.
+- Si el usuario no sabe la fecha límite, proponer una a partir de lo que se sabe y pedir que
+  la confirme. Una fecha propuesta y no confirmada no se guarda.
+- Prioridad y horas estimadas se preguntan solo si el usuario gestiona con ellas o las
+  menciona.
+- Con los datos completos, crear la tarea con la plantilla `Nueva tarea`, llenar el relato con
+  lo conversado y dejar `Resultado = Pendiente`.
+
+### Cierre de una tarea: pedir el resultado
+
+Cuando el usuario diga que terminó una tarea, o pida marcarla como completada:
+
+1. Preguntar dónde está el resultado: un enlace, un archivo o el contenido mismo si es corto.
+2. Confirmar la fecha real de cierre (por defecto, hoy) y, si se usan, las horas reales.
+3. Con el resultado, escribirlo en la sección Resultado, pasar `Estado = Completada` y
+   `Resultado = Listo`.
+4. Sin resultado, no pasar a `Listo`. Si el usuario igual quiere marcarla completada, se
+   marca, y se le avisa que va a quedar con `Alerta de cierre` hasta que aparezca el resultado.
+
+Al consultar el estado de un proyecto o de la semana, recordar las tareas con `Alerta de
+cierre` y preguntar por su resultado, una por una o en lote, sin repetir la pregunta por la
+misma tarea en la misma conversación.
 
 ## Alcance compartido en ClickUp
 
