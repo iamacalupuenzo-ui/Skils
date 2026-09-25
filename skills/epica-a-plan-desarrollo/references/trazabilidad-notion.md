@@ -51,6 +51,42 @@ historia), `Estado`, `Prioridad`, `Objetivo`, `Criterio de cierre`, `Proyecto`,
 4. `Riesgos y decisiones pendientes`: contradicciones de la fuente y dependencias, cada una
    con un rótulo corto en negrita.
 
+## Estructura de la historia de usuario
+
+La historia tiene dos capas: una página de lectura que cuenta qué se construye y una
+**Ficha técnica** con todo el detalle. Los criterios de aceptación viven **solo** en los
+casos de uso; la historia no los repite.
+
+**Propiedades:** `Historia de usuario` (título `US<n> — <nombre de la fuente>`), `Orden`,
+`Estado`, `Prioridad`, `Épica`, `Casos de uso`, `Fuente` y `Tareas`. Nada más: fechas,
+esfuerzo y responsables son de ejecución y viven en las tareas de Gestión de proyectos.
+
+**Orden:** número de secuencia dentro de la épica según dependencias (qué historia necesita
+a cuál). No depende del número de GitLab ni se escribe en el título, porque una historia
+creada antes puede ir después. Las vistas de historias se ordenan por `Orden`.
+
+**Página de lectura, en este orden:**
+1. Cita con la pregunta previa (`> **Antes de leer:** …`), respondida en el relato.
+2. `Recursos`: la subpágina `Ficha técnica — US<n>` (ícono `icons/document_blue`).
+3. `En 30 segundos`: Como/quiero/para y una línea con su papel en la épica.
+4. `El relato`: de 4 a 7 bloques cortos con rótulo en negrita, contados desde lo que hace
+   el actor. Cierra con `Lo que todavía no está decidido`. Sin tablas ni criterios.
+5. `Casos de uso`: vista enlazada de Casos de uso filtrada por `Historia padre` = esta página.
+6. `Comprueba`: una pregunta que se responde con el relato o la ficha.
+
+**Ficha técnica, en este orden:**
+1. `Fuente`: issue, etiquetas, actor y límites de verificación.
+2. `Reglas de negocio`: tabla de dos columnas, una fila por regla numerada `R-01…`, con los
+   datos exactos de la fuente (formatos, límites, textos de mensajes).
+3. `Estados`: los que menciona la fuente y si la matriz está definida.
+4. `Dependencias` y `Decisiones pendientes`.
+5. `Mapa de cobertura`: tabla regla → caso que la cubre → cobertura (`Cubierta`, `Parcial`,
+   `Bloqueada`, `Hueco` o `Solapamiento`, con el motivo). Toda regla debe llegar a un caso.
+6. `Pruebas transversales`: permisos, auditoría, errores, responsive y accesibilidad.
+
+Las plantillas `Nueva épica` y `Nueva historia de usuario` de Notion ya traen esta
+estructura. Si se crea una historia sin plantilla, construirla igual siguiendo esta sección.
+
 La historia de usuario conserva el alcance funcional y su fuente. Un caso de uso
 expresa un flujo, una regla o una interacción verificable dentro de esa historia.
 No sustituir la historia por sus casos, no presentar un caso como una nueva historia
