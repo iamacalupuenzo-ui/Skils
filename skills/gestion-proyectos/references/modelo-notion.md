@@ -114,9 +114,16 @@ No crear proyectos ni tareas dentro de Gestión de producto.
 
 **Proyecto** (base `Proyectos`, propiedades en español desde 2026-09-24): `Nombre`, `Estado`,
 `Prioridad`, `Ámbito`, `Inicio`, `Fin objetivo`, `Objetivo`, `Criterio de cierre`,
-`Avance (%)`, `Salud`, `Fecha real de cierre`, `Tareas`, `Épicas`, `Bloqueado por`,
-`Bloquea a`, `Notas` y `Recursos`. Las opciones de `Estado` y `Prioridad` siguen en inglés
-hasta que se traduzcan; leerlas del schema vivo.
+`Avance`, `Salud`, `Fecha real de cierre`, `Tareas`, `Épicas`, `Notas` y `Recursos`.
+`Avance` es un rollup (porcentaje de tareas en el grupo completado): nunca se escribe a mano.
+Las dependencias viven entre tareas, no entre proyectos. Ícono de proyecto:
+`icons/briefcase_blue`.
+
+**Página de proyecto** (plantilla `Nuevo proyecto`), con encabezado 2: `Qué se logra`
+(objetivo y "Termina cuando" con el criterio de cierre), `Alcance` (incluye, no incluye,
+límite), `Épicas` (vista filtrada, solo si el proyecto construye producto), `Tareas` (vista
+filtrada agrupada por estado) y `Riesgos y decisiones`. Lo que no se sabe queda como
+*Pendiente*.
 
 **Tarea** (base `Tareas`, ex Tasks Manager): `Nombre`, `Estado`, `Prioridad`,
 `Fecha límite`, `Proyecto`, `Historia`, `Caso de uso`, `Progreso (%)`,
