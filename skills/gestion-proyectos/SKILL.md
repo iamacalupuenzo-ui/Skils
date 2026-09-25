@@ -7,7 +7,7 @@ description: >
   Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
   revisar riesgos, dar estado o hacer seguimiento.
 metadata:
-  version: "1.7.2"
+  version: "1.7.3"
 ---
 
 # Gestión de proyectos — PM operativo
