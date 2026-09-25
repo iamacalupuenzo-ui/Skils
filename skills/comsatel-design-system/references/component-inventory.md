@@ -13,6 +13,463 @@ README, nota de release y Storybook. Verificación: `npm run build`,
 `ng serve` y revisión visual de `/foundations/logos` con ambos recursos cargados
 desde `data:image/svg+xml`.
 
+Actualización: 2026-09-14, segundo hallazgo real de reuso en la misma
+sesión, en el botón "Columnas" de `table-page.html` (toolbar del
+Playground de Table): era un `<button>` nativo con clase propia
+(`.table-toolbar__columns-btn`), no `cs-button` — el usuario lo detectó
+con un inspector de página, viendo `Font Family: Arial` en vez del token
+`--font-family-content` (la clase a mano nunca declaraba font-family, solo
+font-size/line-height, así que el navegador caía al default). Corregido:
+ahora es `<cs-button variant="default" size="sm" [selected]="...">` como
+trigger de `cs-popover` — patrón YA establecido y verificado en
+`popover-page.html` (`#pgTrigger`/`#placementBtn` + `@ViewChild(...,
+{ read: ElementRef })`), que además resuelve automáticamente
+`aria-expanded`/`aria-haspopup`/`aria-controls` sobre el `<button>` interno
+real (`popover.ts` → `accessibleTrigger()`), así que el binding manual de
+esos atributos ARIA que yo había escrito a mano sobró y se quitó. Verificado
+en el navegador real: `font-family: "Public Sans"` (antes Arial),
+`aria-expanded`/`aria-haspopup="dialog"` inyectados por Popover al abrir,
+el panel de columnas sigue abriendo con 4 filas.
+
+Seguido de un tercer ajuste en el mismo botón, pedido por el usuario
+comparando el mismo toolbar: "Estado" y "Filas" (ambos `cs-input-dropdown`)
+muestran un label arriba de su control — "Columnas" no tenía esa misma
+estructura y quedaba visualmente distinto en la fila. `cs-button` no
+expone una prop `label`, así que se envolvió en un `<div class="table-
+toolbar__columns">` con un `<span>` decorativo (`aria-hidden="true"`,
+el nombre accesible del botón ya lo da su texto visible "Columnas", así
+que duplicarlo en `aria-labelledby` no suma nada) calcando **la misma
+receta tipográfica** de `.cs-input-dropdown__label` (font-family/size/
+weight/line-height/color, mismos tokens) en vez de inventar una nueva —
+es la única fuente de "label arriba de un control" en esa toolbar.
+Verificado: el borde inferior del botón "Columnas" y el de "Estado" caen
+en el mismo px (427.5), misma tipografía tokenizada.
+
+**Lección para auditorías futuras (refuerza la de abajo):** un componente
+de librería (`cs-button`) ya construido y ya usado como trigger de
+`cs-popover` en otra página (`popover-page.html`) no se reinventa como
+`<button>` con clase local — buscar primero si el elemento que se está por
+construir a mano ya tiene un componente real en la librería, y si ese
+componente ya se usó en el mismo rol (trigger de popover) en otra página
+de este mismo sistema.
+
+Actualización: 2026-09-14, hallazgo real de reuso en `table-page.ts`
+(Table, Playground): la columna "Estado" seguía usando `cs-badge` sin
+ícono (`STATUS_VARIANT`/`statusBadge()`), mientras que Table tree ya había
+migrado esa misma columna a `cs-tag` con `severity`+`icon`+`rounded` (ver
+entrada de Table tree más abajo) — el comentario en
+`table-tree-page.ts` decía explícitamente "un solo lenguaje visual de
+estado en todo el sistema", pero esta página nunca se actualizó a esa
+migración. El usuario lo detectó comparando ambas páginas ("¿por qué a
+este le pones el icono y a este otro no, si ya tenemos ese componente?").
+Corregido: `table-page.ts` ahora importa `Tag` (no `Badge`), define
+`STATUS_SEVERITY`/`STATUS_ICON` (mismos valores que `table-tree-page.ts`:
+`success`/`warn`/`secondary` + `activity`/`circle-pause`/`wifi-off`) y el
+`statusCell` renderiza `<cs-tag [severity] [icon] [value]="statusText(status)"
+[rounded]="true" size="sm" />`. Verificado en el navegador real: los 3
+badges/tags de "Activo" en la tabla real muestran ícono `activity` y
+`border-radius: var(--radius-full)`, "Detenido" mapea a `warning`. Gate
+completo (`check:docs` + `test:ci`) en verde tras el cambio. **Lección para
+auditorías futuras:** cuando dos páginas de docs distintas modelan el
+mismo concepto de dominio (aquí: "Estado" de una unidad de flota), migrar
+el patrón visual en una sin revisar las demás deja el sistema
+inconsistente — al tocar cualquier columna/celda que representa un
+concepto ya resuelto en otra página (Estado, Prioridad, etc.), buscar
+activamente sus otros usos antes de darla por cerrada.
+
+Actualización: 2026-09-14, corrección de arquitectura en "Table: reordenar
+y mostrar/ocultar columnas" (agregado minutos antes en la misma sesión,
+ver entrada más abajo). El usuario rechazó la primera versión completa —
+headers de `cs-table` arrastrables + botón separado con panel de
+checkboxes — por no ser el patrón real de la industria. Se revirtió
+`Table` (librería) al estado sin ningún control de columnas en los
+headers: `reorderableColumns`, `columnsReorder` y `TableColumn.reorderable`
+salieron por completo de `table.ts`/`.html`/`.css`/`table-types.ts`. La
+reconstrucción correcta quedó 100% en `table-page.ts`/`.html` (página de
+documentación, NO la librería): un único panel "Columnas" (mismo botón +
+`cs-popover` de antes) con una LISTA donde cada fila trae el handle de
+arrastre (`grip-vertical`) y el ícono de mostrar/ocultar (`eye`/`eye-off`)
+uno al lado del otro — mismo patrón que Notion "Properties" o Airtable
+"Hide fields". El arrastre ahora reordena directo `columnOrder` (el
+arreglo maestro de keys, visibles y ocultas por igual) en vez de mergear
+un subconjunto emitido por Table. Se agregó **B16** a `SKILL.md`: antes de
+construir un patrón con prior art conocido, hay que poder nombrar qué
+producto real ya lo resuelve así — revisar la API de PrimeNG (Gate de
+cierre paso 1) confirma capacidades, no arquitectura visual. Verificado de
+nuevo con `DragEvent`/click reales tras el revert: ocultar "Conductor" lo
+saca de los headers reales de `cs-table`, y arrastrar "Unidad" al final de
+la lista del panel reordena los headers reales respetando la columna
+oculta.
+
+
+Actualización: 2026-09-14, nueva característica en `Table` pedida por el
+usuario: reordenar columnas por arrastre y mostrar/ocultar columnas —
+ambas inspiradas en `p-table` de PrimeNG (`reorderableColumns`/
+`pReorderableColumn`), consultado solo como referencia funcional (nunca de
+implementación ni de tokens, B2/B12/Gate de cierre). Hallazgo real de esa
+consulta: la propia documentación de PrimeNG y un issue abierto en su
+repo confirman que su reordenamiento es "drag-only, no keyboard
+alternative" — se lo señalé al usuario antes de construir; decidió
+explícitamente NO agregar alternativa de teclado por ahora ("no tiene
+sentido... no voy a recomendarle manejarla por teclado"), así que quedó
+igual de mouse-only que la referencia, pero DOCUMENTADO como decisión
+explícita en `GAPS.md` (vía `npm run gap:report`), no como un olvido.
+- **Reordenar columnas** (`Table`, librería): `TableColumn` ganó
+  `reorderable?: boolean` (opt-out por columna); `Table` ganó
+  `@Input() reorderableColumns` + `@Output() columnsReorder`. Headers
+  arrastrables con eventos HTML5 nativos (`dragstart`/`dragover`/`drop`/
+  `dragend`), ícono `grip-vertical` visible como affordance de
+  descubribilidad (mouse-only no significa invisible), indicador de
+  drop-target con `--color-border-brand-default`. Controlado: Table nunca
+  muta su propio `columns`, solo emite el arreglo ya reordenado — mismo
+  criterio que `(sort)`. Verificado con eventos `DragEvent` reales
+  (`dispatchEvent`) en el navegador: headers Y celdas de datos quedan en
+  el mismo orden nuevo, confirmado leyendo el DOM real.
+- **Mostrar/ocultar columnas** (composición en la página, NO en la
+  librería): un botón "Columnas" abre un `cs-popover` con un `cs-checkbox`
+  real por columna — mismo patrón de composición que ya usan
+  búsqueda/filtros alrededor de `Table` (Table sigue sin saber nada de
+  visibilidad, el consumidor filtra `columns` antes de pasarlo). No se
+  puede ocultar la última columna visible (checkbox se deshabilita).
+  Construido en `table-page.ts`/`.html`, no como primitivo nuevo de
+  `comsatel-ds` — si se repite en más tablas reales, ahí sí amerita
+  promoverlo a componente reusable.
+- **Reubicación del resumen de filas** (pedido explícito, confirmado con
+  el usuario antes de aplicar): "Mostrando X de Y" pasó de estar arriba de
+  la tabla a compartir la fila de abajo con `cs-pagination`, en el extremo
+  opuesto (patrón estándar: conteo a la izquierda, paginador a la
+  derecha) — antes eran dos bloques separados en distintas posiciones.
+
+Verificación: `npm run build`/`docs`/`check:docs`/`test:ci` en verde
+(hubo que completar a mano 2 filas "Sin descripción" que el generador de
+`guidelines/table.md` dejó en blanco para las props nuevas). Navegado en
+servidor real reiniciado limpio: panel de columnas abre y oculta
+"Conductor" en vivo (confirmado que desaparece de la tabla), reorder
+verificado con `DragEvent` reales.
+
+
+Actualización: 2026-09-14, corrección real en `TableTree` reportada por el
+usuario probando la demo: al expandir un nodo con carga perezosa
+(`children === undefined`), el skeleton SIEMPRE dibujaba una sola fila —
+sin importar cuántos hijos iban a resolverse. `Table` (el componente
+hermano) ya resolvía exactamente este problema con `@Input()
+skeletonRowCount = 5` + `skeletonRowIndices`; `TableTree` nunca lo portó
+para su propio caso de carga perezosa (C8: no se reusó un patrón que ya
+existía). Fix: `TableTreeItem` ganó `skeletonRowCount?: number` (opcional,
+default 1 por nodo si no se declara — conservador, no cambia el
+comportamiento de quien no lo use), y `table-tree.html` reemplazó la fila
+skeleton única por un `@for` sobre `skeletonRowsFor(item)`. La demo de
+carga perezosa (`table-tree-page.ts`) se actualizó para declarar
+`skeletonRowCount: 6` en Región Norte y `3` en Región Sur, resolviendo
+después esa misma cantidad real de unidades — antes solo resolvía 2 fijas
+sin importar la región. Verificado con `getComputedStyle`/conteo real de
+`<cs-skeleton>` en el DOM 50ms después de expandir (no por screenshot: la
+transición de 900ms es más corta que la latencia normal de una captura de
+pantalla en este Browser pane): 6 elementos, coincide exacto.
+
+**Segunda ronda en la misma pasada, 2 hallazgos más reportados por el
+usuario probando la demo real:**
+- **El skeleton no respetaba columnas.** Tanto el skeleton raíz
+  (`showSkeleton`) como el de carga perezosa dibujaban UN solo
+  `<cs-skeleton>` dentro de una celda con `colspan` — la columna "Nombre"
+  se veía cargando, pero "Estado"/"Actualizado" quedaban vacías. `Table`
+  (el hermano) ya resolvía esto con un `@for` anidado sobre `columns`, un
+  `<cs-skeleton>` por columna (`table.html:34-41`) — `TableTree` nunca lo
+  portó para su propio caso (C8 de nuevo, mismo patrón que el hallazgo de
+  `skeletonRowCount`). Fix: los dos bloques de `table-tree.html` pasaron a
+  `@for (col of columns; ...)` con `[width]="col.width ? '70%' : undefined"`,
+  igual criterio que Table. Verificado: 18 elementos skeleton = 6 filas ×
+  3 columnas, confirmado por conteo real en el DOM.
+- **Cerrar y reabrir un nodo lazy mostraba los datos ya resueltos en vez
+  de volver a cargar.** Correcto para un caso real de caché, pero el
+  usuario quería poder repetir la carga en la demo. Se resolvió en la
+  PÁGINA (`table-tree-page.ts`), no en el componente — `TableTreeItem.children`
+  es 100% responsabilidad del consumidor, no hay ningún mecanismo del
+  componente que decida cachear o no. `onLazyExpandedChange` ahora
+  detecta qué ids se CERRARON en cada cambio y les resetea `children` a
+  `undefined`; además se guardó contra una carrera real (colapsar antes de
+  que resuelva el `setTimeout` de 900ms ya no aplica los datos viejos a un
+  nodo que el usuario volvió a cerrar). Verificado con click real +
+  `aria-expanded` + conteo de filas: colapsar quita las 6 filas de la
+  tabla, reabrir vuelve a mostrar 18 elementos skeleton (no los datos
+  viejos).
+- **Estado sin ícono, sin el patrón de Tag ya establecido.** La página
+  usaba `cs-badge` con solo texto y colores propios (`success`/`warning`/
+  `neutral`) en vez de reusar el patrón real que ya fijó `FleetUnitList`
+  para exactamente este mismo caso (estado de una unidad de flota):
+  `cs-tag` con `severity`/`icon`/`value`/`[rounded]="true"`, con el mismo
+  mapeo estado→ícono (`active`→`activity`, `stopped`→`circle-pause`,
+  `offline`→`wifi-off`) y estado→severidad (`success`/`warn`/`secondary`).
+  Fix: `table-tree-page.ts`/`.html` migrados a `cs-tag`, `Badge` retirado
+  de los imports (ya no se usaba en ningún otro lado de la página).
+
+
+Actualización: 2026-09-14, reconstrucción puntual de "PressScale"
+(`src/app/pages/press-scale-demo/`), 2 hallazgos reportados por el usuario
+tras ver la página:
+- **Contenedor duplicado en el Playground:** `.press-scale-stage` tenía su
+  propio `background-color`/`min-height`/`border-radius` — el Canvas de
+  `DemoShell` YA centra y da contexto visual (`display:flex; align-items:
+  center; justify-content:center; min-height:120px; background-image:
+  radial-gradient(...)`), así que se veía una caja gris sólida flotando
+  adentro del grid punteado del Canvas. Precedente real confirmado en
+  `button-page.html`: su Playground no envuelve `<cs-button>` en ningún
+  div propio, se apoya en el Canvas directo. Fix: `.press-scale-stage`
+  quedó solo con `display:flex; flex-direction:column; align-items:
+  center; gap`, sin fondo ni alto mínimo propios.
+- **Íconos de lineamientos sin el color semántico:** los `<cs-icon
+  name="check"/"x">` de "Recomendado"/"Evita" no tenían
+  `class="guide-card__header-icon"` — esa clase (definida en
+  `doc-page.css`) es la que aplica `--color-text-success-bolder`/
+  `--color-text-danger-bolder`; sin ella, el ícono queda con el color de
+  texto por defecto. Mismo patrón ya usado en Motion/Markers/Tokens en
+  esta misma sesión — acá se había omitido. Verificado con
+  `getComputedStyle`: `rgb(2,122,72)` (verde) / `rgb(192,16,72)` (rojo)
+  tras el fix.
+
+Verificación: `npm run build`/`check:docs`/`test:ci` en verde, navegado en
+servidor real reiniciado limpio, sin errores de consola, click real
+confirmó que el contador del guide-card sigue funcionando.
+
+
+Actualización: 2026-09-14, construcción de "Guía de instalación"
+(`src/app/pages/installation/`, `/foundations/installation`, primer ítem
+de la sección Fundamentos). **Hallazgo real antes de escribir la página:**
+se verificó que `comsatel-ds` NO está publicado en ningún registro
+(`npm view comsatel-ds` → 404) — la única forma real de consumirlo hoy es
+dentro de este mismo workspace, vía el path mapping de `tsconfig.json`
+(`"comsatel-ds": ["./dist/comsatel-ds"]`). La página lo documenta honesto
+(banner de advertencia), en vez de asumir que `npm install comsatel-ds`
+funciona desde otro proyecto — y se registró como gap real en `GAPS.md`
+(`npm run gap:report`) para que la próxima sesión no lo redescubra.
+Cubre además, con evidencia verificada en la misma sesión: consumo dentro
+del workspace (`build:lib` + import real), `adsa-cli` vía `npx` (sin
+instalación), el servidor MCP ya registrado en `.mcp.json`, y
+`npm run check:docs` como gate de verificación antes de cerrar un cambio.
+
+
+Actualización: 2026-09-14, construcción de "Tokens explicados", "Uso en
+código" y "Uso en diseño" (`src/app/pages/tokens-explained/`,
+`tokens-code/`, `tokens-design/`) — las 3 páginas de fundamentos que no
+dependían de ninguna decisión de diseño pendiente. La cuarta (Themes,
+`/foundations/color/themes`) se cerró en la misma sesión, minutos después:
+el usuario resolvió la decisión Glass (ver "Decisiones de diseño ya
+tomadas" más abajo) y se construyó también — las 4 páginas quedan
+Finalizadas.
+- **Tokens explicados**: las 3 capas (primitivo→semántico→componente) con
+  la cadena real (`--font-primitive-size-micro` → `--font-size-label-small`
+  → `componentTypography.badge.sm`), convención de nombres, mecanismo de
+  tema (`[data-theme="dark"]` redefine el MISMO nombre), qué hacer cuando
+  un valor no tiene token, y la sección de accesibilidad ligada a tokens
+  (adaptada de `guidelines/design-tokens.md`, ya generada del código real).
+- **Uso en código**: `var(--token)` directo para CSS, `textStyle()`/
+  `componentTypography` para tipografía — con el ejemplo REAL de
+  `badge.ts`/`badge.html` (`[ngStyle]="style"`), no uno inventado. Incluye
+  la escala de z-index completa y cómo se verifica (`npm run check:docs`).
+- **Uso en diseño**: honesto sobre el estado real del proyecto — no hay
+  sincronización automática entre `tokens.css` y ningún archivo de diseño
+  todavía (se verificó explícitamente que no existe tooling de Figma sync
+  en este repo antes de escribir la página, en vez de asumir una
+  integración que no está). Documenta elegir por ROL en vez de por valor,
+  los mínimos de contraste WCAG reales, y qué hacer cuando ningún token
+  calza (mismo criterio B1 del lado de diseño: proponer y registrar, no
+  redondear en silencio).
+- `app.routes.ts` y `nav.ts` actualizados (`pending: true` retirado de las
+  3 entradas); las 3 traducidas al español (`nav.ts` ya tenía "Tokens
+  explained"/"Use in code"/"Use in design" en inglés, inconsistente con el
+  resto del nav — se corrigió solo para estas 3 entradas nuevas, no se
+  tocó "All design tokens"/"Overview"/"Color palette"/"Semantic tokens",
+  que ya existían así y quedan fuera de este alcance).
+- `GAPS.md` estaba desactualizado (listaba Logos/Grids/List item/estas 3
+  páginas como huecos pese a estar ya Finalizados en sesiones anteriores)
+  — se limpió, dejando solo Temas de color como pendiente real.
+
+Verificación: `npm run build`/`check:docs`/`test:ci` en verde, navegado en
+servidor real reiniciado limpio, sin errores de consola, y navegación real
+confirmada por click (`inline-link` → `/foundations/tokens`).
+
+Validación adicional pedida por el usuario en esta sesión: se corrió
+`npx adsa-cli doctor` (5/5 PASS) y `npx adsa-cli audit` (45/45, las 9
+dimensiones al máximo, gateado en CI vía `.github/workflows/docs.yml`
+contra `.adsa/score.json` versionado) para confirmar que el sistema ya
+tiene una auditoría real de "qué tan listo está para un agente de IA" —
+existe, funciona, y el proyecto ya pasa. Ese puntaje mide la LIBRERÍA
+(`projects/comsatel-ds/` + `guidelines/`), es independiente de las páginas
+de fundamentos de la app Angular. Hay además un servidor MCP ya registrado
+(`.mcp.json`, `npx adsa-cli mcp`) — no hace falta instalar nada para que un
+cliente MCP lea las guías del sistema. No existe todavía una página
+"Fundamentos → Guía de instalación" en el sitio (solo vive en `AGENTS.md`,
+que le habla al agente, no a quien navega el sitio).
+
+Actualización: 2026-09-14, auditoría y reconstrucción de "Motion"
+(`projects/comsatel-ds/src/lib/motion/` + `src/app/pages/motion-demo/` +
+`src/app/pages/motion-tokens-demo/`). 3 hallazgos, todos corregidos:
+- **C7 (1, 8 instancias):** los 4 pares Recomendado/Evita de "Lineamientos
+  de uso" en `motion-page.html` usaban `<svg>` inline a mano en vez de
+  `<cs-icon name="check"/"x">` — mismo patrón corregido antes en Accordion
+  y Marcadores. Reveló además que `MotionPage` no importaba `Icon` desde
+  `comsatel-ds` — se agregó al array `imports` del componente.
+- **B15.3 (1, 3 archivos):** el botón "Repetir" de `preset-card.css`,
+  `duration-row.css` y `easing-row.css` (misma pieza repetida en 3 lugares)
+  usaba `--font-size-label-micro` en vez de `--font-size-content-note` — el
+  default de B15.3 para acciones auxiliares, ya usado correctamente por
+  `.guide-card__action` en `motion-page.css` y por el botón "Copiar" real
+  de `code-block.css`. Verificado con `getComputedStyle`: 10px→12px.
+- **C1 (1):** `preset-card.css` `border-top: 1px solid` sin atar a
+  `var(--layout-border-thin)`.
+
+El resto del componente (motion.ts/eases.ts/token-duration.ts) ya estaba
+limpio: `rendered` es `signal()` (sin bug zoneless), y `tokenEase`/
+`tokenSeconds` se reusan desde `comsatel-ds` en las páginas de fundamentos
+en vez de reimplementarse (C8 correcto).
+
+Verificación: `npm run build`/`check:docs`/`test:ci` en verde, navegado en
+servidor real reiniciado limpio, sin errores de consola.
+
+**Corrección de layout tras feedback visual del usuario (misma sesión):**
+en `duration-row.html`/`easing-row.html`, el botón "Repetir" vivía dentro de
+`.row-card__head` (fila superior) mientras la descripción era un bloque
+aparte debajo, ambos compartiendo el ancho completo de `.row-card__body` —
+cuando la descripción ocupaba 2 líneas (el caso de `--motion-duration-fast`,
+la más larga), su segunda línea quedaba visualmente pegada bajo el botón,
+mientras que las descripciones cortas tenían aire de sobra: separación
+inconsistente según el largo del contenido, no un límite real. Fix: se sacó
+`Repetir` de `.row-card__head` a una columna nueva `.row-card__actions`,
+hermana de `.row-card__body` (no hija), con `border-left` separador — mismo
+criterio que ya usaba `.row-card__track` en el lado opuesto. Así el texto
+nunca puede alcanzar al botón sin importar cuántas líneas ocupe, en vez de
+depender de un `margin-left: auto` que comparte fila con contenido de largo
+variable. Verificado con click real (`aria-label` correcto) y revisión
+visual en ambas páginas tras reinicio del servidor.
+
+Actualización: 2026-09-14, auditoría y reconstrucción de "Marcadores"
+(`src/app/pages/markers-demo/` — VehiclePill, GpsCompact, GpsFull,
+ClusterBadge, página). 15 hallazgos, todos corregidos:
+- **C1 (11):** bordes/outline sin tokenizar en las 4 piezas (`2px`→
+  `var(--layout-border-thick)`, `1px`→`var(--layout-border-thin)`,
+  `4px`→`var(--layout-border-thicker)`), más 3 huecos reales (1.5px en
+  vehicle-pill/gps-compact/gps-full, 3px en cluster-badge) que no tenían el
+  comentario de excepción B1 que sí llevaban los 17px/7px ya documentados
+  de `cluster-badge.css` — se agregó la justificación a cada uno.
+- **C7 (1, 6 instancias):** los 3 pares Recomendado/Evita de "Lineamientos
+  de uso" en `markers-page.html` usaban `<svg>` inline a mano en vez de
+  `<cs-icon name="check"/"x">` — mismo patrón ya corregido antes en
+  Accordion, ahora también acá.
+- **B6/C3 (1):** el texto de `VehiclePill` (`.marker-pill__name`/`__plate`)
+  no escalaba con `iconTier` (sm/base) mientras el ícono y el punto sí.
+  Fix: clase `.marker-pill--tier-base` que sube un paso la escala
+  tipográfica (label-micro→label-small, label-small→content-note) —
+  verificado con `getComputedStyle` real (11px→12px).
+- **Hallazgo de contenido, no de tokens (1, el más grande):** la página
+  describía la integración como "se integran con Leaflet mediante
+  `divIcon`" y el código de ejemplo del Playground generaba
+  `L.marker`/`L.divIcon`/`renderVehicleMarker()` — quedó desactualizado en
+  la MISMA sesión al migrar `/map/theme` de Leaflet a MapLibre GL. Se
+  reescribió la descripción y `pgCode()` en `markers-page.ts` con el patrón
+  MapLibre real (`createComponent` + `Marker({element, anchor:'bottom'})`),
+  el mismo que ya usa `live-map-preview.ts`.
+
+Verificación: `npm run build`/`check:docs`/`test:ci` en verde, navegado en
+servidor real reiniciado limpio, sin errores de consola, íconos check/x
+renderizando, y texto de la columna "Propuesta" (iconTier base) confirmado
+en 12px vs. 11px de la columna "Actual" (sm) vía `getComputedStyle`.
+
+**Ruta del proyecto, aclaración 2026-09-14:** en la laptop donde se corrió esta
+sesión, el repositorio vive en
+`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS` (con `AGENTS.md`,
+`GAPS.md`, `guidelines/` generadas y gates `check:docs`/`test:ci` — variante
+"agent readiness" del proyecto), no en `D:\Investigacion\Comsatel-DS-Angular`
+como asume el resto de este skill. La página de seguimiento propia del
+proyecto (`src/app/pages/evaluation-tracking/evaluation-tracking-page.html`)
+es la fuente de verdad de estado en esa copia — contrastarla contra este
+archivo al empezar una sesión ahí, no asumir que están sincronizadas.
+
+Actualización: 2026-09-14, auditoría y reconstrucción de "Tema del mapa"
+(`src/app/pages/map-theme-demo/`). Hallazgos C1 (4 bordes sin tokenizar +
+2 colores crudos sin excepción documentada), C8 (`.warning-banner` hecho a
+mano en vez de `cs-banner variant="warning"`) y C13 (4 reglas de tipografía
+sin `line-height` par) corregidos. A mitad de la reconstrucción el usuario
+pidió evaluar si CartoDB Voyager/Stadia Alidade Smooth Dark (los proveedores
+que la página documentaba) seguían siendo la elección correcta — CARTO
+cambió de política en agosto 2026 y ahora exige API key incluso en su
+endpoint gratis, y por eso `live-map-preview.ts` caía a un fallback de Esri
+World Gray Base sin diseño pensado para dashboards (el "demasiado claro/
+oscuro" que reportó el usuario era ese fallback, no los proveedores reales).
+**Decisión de arquitectura tomada por el usuario, no por el skill:**
+reemplazar el motor completo — Leaflet (tiles raster) por **MapLibre GL JS**
+(BSD-3-Clause, evaluado con el mismo criterio de utilidad sin identidad
+visual que ya se aplicó a Leaflet, ver B14) y los tiles por **OpenFreeMap**
+(`tiles.openfreemap.org`, vectorial, sin API key, sin cuenta, sin límite de
+requests — estilos `positron`/`dark`). Detalle real de la migración, por si
+se repite en otro proyecto:
+- **Bug de plataforma nuevo, no cubierto antes en `audit-checklist.md` C4:**
+  MapLibre resuelve su propio Web Worker con un patrón que ni Vite (dev) ni
+  esbuild (`@angular/build`, prod) detectan como referencia de asset — el
+  mapa queda en blanco sin ningún error de consola (el `Map` se construye,
+  hay `<canvas>`, pero el estilo nunca se pide). Fix real: copiar
+  `maplibre-gl-worker.mjs` + su sibling `maplibre-gl-shared.mjs` a la raíz
+  servida vía `assets` en `angular.json` (glob directo sobre
+  `node_modules/maplibre-gl/dist`) y `setWorkerUrl('/maplibre-gl-worker.mjs')`
+  — una URL de string plano, nada de bundling. También hizo falta
+  `serve.options.prebundle.exclude: ["maplibre-gl"]` en `angular.json`
+  (la pre-optimización de dependencias de Vite rompía el worker en dev de
+  otra forma distinta, con el mismo síntoma de mapa en blanco).
+- **Variante nueva del bug C4 #4 (encapsulación Emulated no alcanza
+  contenido inyectado):** un marcador construido con
+  `document.createElement` fuera de la plantilla de Angular (para pasarlo a
+  `new Marker({element})`) tampoco recibe el atributo `_ngcontent-*` — el
+  CSS del componente con clases normales no lo alcanza, igual que con
+  `[innerHTML]`. Fix: estilos inline por JS (`el.style.cssText`) usando los
+  tokens reales — los custom properties CSS sí atraviesan la encapsulación,
+  solo el selector con scope no matchea.
+- Layout: `.preview-grid` (dos columnas) pasó a `.preview-stack` (columna
+  única, mapas más grandes — 220px→360px de alto) por pedido explícito del
+  usuario, con una unidad de ejemplo en ambos mapas para validar contraste
+  real en claro/oscuro.
+- **Corrección real tras feedback del usuario (misma pasada):** el primer
+  intento de la unidad de ejemplo fue un punto+placa dibujado a mano — el
+  usuario lo marcó como el MISMO error que C8 audita en otros componentes
+  ("ya tenemos definido un marcador... no inventes otro"). Fix: reusar el
+  componente real `VehiclePill` de `/map/markers` vía `createComponent()`
+  (no `document.createElement`) — al pasar por el compilador real de
+  Angular, su vista recibe `_ngcontent-*` y su propio CSS con scope aplica
+  sin el gotcha de encapsulación que sí afectaba al nodo creado a mano.
+  `Marker({ element: ref.location.nativeElement, anchor: 'bottom' })`.
+- **Bug real de accesibilidad encontrado en el estilo "dark" de OpenFreeMap**
+  (usuario reportó que las calles no se leían bien en oscuro): confirmado
+  leyendo el `style.json` real — las etiquetas de calle/lugar usan texto
+  gris ~40% (`rgb(101,101,101)`/`hsl(0,0%,37%)`) sobre fondo casi negro
+  (`rgb(12,12,12)`, contraste real ~3.3-3.9:1, bajo el mínimo 4.5:1) y
+  `water_name` va literal en negro sobre negro (invisible). El estilo
+  "positron" (claro) no tiene este problema. Fix: `map.setPaintProperty()`
+  sobre esas capas apenas dispara `'load'`, solo en modo oscuro, subiendo el
+  color a valores con contraste real verificado (~9-11:1) — es la hoja de
+  estilo del proveedor externo, no tokens propios (mismo criterio que ya
+  documenta la página sobre por qué el mapa no usa `data-theme`), así que el
+  valor queda explícito con el cálculo en el comentario, no copiado de
+  ningún lado.
+  **Segunda ronda del mismo bug (misma sesión):** el problema no era solo
+  el texto — `highway_minor` (la capa que dibuja la mayoría de calles
+  visibles, las locales/residenciales) usaba `#181818` sobre el fondo
+  `rgb(12,12,12)`: contraste real ~1.1:1, la red vial completa quedaba
+  invisible, no solo las etiquetas. `building` y el propio `background`
+  agravaban el efecto (todos agrupados cerca del negro puro). Mismo fix
+  (`setPaintProperty` en `'load'`, solo dark), mismos criterios de
+  contraste calculado, no copiado: `highway_minor` ~4.5:1, `highway_major_subtle`/
+  `highway_motorway_subtle` ~7.5-10:1 (jerarquía visual sobre las locales),
+  `highway_path` deliberadamente más sutil (~2:1, es la vía de menor
+  jerarquía), fondo y edificios con ajuste leve. **Aclaración de arquitectura
+  importante que el usuario preguntó explícitamente:** el canvas de
+  MapLibre (WebGL) nunca puede leer los custom properties de `tokens.css`
+  — no hay forma de que un token del sistema le "llegue" al render de un
+  tile; `setPaintProperty` es la única superficie de ajuste, y solo acepta
+  valores explícitos (no hay token de sistema para "línea de calle en un
+  mapa"), consistente con C1 cuando no hay ningún token que coincida.
+- Dependencia raíz (no de `comsatel-ds`): `leaflet`/`@types/leaflet`
+  desinstalados, `maplibre-gl` instalado. `angular.json` actualizado en
+  `build.options.styles` (leaflet.css→maplibre-gl.css, dos builders) y
+  `build.options.assets` (worker + shared).
+
 Actualización: 2026-09-10, reconstrucción de `AppLayout` y navegación. Se
 tokenizaron bordes, motion y tipografía; se agregaron landmarks y estados ARIA
 (`aria-expanded`, `aria-controls`, `aria-current`), nombres accesibles en rail,
@@ -268,6 +725,13 @@ componente anterior. Construido:
   desde `comsatel-ds`: en React tampoco vive en `components/ui/`, es un
   componente de docs). Nuevos tokens de color en `tokens.css` (ver su
   entrada abajo).
+  **Superseded 2026-09-14:** `leaflet` se reemplazó por `maplibre-gl` (misma
+  disciplina de evaluación, ver la entrada de auditoría al inicio de este
+  archivo) — los proveedores CartoDB/Stadia documentados acá empezaron a
+  exigir API key y el fallback real terminó siendo Esri sin diseño pensado
+  para dashboards. `LiveMapPreview` ahora usa OpenFreeMap (sin key). El
+  resto de esta nota (arquitectura de tokens de color, `/map/markers`) sigue
+  vigente sin cambios.
 - **Página `/map/markers`** — documentación pura, sin componente de
   librería nuevo: igual que en React, los marcadores reales los pinta
   Leaflet con `divIcon`/HTML plano (código de C-Locater, fuera de este
@@ -1006,6 +1470,20 @@ Radio + RadioGroup del registro de auditorías.
 
 ## Decisiones de diseño ya tomadas (no reabrir sin que el usuario lo pida)
 
+- **Sin tema "Glass" (2026-09-14).** Solo existen dos temas: Light y Dark.
+  El usuario lo cerró explícito: "glass no va con nuestro sistema de
+  diseño, solo vamos a manejar dark y claro" — las menciones a Glass que
+  traía la referencia React (y que bloqueaban `/foundations/color/themes`)
+  quedaron desactualizadas a propósito, no hace falta portarlas. Con esto
+  se construyó la página `color-themes` (`src/app/pages/color-themes/`):
+  documenta el mecanismo real `[data-theme="light"/"dark"]` de
+  `tokens.css`, aclara que el SITIO no tiene un toggle global (cada página
+  de componente trae su propio Canvas vía `demo-shell.html`,
+  `[attr.data-theme]="mode()"`) y que persistir el tema en una app real
+  consumidora es responsabilidad de esa app, mismo criterio que
+  `SidenavState`.
+
+
 - Tipografía: Manrope para heading, Public Sans para content — **ya no es
   divergencia, es la decisión compartida por ambas plataformas.** Public
   Sans nació como excepción solo de Angular (2026-09-06); el usuario
@@ -1140,9 +1618,9 @@ individual trazable.
 | Cerrado | Input + InputGroup | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Dropdown + InputDropdown | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | AppLayout + navegación | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
-| P1 | Motion | Construido, sin auditoría C1-C13 individual de la última ronda. | Tokens de animación, signals y documentación. |
-| P1 | Tema de mapa | Construido, sin auditoría C1-C13 individual de la última ronda. | Tokens de mapa, contraste y proveedor de tiles. |
-| P1 | Marcadores | Construido, sin auditoría C1-C13 individual de la última ronda. | Tokens, estados y accesibilidad de tarjetas/markers. |
+| Cerrado | Motion | Auditoría y reconstrucción individual completa: borde tokenizado, íconos de lineamientos migrados a cs-icon, botón "Repetir" alineado al patrón de acciones auxiliares (content/note) en las 3 piezas que lo repetían. | Ninguno; reabrir solo ante cambio. |
+| Cerrado | Tema de mapa | Auditoría y reconstrucción individual completa: tokens, motor MapLibre+OpenFreeMap, contraste de proveedor (etiquetas y calles) y marcador real reusado. | Ninguno; reabrir solo ante cambio. |
+| Cerrado | Marcadores | Auditoría y reconstrucción individual completa: tokens, escala tipográfica por iconTier, íconos curados y contenido de integración actualizado a MapLibre. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Toast | Reconstrucción individual: anuncio accesible, acciones y cierre verificables, lineamientos en pares, documentación de accesibilidad y Storybook. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Popover | Reconstrucción individual: portal, posicionamiento por colisión, vínculo ARIA trigger/panel, Escape con retorno de foco, lineamientos interactivos y Storybook. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Spotlight | Reconstrucción individual: diálogo no modal, relaciones ARIA, Escape opcional, posiciones sin colisión, lineamientos interactivos, accesibilidad y Storybook verificados. | Ninguno; reabrir solo ante cambio. |

@@ -32,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.8.5"
+  version: "2.8.6"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)
@@ -499,7 +499,6 @@ lo son entre sí.
   estar en español, aunque conserven valores técnicos estables para la API.
   Si el componente es interactivo, el click real debe actualizar el estado
   renderizado y el código mostrado, no solo cambiar el foco.
-
 - **B16 — Cada versión distribuible deja una nota de versión verificable.**
   Si un cambio altera la API pública, el nombre/versión del paquete o el flujo
   de distribución, crear o actualizar `docs/releases/<versión>.md` antes de
@@ -525,6 +524,42 @@ lo son entre sí.
   `features/` (flujos como `auth/login`); una composición de login no se
   agrega a la librería hasta que exista evidencia de reutilización entre
   plataformas.
+
+- **B18 — Un patrón con prior art conocido (tablas, calendarios, selectores
+  de columnas, pickers complejos) se construye contra el estándar real de
+  la industria, no contra una arquitectura inventada en el momento.**
+  Revisar la API de un componente equivalente en PrimeNG (Gate de cierre,
+  paso 1) confirma QUÉ capacidades cubrir — no basta: falta ver CÓMO
+  productos reales establecidos (Notion, Airtable, Linear, Google Sheets,
+  GitHub, u otro con el mismo patrón) resuelven la estructura visual y de
+  interacción concreta, antes de diseñar la propia. Dos features con la
+  misma capacidad pueden tener arquitecturas completamente distintas — la
+  que hay que construir es la reconocible, no la primera que se le ocurra
+  al agente.
+  **Caso real (2026-09-14, Table — reordenar y mostrar/ocultar
+  columnas):** se investigó PrimeNG (`reorderableColumns`/
+  `pReorderableColumn`) y se construyó arrastre directo en los headers de
+  la tabla + un botón separado con un panel de checkboxes para
+  visibilidad — técnicamente funcional, pero una arquitectura inventada
+  que nadie reconoce. El usuario la rechazó completa ("está completamente
+  mal... no es esa la arquitectura") y pidió el patrón real: un único
+  panel de columnas donde cada fila trae el handle de arrastre y el
+  ícono de mostrar/ocultar (el "ojito") juntos, uno al lado del otro —
+  los headers de la tabla NO llevan ningún control, quedan intactos. Hubo
+  que revertir por completo la librería (`Table` perdió
+  `reorderableColumns`/`columnsReorder`, `TableColumn` perdió
+  `reorderable?`) y reconstruir como panel de página, con doble costo de
+  tiempo evitable si se hubiera buscado el patrón visual real antes de la
+  primera pasada.
+  **Acción concreta:** antes de escribir la primera línea de un patrón
+  con prior art, nombrar en voz alta (o preguntar directo al usuario) qué
+  producto real ya lo resuelve así y cómo — si no hay una respuesta
+  citable, no se inventa la estructura, se pregunta.
+  **Si el Playground existente no alcanza para mostrar el nuevo patrón**
+  (ej. el patrón necesita su propio panel, su propia demo, o no calza en
+  los controles ya definidos), se agrega una sección nueva dedicada a ese
+  estilo en la página — no se fuerza dentro del Playground genérico ni se
+  omite por falta de espacio.
 
 ---
 
@@ -578,6 +613,7 @@ estado, referencia o evidencia falta.
 | "Esto es genuinamente difícil (focus trap, navegación jerárquica), mejor traer una librería" | Ya se evaluó a fondo y se descartó — el motivo no fue capacidad técnica, fue licenciamiento (B14). Usar `accessibility-patterns.md`, el patrón ya está resuelto ahí. |
 | "GSAP ya está instalado, cualquier librería de UI también debería poder entrar" | GSAP es una librería de utilidad sin identidad visual propia — el motivo de PrimeNG fue licenciamiento de un sistema de componentes completo, no "ninguna dependencia nueva jamás" (B14, alcance aclarado 2026-09-10). Cada librería nueva se evalúa por su propio mérito. |
 | "El estado cambió, pero la vista no se actualiza — debe ser un bug de Angular" | Antes de asumir eso, revisar si esa mutación pasó dentro de un `setTimeout`/callback async y la propiedad es plana, no `signal()` — este proyecto corre sin `zone.js` (ver `accessibility-patterns.md` sección 0). |
+| "Ya revisé la API equivalente en PrimeNG, sé qué capacidades cubrir" | Cubrir la MISMA capacidad no es construir la MISMA arquitectura — falta ver cómo un producto real (Notion, Airtable, Linear, etc.) resuelve visualmente ese patrón concreto antes de diseñar la estructura propia (B18). |
 
 ---
 
@@ -631,6 +667,10 @@ estado, referencia o evidencia falta.
 - Una tarjeta de "Lineamientos de uso" documenta una acción o cambio de
   estado, pero el ejemplo solo tiene markup estático o no expone un nombre
   accesible — ver B15; probar ese ejemplo por separado antes de cerrar.
+- Se está por escribir la primera línea de un patrón con prior art conocido
+  (tabla, calendario, selector de columnas, etc.) sin poder nombrar qué
+  producto real ya lo resuelve así — ver B18; preguntar antes de inventar
+  la estructura.
 
 ---
 
@@ -685,6 +725,9 @@ Antes de cerrar cualquier modo, confirmar:
 - [ ] Si se construyó una pantalla de producto, se trabajó en el repositorio
       consumidor, no se clonó este workspace y la composición quedó en
       `core/`, `layout/` o `features/` según su responsabilidad (B17)
+- [ ] Si el patrón tiene prior art conocido (tabla, calendario, selector de
+      columnas, etc.), se puede nombrar qué producto real ya lo resuelve así
+      y cómo — no se inventó la estructura de interacción (B18)
 
 Si algún ítem falla, no cerrar como completo — decir explícitamente qué
 falta.
