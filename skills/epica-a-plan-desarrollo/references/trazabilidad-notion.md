@@ -84,8 +84,8 @@ creada antes puede ir después. Las vistas de historias se ordenan por `Orden`.
    `Bloqueada`, `Hueco` o `Solapamiento`, con el motivo). Toda regla debe llegar a un caso.
 6. `Pruebas transversales`: permisos, auditoría, errores, responsive y accesibilidad.
 
-Las plantillas `Nueva épica` y `Nueva historia de usuario` de Notion ya traen esta
-estructura. Si se crea una historia sin plantilla, construirla igual siguiendo esta sección.
+Las plantillas `Nueva épica`, `Nueva historia de usuario` y `Nuevo caso de uso` de Notion
+ya traen estas estructuras. Si se crea una historia sin plantilla, construirla igual siguiendo esta sección.
 
 La historia de usuario conserva el alcance funcional y su fuente. Un caso de uso
 expresa un flujo, una regla o una interacción verificable dentro de esa historia.
