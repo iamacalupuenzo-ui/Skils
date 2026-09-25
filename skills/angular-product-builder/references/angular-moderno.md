@@ -1,104 +1,105 @@
 # Angular moderno: guía de framework
 
 Este skill decide **qué se construye y cómo se organiza** (producto, sistema de
-diseño, arquitectura del repositorio). No es una guía del framework. Para
-cómo se escribe Angular actual (señales, formularios, DI, rutas, pruebas), la
-autoridad es el **skill oficial del equipo de Angular**, que se mantiene al día
-con el framework. Este archivo dice cuándo consultarlo, qué contiene y qué
-reglas suyas ceden ante las del repositorio.
+diseño, arquitectura del repositorio). Cómo se escribe Angular actual lo
+resuelven dos skills oficiales del equipo de Angular que este catálogo incluye
+**sin modificar**:
 
-## Referente oficial
-
-- Repositorio: `https://github.com/angular/skills` (licencia MIT; documentación
-  CC BY 4.0; autoría Google).
-- Página oficial: `https://angular.dev/ai/agent-skills`.
-- Instalación: `npx skills add https://github.com/angular/skills`.
-- Skills que publica (verificado el 2026-09-25):
-  - `angular-developer`: genera código Angular y da guía de arquitectura.
-  - `angular-new-app`: crea una aplicación nueva con el CLI.
-- Regla de mantenimiento: **no se copia su contenido a este skill.** Se
-  actualiza con cada versión de Angular y una copia envejece sin aviso. Se
-  consulta en el momento (instalado, o leyendo el `SKILL.md` y la referencia
-  puntual en el repositorio) y se registra en el cierre qué se consultó.
-
-## Regla previa: conocer la versión
-
-Antes de escribir código, confirmar la versión de Angular del proyecto
-(`package.json` y, si hace falta, `ng version`). Las recomendaciones cambian
-entre versiones. Un proyecto nuevo usa la versión estable más reciente salvo
-que el usuario indique otra. Nunca aplicar de memoria una práctica de otra
-versión.
-
-## Qué tema consultar y dónde
-
-Referencias del skill oficial `angular-developer` (nombres de archivo tal como
-las publica; verificados el 2026-09-25):
-
-| Tema | Referencia oficial |
+| Skill vendorizado | Para qué |
 |---|---|
-| Componentes | `components.md`, `inputs.md`, `outputs.md`, `host-elements.md` |
-| Nombres | `naming-conventions.md` |
-| Reactividad | `signals-overview.md`, `linked-signal.md`, `resource.md`, `effects.md` |
-| HTTP | `http-client.md` |
-| Formularios | `signal-forms.md`, `template-driven-forms.md`, `reactive-forms.md` |
-| Inyección de dependencias | `di-fundamentals.md`, `creating-services.md`, `defining-providers.md`, `injection-context.md`, `hierarchical-injectors.md` |
-| Pipes | `pipes.md` |
-| Accesibilidad | `angular-aria.md` |
-| Rutas | `define-routes.md`, `loading-strategies.md`, `route-guards.md`, `data-resolvers.md`, `router-lifecycle.md`, `rendering-strategies.md`, `route-animations.md` |
-| Estilos | `component-styling.md`, `angular-animations.md`, `tailwind-css.md` |
+| `angular-developer` | Código Angular y guía de arquitectura: componentes, señales, formularios, DI, rutas, estilos, accesibilidad, pruebas, CLI. Trae 40 referencias por tema. |
+| `angular-new-app` | Crear una aplicación nueva con el CLI y sus flags. |
+
+Origen: `https://github.com/angular/skills` (MIT, Copyright 2026 Google LLC). El
+commit exacto y los hashes de cada archivo están en `UPSTREAM.json` dentro de
+cada skill; la licencia, en `LICENSE-UPSTREAM.md`. Se actualizan con
+`npm run sync:angular` desde el repositorio Skils; `npm test` falla si alguien
+edita una copia.
+
+## Cómo se usa junto a este skill
+
+1. **Confirmar la versión de Angular del proyecto** antes de escribir código
+   (`package.json`, `ng version`). Es la primera regla de `angular-developer` y
+   la de nuestro bloqueante B13.
+2. **Leer la referencia del tema que toca**, no todo el conjunto. Se lee desde
+   el skill instalado `angular-developer/references/<tema>.md`:
+
+| Voy a escribir… | Leer |
+|---|---|
+| Un componente | `components.md`, `inputs.md`, `outputs.md`, `host-elements.md` |
+| Estado, derivados, sincronía entre señales | `signals-overview.md`, `linked-signal.md`, `resource.md`, `effects.md` |
+| Un servicio o un provider | `creating-services.md`, `di-fundamentals.md`, `defining-providers.md`, `injection-context.md`, `hierarchical-injectors.md` |
+| Llamadas HTTP | `http-client.md` |
+| Un formulario | `signal-forms.md`, `reactive-forms.md` o `template-driven-forms.md` |
+| Rutas, guards, resolvers | `define-routes.md`, `route-guards.md`, `data-resolvers.md`, `loading-strategies.md`, `router-lifecycle.md` |
+| Estilos de componente, animaciones | `component-styling.md`, `angular-animations.md` |
+| Un control accesible propio | `angular-aria.md` |
+| Nombres de archivos y clases | `naming-conventions.md` |
 | Pruebas | `testing-fundamentals.md`, `component-harnesses.md`, `router-testing.md`, `e2e-testing.md` |
-| Herramientas | `cli.md`, `migrations.md`, `mcp.md`, `environment-configuration.md` |
+| CLI, migraciones, entorno | `cli.md`, `migrations.md`, `environment-configuration.md`, `mcp.md` |
 
-Uso: al construir una pieza, leer la referencia del tema que toca (por
-ejemplo `signals-overview.md` y `effects.md` antes de un servicio de estado; la
-de formularios antes de un formulario), no todo el conjunto.
+3. **Aplicar la precedencia** de `arquitectura-proyecto.md` sección 1: usuario,
+   luego reglas del repositorio, luego este skill, luego Angular. Si el skill
+   oficial no está instalado, leer su `SKILL.md` y la referencia puntual desde
+   el repositorio oficial y declararlo.
 
-## Reglas que declara el skill oficial (resumen)
+## Reglas oficiales que este skill hace suyas
 
-- Señales como base del estado (`signal`, `computed`, `linkedSignal`,
-  `resource`, `effect`).
-- Inyección con `inject()` y servicios `providedIn: 'root'`.
-- Control de flujo de plantilla con `@if`, `@for`, `@switch`.
-- Entradas y salidas basadas en funciones (`input()`, `input.required()`,
-  `output()`, `model()`).
-- Formularios: en aplicaciones nuevas de la versión 22 o posterior, preferir
-  Signal Forms; en aplicaciones existentes, respetar la estrategia que ya usan.
-  Plantillas para formularios simples y reactivos para complejos.
-- Accesibilidad de componentes propios con Angular Aria.
-- Pruebas unitarias con Vitest, arneses de componentes para interacción y
-  `RouterTestingHarness` para navegación.
-- Usar el CLI para generar código.
+Verificadas leyendo `angular-developer` en el commit fijado:
 
-## Qué reglas ceden ante el repositorio
+- **Los efectos no propagan estado.** Regla marcada "CRITICAL" en `effects.md`:
+  si un `effect` hace `.set()` o `.update()` sobre otra señal para mantenerlas
+  sincronizadas, es un error (ciclos y `ExpressionChangedAfterItHasBeenChecked`).
+  El estado derivado se expresa con `computed()` o `linkedSignal()`. Los
+  efectos se reservan para trabajo fuera del grafo de señales (registro,
+  almacenamiento, un lienzo o librería de terceros).
+- **Señales como base del estado**; entradas con `input()` /
+  `input.required()` y salidas con `output()`. El decorador `@Input` sigue
+  funcionando; en código nuevo, la función.
+- **`@HostBinding` y `@HostListener` se evitan en código nuevo**; se usa la
+  propiedad `host` del decorador del componente.
+- **Control de flujo de plantilla** `@if`, `@for`, `@switch`; nada de
+  `*ngIf`/`*ngFor`.
+- **Etiquetas autocerradas** cuando el componente no proyecta contenido
+  (`<app-x />`).
+- **`inject()`** para la inyección y servicios `providedIn: 'root'`.
+- **Componentes standalone** (por defecto desde Angular 19).
+- **Nombres**: respetar primero las convenciones del proyecto. El estilo
+  "Intención sobre rol" (archivos sin sufijo `.component.ts`/`.service.ts`) solo
+  se aplica a proyectos nuevos configurados así; `naming-conventions.md` dice
+  expresamente que no se fuerza en proyectos que usan sufijos.
+- **Formularios**: en aplicaciones nuevas de Angular 22 o posterior, Signal Forms
+  por defecto; en aplicaciones existentes se respeta la estrategia que ya usan.
+- **Pruebas**: Vitest, arneses de componentes y `RouterTestingHarness`; enfoque
+  sin zone.js y asíncrono desde el inicio.
+- **Accesibilidad de componentes propios** con Angular Aria.
 
-Estas recomendaciones del skill oficial **no se aplican** si el repositorio
-declara lo contrario (ver `arquitectura-proyecto.md`, sección 1):
+## Conflictos conocidos y cómo se resuelven
 
-| Recomendación oficial | Cuándo cede |
+`angular-developer` es genérico y puede pedir cosas que un repositorio prohíbe.
+Estas son las diferencias ya detectadas; en todas manda la regla del
+repositorio o del usuario y el cierre lo declara:
+
+| Lo que dice el skill oficial | Cuándo cede |
 |---|---|
-| Ejecutar `ng build` después de generar código | Si el repositorio prohíbe ejecutar build, `tsc` o pruebas sin pedido del usuario |
-| Escribir pruebas con Vitest al construir | Si el usuario ejecuta las pruebas y no quiere que se corran; se escriben, no se ejecutan |
-| Plantilla y estilos en archivos separados del componente | Si el repositorio exige plantilla y estilos inline |
-| Signal Forms en proyectos nuevos v22+ | Si el proyecto ya usa otra estrategia de formularios o el Design System expone sus propios controles con otro contrato; se decide y se registra |
+| Paso 3 de `SKILL.md`: "ejecuta `ng build` al terminar y no omitas este paso" | Si el repositorio prohíbe ejecutar build, `tsc` o pruebas sin pedido del usuario. Se verifica con los logs del servidor de desarrollo y el navegador, y se declara. |
+| Plantilla y estilos en archivos separados | Si el repositorio exige plantilla y estilos inline en el `.ts` (FleetOperations). El oficial lo permite: solo dice cómo nombrarlos si se separan. |
+| Signal Forms en proyectos nuevos v22+ | Si el Design System expone controles con otro contrato o el proyecto ya usa otra estrategia; se decide y se registra. |
+| Usar el CLI para generar archivos | Si el repositorio arma archivos a mano por convención propia; el CLI no se impone a una estructura ya definida. |
+| Bootstrap con `--ai-config` y el servidor MCP del CLI (`angular-new-app`) | Opcional; se ofrece al usuario, no se asume. |
 
-## Convenciones observadas en el repositorio de referencia
+## Auditar contra esta guía
 
-Ya presentes y coherentes con la guía oficial (Angular 22): componentes
-standalone con `imports` propios, señales (`signal`, `computed`, `effect`),
-`inject()`, control de flujo `@if`/`@for`, entradas `input()` e
-`input.required()`. Un componente nuevo sigue lo que hacen sus vecinos; no
-mezcla el estilo decorador (`@Input`) y el de funciones dentro de un mismo
-componente sin motivo. Cuando el repositorio mezcla ambos por historia,
-usar el de funciones en código nuevo y no reescribir código ajeno sin pedido.
+El modo AUDITAR del skill (ver `auditoria-arquitectura.md`) usa las reglas de
+este archivo como criterio, junto con las del repositorio. Una regla oficial que
+el código incumple no es un error del repositorio si el repositorio decidió otra
+cosa: se registra como desviación consciente, no como hallazgo.
 
-## Estado de esta integración
+## Mantenimiento
 
-- El skill oficial **no está instalado** como dependencia de este skill; esta
-  referencia lo enlaza y ordena su uso. Decidir su instalación global (Claude
-  Code y Codex) queda a cargo del usuario.
-- No se auditó el contenido completo de cada referencia oficial; el resumen de
-  arriba proviene de su `SKILL.md`. Antes de apoyarse en una regla concreta
-  para una decisión importante, leer la referencia puntual.
-- Alternativas comunitarias revisadas solo por título en la búsqueda (por
-  ejemplo colecciones de terceros para Angular 22) no se adoptan: el referente
-  es el del equipo de Angular.
+- Para actualizar: `npm run sync:angular` (última versión) o
+  `node scripts/sync-angular-skills.mjs <commit>` (una revisión fija); luego
+  `npm test`, revisar el diff de las referencias y publicar.
+- Las copias vendorizadas nunca se editan a mano. Lo propio va en este skill.
+- Si el equipo de Angular cambia una regla que aquí se cita (por ejemplo la de
+  efectos), esta sección se corrige en el mismo cambio que la sincronización.

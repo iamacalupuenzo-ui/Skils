@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/angular/skills",
+  "skill": "angular-new-app",
+  "commit": "94a2db1317095ccfedcc024a4cca0a18fc259e72",
+  "syncedAt": "2026-09-25",
+  "license": "MIT (Copyright 2026 Google LLC)",
+  "files": {
+    "SKILL.md": "807120998cc2161b14963300fcb8fd594c71f3a527f67f0172123b458178631e"
+  }
+}

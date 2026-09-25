@@ -7,13 +7,15 @@ description: >
   usuario) y trabaja solo con su contrato público. Convierte una necesidad en
   un plan con roles, estados, errores, notificaciones, accesibilidad y
   verificación. Respeta las reglas de arquitectura y de trabajo del repositorio
-  destino (CLAUDE.md/AGENTS.md) por encima de sus propias recomendaciones y
-  consulta la guía oficial de Angular para el framework. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
-  el mapa de unidades” o “implementa alertas en esta plataforma”. No construye
+  destino (CLAUDE.md/AGENTS.md) por encima de sus propias recomendaciones, se
+  apoya en los skills oficiales de Angular incluidos en el catálogo
+  (angular-developer, angular-new-app) para el framework y audita
+  repositorios existentes con evidencia. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
+  el mapa de unidades” o “implementa alertas en esta plataforma”, y para “audita la arquitectura de este proyecto”. No construye
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
 ---
 
 # Angular Product Builder
@@ -53,8 +55,11 @@ que resuelven y lo adapta con la librería pública.
   y de transiciones), brechas del sistema de diseño, trampas reales y trabajo
   concurrente con otros agentes.
 - `references/angular-moderno.md` — leer antes de escribir código Angular:
-  cuándo consultar el skill oficial del equipo de Angular, qué contiene y qué
-  reglas suyas ceden ante el repositorio.
+  cómo usar los skills oficiales incluidos (`angular-developer`,
+  `angular-new-app`), las reglas que este skill hace suyas y las que ceden
+  ante el repositorio.
+- `references/auditoria-arquitectura.md` — leer en modo AUDITAR: mediciones
+  reproducibles, criterios y formato del informe.
 - `references/product-discovery.md` — leer siempre antes de planificar o
   construir una característica.
 - `references/feature-delivery.md` — leer en INICIAR y CONSTRUIR.
@@ -109,6 +114,7 @@ Declarar el modo en la primera línea.
 | INICIAR | “crea una app”, “proyecto nuevo”, “pantalla aparte” | Pregunta el sistema de diseño, crea consumidor Angular limpio, configura e instala. | App base verificable. |
 | CONSTRUIR | “crea login”, “agrega mapa”, “implementa alertas” | Planifica y construye en el destino validado. | Flujo y evidencia. |
 | ACTUALIZAR | “actualiza el sistema de diseño”, “sube la versión de la librería” | Cambia versión explícita, lockfile y compatibilidad. | Adopción verificable. |
+| AUDITAR | “audita el proyecto”, “revisa la arquitectura”, “qué mejoraríamos”, “estamos desarrollando bien” | Mide y lee el repositorio contra sus reglas, la guía oficial de Angular y el patrón de pantalla. No edita. | Informe con evidencia y backlog priorizado. |
 
 Si el usuario pidió construir, PLANIFICAR ocurre primero dentro de la misma
 pasada y se continúa salvo que falte una decisión material. Si pidió solo
@@ -166,6 +172,20 @@ evaluar, no se edita.
    recorrido crítico con teclado, foco y mensajes accesibles; una demo del
    sistema de diseño o Storybook puede informar una composición, pero no
    sustituye la evidencia visual e interactiva en el producto consumidor.
+
+## Protocolo AUDITAR
+
+1. Leer las reglas del repositorio (GUARD 8) y `git status`; no auditar sobre
+   cambios ajenos sin decir cuáles son.
+2. Leer `angular-moderno.md` y `auditoria-arquitectura.md`; ejecutar las
+   mediciones de solo lectura (no compilar ni correr pruebas si el repositorio
+   lo prohíbe) y leer los archivos que las mediciones señalen.
+3. Separar hallazgos de decisiones conscientes: lo que el repositorio decidió a
+   propósito no se reporta como error.
+4. Entregar el informe en el formato de la referencia (pregunta previa, 30
+   segundos, lo que está bien, hallazgos priorizados con evidencia y esfuerzo,
+   orden sugerido). No editar código: cada mejora se aprueba y aplica aparte,
+   registrando primero en el `CLAUDE.md` del repositorio cualquier regla nueva.
 
 ## Protocolo ACTUALIZAR
 
@@ -231,6 +251,15 @@ evaluar, no se edita.
   Angular se confirma la versión del proyecto y se consulta la referencia
   oficial del tema (`angular-moderno.md`). Aplicar de memoria una práctica de
   otra versión produce APIs obsoletas o incompatibles.
+- **B15 — Los skills oficiales no se editan.** `angular-developer` y
+  `angular-new-app` son copias sin modificar de `github.com/angular/skills`
+  (MIT), fijadas a un commit y verificadas por hash. Un ajuste local va en este
+  skill o en el repositorio del proyecto; editar la copia rompe la
+  actualización, incumple la trazabilidad de la licencia y `npm test` lo
+  detecta.
+- **B16 — Auditar es medir.** Un hallazgo sin comando, archivo o línea que lo
+  respalde no se reporta, y una desviación consciente del repositorio no es un
+  hallazgo. Un informe de opiniones no permite priorizar ni aprobar mejoras.
 - **B14 — No pisar el trabajo ajeno.** Cuando otra persona u otro agente edita
   el mismo repositorio, el estado del disco es el vigente: no se revierte, no
   se completa su diseño a ciegas y se reporta lo que rompe. Ver
@@ -261,10 +290,12 @@ evaluar, no se edita.
 
 ## Formato de respuesta
 
-- Primera línea: `Modo: PLANIFICAR`, `INICIAR`, `CONSTRUIR` o `ACTUALIZAR`.
+- Primera línea: `Modo: PLANIFICAR`, `INICIAR`, `CONSTRUIR`, `ACTUALIZAR` o `AUDITAR`.
 - Español neutro latinoamericano, directo y sin emojis decorativos.
 - Antes de construir, mostrar el plan de producto y señalar hipótesis.
 - Cierre de PLANIFICAR: plan, decisiones pendientes y no-ediciones.
+- Cierre de AUDITAR: informe con evidencia, backlog priorizado, decisiones
+  conscientes y qué necesita aprobación; sin ediciones de código.
 - Cierre de INICIAR/CONSTRUIR/ACTUALIZAR: archivos, sistema de diseño y
   versión, componentes públicos usados, estados verificados, comandos
   ejecutados (o no ejecutados por regla del repositorio), reglas del
@@ -279,6 +310,7 @@ evaluar, no se edita.
 - `references/design-systems/comsatel-ds.md`
 - `references/arquitectura-proyecto.md`
 - `references/angular-moderno.md`
+- `references/auditoria-arquitectura.md`
 - `references/especificacion-producto.md`
 - `references/product-discovery.md`
 - `references/logistics-patterns.md`

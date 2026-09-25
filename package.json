@@ -11,14 +11,16 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --check bin/skils.js"
+    "test": "node --check bin/skils.js && node scripts/validate-skills.mjs",
+    "sync:angular": "node scripts/sync-angular-skills.mjs"
   },
   "files": [
     "bin/",
     "skills/",
     "skills-manifest.json",
     "README.md",
-    "docs/"
+    "docs/",
+    "scripts/"
   ],
   "license": "UNLICENSED"
 }

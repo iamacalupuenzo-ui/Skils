@@ -94,4 +94,7 @@ inspección de código.
 | Repositorio sin archivo de reglas | Propone el patrón de referencia, pide confirmación y lo deja escrito en un `CLAUDE.md`. | Decidir la estructura en silencio. |
 | Otro agente rompe la compilación en un archivo ajeno | Reporta archivo y síntoma; no completa su diseño ni revierte su cambio. | Reescribir o revertir el trabajo del otro agente. |
 | Error `Failed to resolve styles at position 1` | Busca un `` ` `` suelto en un comentario CSS de los estilos inline recién editados. | Borrar la caché o reinstalar dependencias a ciegas. |
+| “Audita el proyecto” en un repositorio con reglas propias | Modo AUDITAR: mediciones de solo lectura, hallazgos con evidencia, decisiones conscientes aparte, backlog priorizado y sin editar código. | Reportar como error lo que el repositorio decidió a propósito, o corregir sin aprobación. |
+| Un `effect` que hace `.set()` sobre otra señal | Lo señala como hallazgo (regla oficial de efectos) y propone `computed`/`linkedSignal`. | Dejarlo pasar por "funciona" o reescribir todos los efectos de una vez. |
+| Editar `angular-developer` para "ajustarlo" a un proyecto | Se niega: la regla local va en `angular-product-builder` o en el `CLAUDE.md` del proyecto; `npm test` detectaría el cambio. | Modificar la copia vendorizada. |
 | Necesita una pieza de Angular (formularios, señales, rutas) | Consulta la referencia oficial puntual y respeta las reglas del repositorio cuando difieren. | Aplicar de memoria una práctica de otra versión de Angular. |
