@@ -118,7 +118,8 @@ No crear proyectos ni tareas dentro de Gestión de producto.
 `Bloquea a`, `Notas` y `Recursos`. Las opciones de `Estado` y `Prioridad` siguen en inglés
 hasta que se traduzcan; leerlas del schema vivo.
 
-**Tarea:** `Name`, `Status`, `Priority`, `Due Date`, `Project`, `Progreso (%)`,
+**Tarea** (base `Tareas`, ex Tasks Manager): `Nombre`, `Estado`, `Prioridad`,
+`Fecha límite`, `Proyecto`, `Historia`, `Caso de uso`, `Progreso (%)`,
 `Horas estimadas`, `Horas reales`, `Criterio de cierre`, `Fecha real de cierre`,
 `Bloqueada por` y `Bloquea a`.
 
@@ -127,7 +128,7 @@ hasta que se traduzcan; leerlas del schema vivo.
 - Un proyecto representa un resultado, no una lista de actividades. Debe tener objetivo y
   criterio de cierre antes de pasar a ejecución.
 - La tarea contiene esfuerzo y progreso; el agente calcula cumplimiento de plazo comparando
-  `Due Date` con `Fecha real de cierre` al completar, y marca alerta si la fecha vence sin
+  `Fecha límite` con `Fecha real de cierre` al completar, y marca alerta si la fecha vence sin
   cierre. No inferir horas reales ni porcentajes.
 - `Bloqueada por` y `Bloquea a` son una relación bidireccional entre tareas. Registrar ambas
   direcciones por la relación; no simular una dependencia solo con una prioridad o fecha.
