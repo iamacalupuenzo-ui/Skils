@@ -7,7 +7,7 @@ description: >
   Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
   revisar riesgos, dar estado o hacer seguimiento.
 metadata:
-  version: "1.7.4"
+  version: "1.8.0"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -51,9 +51,9 @@ operativo. Antes de actuar, consultar el schema vivo de `Project` y `Tasks Manag
    plantilla no son evidencia del trabajo del usuario.
 2. Para cada proyecto, registrar `Objetivo`, `Criterio de cierre`, fechas, `Avance (%)` y
    `Salud`. No convertir un porcentaje en hecho: se confirma con evidencia de tareas y usuario.
-3. Para cada tarea, registrar fecha límite, `Progreso (%)`, horas estimadas y reales cuando
-   existan, criterio de cierre y fecha real al completarla. No inventar horas ni completar al
-   100 % una tarea sin evidencia.
+3. Para cada tarea, registrar fecha límite, horas estimadas y reales cuando existan, criterio
+   de cierre, fecha real al completarla y `Resultado`. No inventar horas ni marcar `Resultado`
+   como `Listo` sin el entregable o su enlace en la sección Resultado de la página.
 4. Calcular el cumplimiento de plazo sin crear campos redundantes: una tarea completada cumple
    si `Fecha real de cierre` no supera `Due Date`; una tarea abierta con fecha vencida es alerta.
    Si falta una de esas fechas, declararlo como no verificable, no como cumplimiento.
@@ -104,7 +104,7 @@ evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
   tareas bloqueadas, leer [dependencias, bloqueos y restricciones](references/dependencias-bloqueos.md).
 - Para lanzamientos, migraciones, accesos o cambios de producción, leer [control de lanzamiento](references/lanzamientos.md).
 - Para salud, riesgos, estatus y proyecciones, leer [control y reporte](references/control-y-reporte.md).
-- Para leer o actualizar el cuerpo de cualquier página de tarea, leer [bitácora única de seguimiento](references/bitacora-seguimiento.md).
+- Para leer o actualizar el cuerpo de cualquier página de tarea, leer [relato de la tarea](references/bitacora-seguimiento.md).
 
 ## Guard de inicio
 
@@ -126,9 +126,9 @@ evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
 5. Declarar si la evaluación encuentra información incompleta, relaciones rotas o
    registros heredados. No completar esos datos por inferencia.
 6. Separar propiedades de contenido: las propiedades y relaciones modelan la tarea; el
-   cuerpo de la página usa exclusivamente la estructura contractual de trabajo. No añadir
-   secciones de seguimiento, bitácora, evidencias o comunicaciones al contenido de la tarea;
-   no sustituir instrucciones, outputs o criterios de aceptación por una descripción genérica.
+   cuerpo de la página usa exclusivamente el relato de la tarea (B10). No añadir secciones
+   de seguimiento, bitácora o comunicaciones al contenido; la evidencia de cierre va solo en
+   la sección `Resultado`.
 
 ## Modos
 
@@ -200,11 +200,11 @@ Declarar el modo en la primera línea.
 - **B9 — Cambio controlado:** después de aprobar una línea base, todo cambio de alcance,
   secuencia, fecha o criterio debe registrar motivo, impacto y decisión antes de alterar
   la jerarquía.
-- **B10 — Estructura contractual uniforme:** cada página de tarea debe conservar el orden
-  `Qué hay que hacer` → `Outputs` → `Criterios de aceptación` → `Notas`. No añadir
-  `Seguimiento`, `Evidencias y comunicaciones` ni una bitácora al contenido; no reemplazar
-  esas secciones por una descripción genérica. La ausencia de criterios verificables impide
-  un cierre objetivo.
+- **B10 — Relato uniforme:** cada página de tarea sigue el orden `Antes de leer` →
+  `En 30 segundos` → `El relato` → `Termina cuando` → `Resultado` → `Comprueba` (ver
+  bitacora-seguimiento.md). No añadir `Seguimiento` ni una bitácora al contenido. Sin
+  condiciones verificables en `Termina cuando` no hay cierre objetivo, y una tarea `Completada`
+  sin entregable en `Resultado` es una alerta de cierre, no un cierre.
 - **B11 — Cancelación conservadora:** no eliminar tareas o subtareas por obsolescencia,
   duplicidad o cambio de alcance. Tras aprobación, cambiar `Estado` a `Cancelada` y anteponer
   `[Cancelada]` al nombre. Conservar descripción, bitácora y evidencia; mantener relaciones

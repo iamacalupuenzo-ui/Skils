@@ -1,39 +1,60 @@
-# Contenido contractual de tareas
+# Contenido de las páginas de tareas
 
 ## Principio
 
-El contenido de cada página de la base **Tareas** define el contrato de ejecución y aceptación.
-Las propiedades y relaciones son la fuente de verdad para estado, fechas, esfuerzo, proyecto y
-dependencias. No agregar una bitácora, seguimiento, evidencias o comunicaciones al cuerpo de
-la tarea.
+El cuerpo de cada página de la base **Tareas** cuenta la tarea como un relato: por qué existe,
+qué se hace, qué entrega, cuándo termina y dónde está su resultado. Las propiedades y relaciones
+son la fuente de verdad para estado, fechas, esfuerzo, proyecto y dependencias. No agregar una
+bitácora, seguimiento ni comunicaciones al cuerpo de la tarea.
 
 Usar la misma estructura en tareas y subtareas, sin importar si son de análisis,
-configuración, ejecución, validación o comunicación.
+configuración, ejecución, validación o comunicación. La plantilla `Nueva tarea` de Notion ya
+la trae (aprobada por Enzo el 2026-09-24).
 
-## Estructura obligatoria
+## Estructura obligatoria (encabezado 2; subsecciones con encabezado 3)
 
 ```markdown
-## Qué hay que hacer
+> **Antes de leer:** [pregunta que el relato responde]
 
-[Instrucciones concretas, con verbos, decisiones y límites. No resumirlas como un tema.]
+## Recursos            ← solo si la tarea tiene subpáginas o documentos de apoyo
 
-## Outputs
+## En 30 segundos
+[Qué se hace y para qué, en dos líneas. La segunda dice su papel en el proyecto.]
 
-- [ ] [Artefacto o resultado verificable]
+## El relato
+**El problema.** [Por qué existe la tarea: qué pasa si no se hace.]
+**Qué se hace.** [El trabajo, contado desde lo que se decide o se construye. El rótulo puede
+cambiar: "La decisión.", "El criterio de selección.", etc.]
+**Qué entrega.** [Los resultados concretos.]
+**Dónde encaja.** [De qué depende (Bloqueada por) y qué habilita (Bloquea a).]
+**Lo que todavía no está decidido.** [Solo si aplica.]
+**Origen.** [Solo si la tarea viene de otra herramienta: quién la pidió y el enlace.]
 
-## Criterios de aceptación
+## Termina cuando
+- [Condición verificable, en lenguaje llano; viñetas simples, no casillas.]
 
-- **CA-01 — [resultado]**
-  DADO [contexto verificable]
-  CUANDO [acción o condición]
-  ENTONCES [resultado observable].
+## Resultado
+El resumen va aquí; la versión completa, en su enlace.
+### 1. [Entregable]
+[Resumen corto. Si es pequeño (un diagrama, una decisión, una tabla chica), va completo aquí.]
+**Enlace:** [URL de la versión completa, o *Pendiente.*]
+**Entregado:** [fecha real de cierre, o *Pendiente.*]
 
-## Notas
-
-[Decisión, restricción o propósito que da contexto. Omitir si no existe una nota útil.]
+## Comprueba
+[Una pregunta que se responda con el relato.]
 ```
 
-Los outputs describen lo que queda disponible; los criterios de aceptación prueban cuándo se
-puede cerrar. No usar como criterio "terminado", "revisado" o "documentado" sin una condición
-observable. Mantener exactamente ese orden. Los hechos de avance viven en las propiedades,
-comentarios, actas o evidencias relacionadas, no en el contenido contractual de la tarea.
+## Reglas
+
+- El relato va en 4 a 6 bloques cortos con rótulo en negrita. Sin tablas en el relato.
+- `Termina cuando` reemplaza a los criterios DADO/CUANDO/ENTONCES: ese formato vive solo en los
+  casos de uso de Gestión de producto. No usar "terminado", "revisado" o "documentado" como
+  condición sin algo observable.
+- `Resultado` es la evidencia del cierre. Una sola fuente por dato: lo grande se enlaza, no se
+  copia. Si hay varios entregables, un encabezado 3 por cada uno.
+- La propiedad `Resultado` pasa a `Listo` solo cuando la sección Resultado tiene el entregable
+  o su enlace. La fórmula `Alerta de cierre` marca "Cerrada sin resultado" cuando la tarea está
+  `Completada` y el Resultado no está `Listo`. Nunca marcar `Listo` sin ver la evidencia.
+- Lo que la fuente no dice queda como *Pendiente.* No se inventan herramientas, cifras,
+  personas ni enlaces.
+- Ícono de tarea: `icons/checkmark_blue`.
