@@ -112,9 +112,11 @@ No crear proyectos ni tareas dentro de Gestión de producto.
 
 ### Campos operativos mínimos
 
-**Proyecto:** `Name`, `Status`, `Priority`, `Start Date`, `End Date`, `Objetivo`,
-`Criterio de cierre`, `Avance (%)`, `Salud`, `Fecha real de cierre`, `Tasks`, `Blocked by`,
-`Blocking`, `Notes` y `Resources`.
+**Proyecto** (base `Proyectos`, propiedades en español desde 2026-09-24): `Nombre`, `Estado`,
+`Prioridad`, `Ámbito`, `Inicio`, `Fin objetivo`, `Objetivo`, `Criterio de cierre`,
+`Avance (%)`, `Salud`, `Fecha real de cierre`, `Tareas`, `Épicas`, `Bloqueado por`,
+`Bloquea a`, `Notas` y `Recursos`. Las opciones de `Estado` y `Prioridad` siguen en inglés
+hasta que se traduzcan; leerlas del schema vivo.
 
 **Tarea:** `Name`, `Status`, `Priority`, `Due Date`, `Project`, `Progreso (%)`,
 `Horas estimadas`, `Horas reales`, `Criterio de cierre`, `Fecha real de cierre`,
