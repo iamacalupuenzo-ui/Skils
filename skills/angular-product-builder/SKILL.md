@@ -6,12 +6,14 @@ description: >
   pregunta qué sistema de diseño usar (Comsatel DS u otro que indique el
   usuario) y trabaja solo con su contrato público. Convierte una necesidad en
   un plan con roles, estados, errores, notificaciones, accesibilidad y
-  verificación. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
+  verificación. Respeta las reglas de arquitectura y de trabajo del repositorio
+  destino (CLAUDE.md/AGENTS.md) por encima de sus propias recomendaciones y
+  consulta la guía oficial de Angular para el framework. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
   el mapa de unidades” o “implementa alertas en esta plataforma”. No construye
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
 # Angular Product Builder
@@ -45,6 +47,14 @@ que resuelven y lo adapta con la librería pública.
 - `references/especificacion-producto.md` — leer siempre que el proyecto tenga
   épica, historias o casos de uso en Gestión de producto: cómo leerlos, cómo
   traducirlos a construcción y cómo pedir un ajuste cuando el flujo cambia.
+- `references/arquitectura-proyecto.md` — leer siempre antes de editar un
+  repositorio existente o proponer la estructura de uno nuevo: precedencia
+  entre reglas, protocolo de entrada, patrón de pantalla (servicio de pantalla
+  y de transiciones), brechas del sistema de diseño, trampas reales y trabajo
+  concurrente con otros agentes.
+- `references/angular-moderno.md` — leer antes de escribir código Angular:
+  cuándo consultar el skill oficial del equipo de Angular, qué contiene y qué
+  reglas suyas ceden ante el repositorio.
 - `references/product-discovery.md` — leer siempre antes de planificar o
   construir una característica.
 - `references/feature-delivery.md` — leer en INICIAR y CONSTRUIR.
@@ -81,6 +91,13 @@ que resuelven y lo adapta con la librería pública.
    historia o caso de uso en Gestión de producto, leerlos según
    `especificacion-producto.md` antes de planificar. El caso de uso es la
    especificación; no se reemplaza por lo que se recuerda de la conversación.
+8. **Resolver las reglas del repositorio.** Antes de editar, leer `CLAUDE.md`
+   y/o `AGENTS.md` de la raíz y los documentos que enlaza, según
+   `arquitectura-proyecto.md`. Esas reglas mandan sobre este skill y sobre la
+   guía general de Angular; si hay un choque, se aplica la del repositorio y el
+   cierre lo declara. Si el repositorio no tiene reglas, proponer el patrón de
+   referencia y pedir confirmación en vez de decidir en silencio. Correr
+   `git status` y anotar los archivos con cambios ajenos.
 
 ## Detección de modo
 
@@ -121,8 +138,10 @@ evaluar, no se edita.
    propia como sustituto.
 5. Crear la estructura `core/`, `layout/`, `features/` y una ruta mínima de la
    pantalla solicitada; no simular una app completa si el usuario pidió una sola.
-6. Ejecutar build y pruebas disponibles; verificar que el import público se
-   resuelva sin alcanzar CSS interno.
+6. Ejecutar build y pruebas disponibles **si las reglas del repositorio lo
+   permiten**; verificar que el import público se resuelva sin alcanzar CSS
+   interno. En un proyecto nuevo, dejar escrito un `CLAUDE.md` con las reglas
+   acordadas (arquitectura, verificación, Design System).
 
 ## Protocolo CONSTRUIR
 
@@ -141,7 +160,9 @@ evaluar, no se edita.
 4. Para mapas o notificaciones, aplicar `logistics-patterns.md`; su ausencia
    de requisitos es una decisión pendiente, no licencia para inventar alertas.
 5. Leer `verification.md`, abrir el playground de la aplicación en el
-   navegador de validación y ejecutar los comandos reales. Revisar el
+   navegador de validación y ejecutar los comandos reales **solo si las
+   reglas del repositorio lo permiten** (si no, verificar por logs del servidor
+   de desarrollo y navegador, y declararlo). Revisar el
    recorrido crítico con teclado, foco y mensajes accesibles; una demo del
    sistema de diseño o Storybook puede informar una composición, pero no
    sustituye la evidencia visual e interactiva en el producto consumidor.
@@ -151,7 +172,9 @@ evaluar, no se edita.
 1. Leer contrato, release notes de la versión objetivo y lockfile actual.
 2. Cambiar solo a una versión explícita, revisar cambios de API y conservar el
    rollback claro en Git.
-3. Probar build, tests y los flujos que usan componentes afectados.
+3. Probar build, tests y los flujos que usan componentes afectados, según lo
+   que permitan las reglas del repositorio (si prohíben ejecutarlos, pedir al
+   usuario que los corra y verificar los flujos en el navegador).
 4. Reportar versión anterior/nueva, impacto y evidencia. No actualizar a
    `latest` ni editar internals de `node_modules`.
 
@@ -194,8 +217,36 @@ evaluar, no se edita.
   historias o casos desde aquí desalinea diagramas, criterios y cobertura; construir
   el cambio sin actualizarlos deja una especificación falsa.
 
+- **B11 — Las reglas del repositorio mandan.** Si el repositorio declara
+  reglas de arquitectura, estilo o verificación, se leen antes de editar y
+  prevalecen sobre este skill y sobre la guía general de Angular. Ignorarlas
+  produce código que la próxima sesión debe rehacer y rompe acuerdos que el
+  usuario ya validó (por ejemplo, ejecutar un build que había prohibido).
+- **B12 — Arquitectura desde el diseño inicial.** Una pantalla con más de una
+  pieza entre filtros, tabla, formulario y diálogos se divide desde el inicio y
+  separa servicio de pantalla y servicio de transiciones. Dividir después de
+  que un archivo llegó a miles de líneas cuesta más que hacerlo bien la
+  primera vez, y la regla vaga "un servicio por feature" ya falló una vez.
+- **B13 — El framework se consulta, no se recuerda.** Antes de escribir código
+  Angular se confirma la versión del proyecto y se consulta la referencia
+  oficial del tema (`angular-moderno.md`). Aplicar de memoria una práctica de
+  otra versión produce APIs obsoletas o incompatibles.
+- **B14 — No pisar el trabajo ajeno.** Cuando otra persona u otro agente edita
+  el mismo repositorio, el estado del disco es el vigente: no se revierte, no
+  se completa su diseño a ciegas y se reporta lo que rompe. Ver
+  `arquitectura-proyecto.md`, sección 6.
+
 ## Señales de alerta
 
+- Se edita un repositorio sin haber leído su `CLAUDE.md`/`AGENTS.md`.
+- Se ejecuta build, `tsc` o pruebas en un repositorio que lo prohíbe, o se
+  marca "compila" sin evidencia.
+- Una pantalla nueva reúne filtros, tabla, formulario y diálogos en un solo
+  archivo, o el servicio de pantalla llama directo a métodos que mutan datos.
+- Se restiliza un componente del sistema de diseño con `::ng-deep` o se usa un
+  token o ícono sin comprobar que existe en el paquete público.
+- Se revierte o reescribe un cambio ajeno sin avisar, o se deja pasar uno que
+  contradice lo que el usuario pidió.
 - Se empieza a instalar o componer sin haber confirmado el sistema de diseño.
 - Se construye un flujo que tiene caso de uso sin haberlo leído, o se omite un
   alterno o un estado del caso.
@@ -216,12 +267,18 @@ evaluar, no se edita.
 - Cierre de PLANIFICAR: plan, decisiones pendientes y no-ediciones.
 - Cierre de INICIAR/CONSTRUIR/ACTUALIZAR: archivos, sistema de diseño y
   versión, componentes públicos usados, estados verificados, comandos
-  ejecutados y pendiente concreto.
+  ejecutados (o no ejecutados por regla del repositorio), reglas del
+  repositorio aplicadas y cualquier caso en que una regla del repositorio se
+  impuso a una recomendación de este skill o de Angular, archivos ajenos que
+  cambiaron durante la sesión, brechas del Design System registradas y
+  pendiente concreto.
 
 ## Referencias
 
 - `references/design-system-contract.md`
 - `references/design-systems/comsatel-ds.md`
+- `references/arquitectura-proyecto.md`
+- `references/angular-moderno.md`
 - `references/especificacion-producto.md`
 - `references/product-discovery.md`
 - `references/logistics-patterns.md`

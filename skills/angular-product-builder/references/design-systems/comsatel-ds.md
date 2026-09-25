@@ -179,10 +179,60 @@ Usar `autocomplete="current-password"` para inicio de sesión o
 `autocomplete="new-password"` para alta/cambio. El correo no es un componente
 especializado: usar `cs-input type="email"` y `autocomplete="email"`.
 
+## Hallazgos verificados en la versión 0.2.2 (2026-09-25)
+
+Comprobados en el repositorio consumidor FleetOperations contra el paquete
+instalado. Son hechos de esa versión; si la versión instalada cambia, volver a
+verificarlos en lugar de darlos por vigentes.
+
+- **Dónde viven los tokens.** El paquete publica tres archivos CSS:
+  `styles.css`, `tokens.css` y `typography-tokens.css`. Los tokens de color,
+  espaciado, radios y sombras están en `tokens.css`; los de tipografía
+  (`--font-size-*`, `--font-line-height-*`, `--font-letter-spacing-*`) están en
+  `typography-tokens.css`. Verificar un token buscándolo en **ambos**; buscar
+  solo en `tokens.css` lo declara inexistente por error. Además, el código
+  compilado del propio DS usa tokens que no existen en ninguno de los dos: un
+  token visto solo en el JS compilado no cuenta como público.
+- **Íconos.** `cs-icon` y `DropdownItem.icon` aceptan solo los nombres del tipo
+  `IconName`. Nombres que parecen razonables y no existen: `crosshair`,
+  `map-pin-off`, `shield`, `building`, `target`. Confirmar el nombre en el tipo
+  antes de usarlo; existen, entre otros, `locate-fixed`, `eye`, `map-pin`,
+  `pencil`, `file-text`, `satellite`, `copy`.
+- **Tooltip.** `cs-tooltip` (import `Tooltip`) recibe `content` (obligatorio),
+  `side` y `arrow`, y envuelve al elemento disparador. Es el único tooltip del
+  sistema: un atributo `title` nativo o el tooltip por defecto de Leaflet no
+  son el del DS y se ven distintos. Se muestra con `:hover` (con retardo de
+  0,4 s) y con `:focus-within`; por eso, tras un clic, el botón conserva el
+  foco y el tooltip queda pegado. Si el disparador es un botón que cambia de
+  estado con el clic, quitar el foco tras el clic (`event.currentTarget.blur()`).
+- **Tooltip dentro de una librería de mapas.** Leaflet inyecta su DOM fuera de
+  Angular y no se puede montar `cs-tooltip` ahí. Se restilizan `.leaflet-tooltip`
+  y sus flechas en `styles.css` global con los mismos tokens que usa el DS:
+  fondo `--color-background-neutral-strongest`, texto `--color-text-inverse`,
+  radio `--radius-xs`, sombra `--shadow-md`, relleno `--layout-padding-xs`
+  y `--layout-padding-md`, y tipografía `label/small` con peso `accent`.
+- **Popover anidado.** `cs-popover` se cierra al hacer clic fuera de su panel y
+  de su disparador, y no reconoce otro `cs-popover` (un calendario dentro de
+  un panel) como "dentro". Para un panel con controles que abren otros
+  popovers, usar `[closeOnOverlayClick]="false"` y decidir el cierre con un
+  `document:click` propio que ignore `.trigger, cs-popover`. Un disparador en
+  el borde derecho usa `placement="bottom-end"`: con `bottom-start` el panel se
+  recorta contra el viewport y queda despegado.
+- **Menús desplegables.** `InputDropdown` expone `fullWidth`; su menú no
+  iguala el ancho del disparador aunque `Popover` tenga `matchTriggerWidth`.
+  Es una brecha registrada, no algo que se corrige en la aplicación.
+- **Tabla.** `cs-table` no ofrece filtro por columna en el encabezado; un
+  patrón de embudo por columna no se construye con su API pública. Brecha
+  registrada.
+- **Sin `::ng-deep`.** Un componente del DS no se restiliza desde el consumidor.
+  Si falta una variante, es una brecha para el DS.
+
 ## Comandos y dependencias
 
 Se permite usar los scripts ya declarados por la aplicación (`npm run build`,
-`npm test`, lint o e2e) y Angular CLI 22 para bootstrap. No instalar PrimeNG,
+`npm test`, lint o e2e) y Angular CLI 22 para bootstrap, **salvo que el
+repositorio consumidor prohíba ejecutarlos sin pedido del usuario** (en cuyo
+caso aplica `../arquitectura-proyecto.md`). No instalar PrimeNG,
 Material, Tailwind, un kit UI alternativo, una librería de mapas ni otra
 dependencia visual para reemplazar Comsatel DS sin una solicitud explícita y
 una evaluación de compatibilidad, licencia, bundle y accesibilidad.

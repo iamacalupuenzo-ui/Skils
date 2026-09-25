@@ -53,8 +53,24 @@ inspección de código.
   error y selección.
 - Notificaciones tienen severidad, acción y política de persistencia acordadas;
   no se duplican ni expiran antes de ser útiles.
-- Ejecutar build, pruebas y lint/e2e definidos por el proyecto destino. Si no
-  existe una prueba, declarar el recorrido manual y su evidencia.
+- Ejecutar build, pruebas y lint/e2e definidos por el proyecto destino **solo
+  si las reglas del repositorio lo permiten** (`arquitectura-proyecto.md`,
+  sección 1). Si el repositorio prohíbe ejecutarlos sin pedido del usuario:
+  no se ejecutan; la compilación se verifica leyendo los logs del servidor de
+  desarrollo ya corriendo (sin errores de compilación), el recorrido crítico
+  se prueba en el navegador y el cierre declara "build y pruebas no ejecutados
+  por regla del repositorio; los corre el usuario". Si no existe una prueba,
+  declarar el recorrido manual y su evidencia.
+- Las reglas de arquitectura del repositorio se verifican con su checklist
+  (`arquitectura-proyecto.md`, sección 3.7): tamaño de archivos, shell sin
+  lógica de negocio, mutaciones solo en el servicio de transiciones, diálogos
+  en su propio componente, plantilla y estilos según la convención.
+- Los tokens CSS del Design System usados en código nuevo existen de verdad en
+  los archivos públicos del paquete instalado (ver la referencia del sistema
+  elegido); un token que solo aparece en el código compilado del DS no cuenta.
+- Si el cambio toca varios archivos y otro agente o persona editaba a la vez,
+  el cierre lista qué archivos ajenos cambiaron en disco durante la sesión y
+  qué se hizo (nada, avisar o una corrección mínima explicada).
 
 ## Casos de evaluación del skill
 
@@ -72,3 +88,10 @@ inspección de código.
 | Pantalla con texto propio | Base tipográfica desde tokens públicos y familia computada verificada. | Heredar la serif del navegador o cargar una fuente ajena. |
 | Formulario con Input y Select | Labels de campos equivalentes comparten tokens y valores computados. | Dejar un label nativo heredando el cuerpo o sobrescribir Checkbox globalmente. |
 | Formulario con baja densidad | Labels y texto interno se miden por separado; Input y Select usan `lg` de forma consistente si el contexto requiere más legibilidad. | Aumentar solo un label local o mezclar `md` y `lg` sin jerarquía. |
+| Repositorio con `CLAUDE.md` que prohíbe ejecutar build y pruebas | Lee el archivo antes de editar, no ejecuta build ni tests, verifica por logs del servidor y navegador, y lo declara en el cierre. | Ejecutar `ng build` "para verificar" porque este skill o el skill de Angular lo recomiendan. |
+| Pantalla nueva con filtros, tabla, formulario y diálogos | Shell delgado, servicio de pantalla, servicio de transiciones y un componente por diálogo desde el diseño inicial. | Un solo componente de página de miles de líneas. |
+| Acción que crea, edita o cierra datos | La mutación vive en el servicio de transiciones; el de pantalla la envuelve y actualiza signals. | Llamar `create`/`update`/`close` del servicio de datos desde el servicio de pantalla. |
+| Repositorio sin archivo de reglas | Propone el patrón de referencia, pide confirmación y lo deja escrito en un `CLAUDE.md`. | Decidir la estructura en silencio. |
+| Otro agente rompe la compilación en un archivo ajeno | Reporta archivo y síntoma; no completa su diseño ni revierte su cambio. | Reescribir o revertir el trabajo del otro agente. |
+| Error `Failed to resolve styles at position 1` | Busca un `` ` `` suelto en un comentario CSS de los estilos inline recién editados. | Borrar la caché o reinstalar dependencias a ciegas. |
+| Necesita una pieza de Angular (formularios, señales, rutas) | Consulta la referencia oficial puntual y respeta las reglas del repositorio cuando difieren. | Aplicar de memoria una práctica de otra versión de Angular. |
