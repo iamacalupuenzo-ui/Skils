@@ -125,40 +125,44 @@ separada.
    hay duplicados y que cada flujo de la historia tiene cobertura o un pendiente
    explícito.
 
-## Contenido mínimo de un caso de uso
+## Estructura del caso de uso
 
-```markdown
-## Caso de uso
+El caso de uso es una especificación funcional y de UX, no un relato: el relato vive en la
+historia. Se basa en el formato "completo" de Cockburn (flujo principal y extensiones
+numeradas por paso), en la separación de flujos alternos y de excepción de la especificación
+RUP y en los cinco estados de pantalla del UI Stack. No incluye decisiones técnicas: esas
+son del analista funcional y de desarrollo.
 
-Como [rol], quiero [acción], para [beneficio].
+**Propiedades:** `Caso de uso` (título `CU-<historia>-<nn> — <verbo + objeto>`), `Estado`,
+`Prioridad`, `Historia padre` y `Tareas`. Nada más: la fuente vive en la historia, y las
+fechas, el esfuerzo y los responsables, en las tareas.
 
-## Flujo end-to-end
+**Convención:** lo que la fuente no dice se marca **Pendiente**, y lo que es recomendación
+de UX, **Propuesta**. Nunca se inventan textos, formatos ni reglas.
 
-1. [disparador]
-2. [pasos y decisiones]
-3. [resultado observable]
+**Cuerpo, en este orden y con encabezado 2:**
+1. `Resumen`: 2 o 3 líneas con actor, objetivo y disparador; enlace a la historia y a su
+   ficha técnica.
+2. `Precondiciones y garantías`: precondición, garantía de éxito y garantía mínima (lo que
+   queda cierto aunque falle o se cancele).
+3. `Flujo principal`: pasos numerados `**Actor:** …` / `**Sistema:** …`, nombrando
+   pantallas, botones y campos.
+4. `Flujos alternos`: `A1 — nombre (paso n)`: qué cambia y a qué paso vuelve. Son caminos
+   válidos, incluida la cancelación.
+5. `Errores y excepciones`: `E1 — nombre (paso n)`: validación, permisos, servicio caído o
+   tiempo agotado; qué ve el usuario y cómo se recupera.
+6. `Estados de pantalla`: tabla momento / estado / qué ve el usuario, con inicial, carga,
+   vacío o sin resultado, parcial, error y éxito donde apliquen.
+7. `Campos y validaciones`: tabla campo / obligatorio / validación.
+8. `Mensajes`: cada momento que necesita un texto, con el texto exacto o Pendiente.
+9. `Reglas aplicadas`: referencias `R-xx` a la ficha técnica, sin copiar su texto.
+10. `Criterios de aceptación`: `CA-nn — nombre (A1/E1)` en DADO/CUANDO/ENTONCES; uno para
+    el camino principal, uno por alterno y uno por error. Reemplazan la sección de pruebas.
+    Un criterio que depende de una decisión se deja escrito como Pendiente.
+11. `Interfaz`: componentes de Comsatel DS y decisiones de UX.
+12. `Dependencias y pendientes`.
 
-## Casuísticas
-
-- [normal, alterna, borde, permiso, dato ausente o fallo relevante]
-
-## Criterios de aceptación
-
-- **CA-01**
-  DADO [contexto], CUANDO [acción], ENTONCES [resultado observable].
-
-## Recomendaciones de interfaz
-
-- [jerarquía, feedback, accesibilidad y componentes del sistema de diseño]
-
-## Pruebas y evidencia
-
-- [funcionales, borde y no funcionales pertinentes]
-
-## Dependencias y límites
-
-- [contrato, decisión o restricción verificable]
-```
+Ejemplo de referencia: CU-3764-01 en Gestión de producto.
 
 ## Informe de cobertura
 
