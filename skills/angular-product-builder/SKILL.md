@@ -11,7 +11,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
 # Angular Product Builder
@@ -42,6 +42,9 @@ que resuelven y lo adapta con la librería pública.
 - `references/design-systems/comsatel-ds.md` — leer si el sistema elegido es
   Comsatel DS. Instalación, estilos, tipografía y recetas de composición que no
   se deben sustituir por inferencia.
+- `references/especificacion-producto.md` — leer siempre que el proyecto tenga
+  épica, historias o casos de uso en Gestión de producto: cómo leerlos, cómo
+  traducirlos a construcción y cómo pedir un ajuste cuando el flujo cambia.
 - `references/product-discovery.md` — leer siempre antes de planificar o
   construir una característica.
 - `references/feature-delivery.md` — leer en INICIAR y CONSTRUIR.
@@ -74,6 +77,10 @@ que resuelven y lo adapta con la librería pública.
    contrato faltante al mantenedor del sistema. Nunca copiar archivos internos.
 6. Antes de investigar referentes actuales, comprobar acceso web y usar fuentes
    oficiales; si no hay acceso, marcar la referencia como no verificada.
+7. **Resolver la especificación.** Si lo que se va a construir tiene épica,
+   historia o caso de uso en Gestión de producto, leerlos según
+   `especificacion-producto.md` antes de planificar. El caso de uso es la
+   especificación; no se reemplaza por lo que se recuerda de la conversación.
 
 ## Detección de modo
 
@@ -92,8 +99,9 @@ evaluar, no se edita.
 
 ## Protocolo PLANIFICAR
 
-1. Leer `product-discovery.md` y obtener actores, objetivo, reglas, datos,
-   restricciones, riesgos y resultado medible.
+1. Si existe especificación en Gestión de producto, partir de ella
+   (`especificacion-producto.md`). Si no, leer `product-discovery.md` y obtener
+   actores, objetivo, reglas, datos, restricciones, riesgos y resultado medible.
 2. Dibujar flujo principal, estados, permisos, recuperación, notificaciones y
    arquitectura. Para logística/mapas, leer `logistics-patterns.md` y buscar
    referencias oficiales solo cuando resuelvan una duda concreta.
@@ -118,7 +126,10 @@ evaluar, no se edita.
 
 ## Protocolo CONSTRUIR
 
-1. Leer `product-discovery.md`, elaborar y comunicar el plan antes de código.
+1. Leer la especificación del caso si existe (`especificacion-producto.md`) o
+   `product-discovery.md`; elaborar y comunicar el plan antes de código. Si
+   durante la construcción el flujo cambia, pausar esa pieza y derivar la
+   "Solicitud de ajuste de producto" a `epica-a-plan-desarrollo`.
 2. Leer `design-system-contract.md`, la referencia del sistema elegido y
    `feature-delivery.md`; reutilizar componentes públicos primero y componer
    semánticamente lo específico del producto. En formularios, alinear los
@@ -174,10 +185,22 @@ evaluar, no se edita.
   mapas ni librería visual por conveniencia sin autorización y evaluación.
 - **B8 — Evidencia honesta.** Build no prueba experiencia: verificar estados,
   teclado, foco, móvil y el flujo crítico; declarar lo no disponible.
+- **B9 — La especificación manda.** Si existe caso de uso, se construyen su flujo,
+  alternos, errores y estados, y se verifican sus criterios de aceptación. Lo marcado
+  como Pendiente no se inventa. Construir de memoria produce una pantalla distinta de
+  la que el equipo validó.
+- **B10 — El builder no edita la especificación.** Un cambio de flujo se deriva a
+  `epica-a-plan-desarrollo` y se construye después del "Ajuste aplicado". Editar
+  historias o casos desde aquí desalinea diagramas, criterios y cobertura; construir
+  el cambio sin actualizarlos deja una especificación falsa.
 
 ## Señales de alerta
 
 - Se empieza a instalar o componer sin haber confirmado el sistema de diseño.
+- Se construye un flujo que tiene caso de uso sin haberlo leído, o se omite un
+  alterno o un estado del caso.
+- El usuario cambia un flujo y se construye el cambio sin derivar la solicitud de
+  ajuste.
 - Se propone editar el sistema de diseño durante la construcción de una aplicación.
 - Se intenta importar un archivo interno o copiar CSS para “avanzar rápido”.
 - Un plan enumera componentes pero no actores, estados ni recuperación.
@@ -199,6 +222,7 @@ evaluar, no se edita.
 
 - `references/design-system-contract.md`
 - `references/design-systems/comsatel-ds.md`
+- `references/especificacion-producto.md`
 - `references/product-discovery.md`
 - `references/logistics-patterns.md`
 - `references/feature-delivery.md`

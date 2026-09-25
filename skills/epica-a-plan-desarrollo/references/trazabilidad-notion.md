@@ -164,6 +164,8 @@ de UX, **Propuesta**. Nunca se inventan textos, formatos ni reglas.
     Un criterio que depende de una decisión se deja escrito como Pendiente.
 12. `Interfaz`: componentes de Comsatel DS y decisiones de UX.
 13. `Dependencias y pendientes`.
+14. `Historial de cambios`: solo cuando el caso cambia después de su primera versión
+    (modo AJUSTAR). Una línea por cambio: fecha, qué cambió, por qué y quién lo pidió.
 
 Ejemplo de referencia: CU-3764-01 en Gestión de producto.
 

@@ -1,8 +1,8 @@
 ---
 name: epica-a-plan-desarrollo
-description: Responsable de Gestión de producto. Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias y casos de uso con criterios de aceptación, y arma el plan de testing y el orden de implementación. Registra y mantiene en Notion la cadena Épica → Historia de usuario → Caso de uso con su estructura estándar (relato, ficha técnica, mapa de cobertura, caso detallado con diagrama). Úsalo cuando el usuario ya tiene la épica escrita, necesita saber en qué módulos y flujos se divide antes de construir o quiere registrar, revisar o mejorar épicas, historias y casos de uso. No redacta historias de usuario desde cero ni implementa código.
+description: Responsable de Gestión de producto. Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias y casos de uso con criterios de aceptación, y arma el plan de testing y el orden de implementación. Registra y mantiene en Notion la cadena Épica → Historia de usuario → Caso de uso con su estructura estándar (relato, ficha técnica, mapa de cobertura, caso detallado con diagrama). Si solo hay una idea o un problema narrado, lo define con una entrevista breve hasta tener una épica e historias validadas. Es el único que actualiza épicas, historias y casos de uso cuando un flujo cambia durante el desarrollo. Úsalo cuando el usuario tiene una idea o una épica escrita, necesita saber en qué módulos y flujos se divide antes de construir, quiere registrar, revisar o mejorar épicas, historias y casos de uso, o el builder deriva un cambio de flujo. No implementa código.
 metadata:
-  version: "1.5.1"
+  version: "1.6.0"
 ---
 
 # Épica a plan de desarrollo
@@ -24,7 +24,9 @@ y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-p
 
 | Hace | No hace |
 |---|---|
-| Segmenta una épica ya escrita en módulos, flujos e historias | Redacta la épica o el problem statement desde cero |
+| Segmenta una épica ya escrita en módulos, flujos e historias | Inventa reglas de negocio o completa una respuesta vaga sin marcarla `[SUPUESTO]` |
+| Define una épica desde una idea, con entrevista y validación (DEFINIR) | Registra en Notion una épica que el usuario no validó |
+| Aplica en historias y casos los cambios de flujo pedidos durante el desarrollo (AJUSTAR) | Cambia la fuente oficial (GitLab) para que coincida con el cambio |
 | Define criterios de aceptación testeables por historia | Implementa o programa el código de ningún módulo |
 | Arma el plan de testing por módulo | Ejecuta los tests — solo los enumera como parte del plan |
 | Marca explícitamente los supuestos que la épica no cubre | Decide por el usuario un supuesto de negocio sin marcarlo como tal |
@@ -39,6 +41,10 @@ y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-p
   salida con un ejemplo relleno. Leer antes de armar el documento.
 - `references/protocolo-analizar.md` — protocolo completo del modo ANALIZAR.
 - `references/protocolo-actualizar.md` — protocolo completo del modo ACTUALIZAR.
+- `references/protocolo-definir.md` — protocolo completo del modo DEFINIR (de una idea
+  a una épica validada).
+- `references/protocolo-ajustar.md` — protocolo completo del modo AJUSTAR (cambios de
+  flujo pedidos durante el desarrollo).
 - `references/trazabilidad-notion.md` — protocolo condicional para leer, relacionar,
   auditar y mejorar la cadena Épica → historia de usuario → casos de uso en Notion.
 
@@ -46,7 +52,8 @@ y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-p
 
 1. **Entrada legible**: la épica debe llegar como texto, archivo, export/captura o
    contenido leído desde Notion cuando el usuario autorizó esa consulta y el conector
-   está disponible. GitLab es una fuente opcional: se consulta solo si la API
+   está disponible. Si no hay nada escrito y el usuario trae una idea o un problema
+   narrado, el modo es DEFINIR: la entrevista produce la fuente. GitLab es una fuente opcional: se consulta solo si la API
    corporativa ya está disponible en ese equipo, normalmente mediante VPN. Su ausencia
    no bloquea un plan basado en Notion. Si no hay ninguna fuente legible, pedir
    captura o export; no solicitar credenciales ni acceso VPN.
@@ -70,6 +77,8 @@ y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-p
 |---|---|---|
 | `ANALIZAR` | No hay plan previo para este proyecto/épica | Leer `references/protocolo-analizar.md` completo y seguirlo |
 | `ACTUALIZAR` | Ya existe un plan versionado y la épica cambió o se pide ajustar el desglose | Leer `references/protocolo-actualizar.md` completo y seguirlo |
+| `DEFINIR` | No hay épica ni historias escritas; el usuario trae una idea, un problema o una necesidad | Leer `references/protocolo-definir.md` completo y seguirlo; al validar, continuar en ANALIZAR |
+| `AJUSTAR` | Durante el desarrollo cambia un flujo: llega una "Solicitud de ajuste de producto" del builder o el usuario pide cambiar cómo funciona algo ya especificado | Leer `references/protocolo-ajustar.md` completo y seguirlo |
 
 Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 
@@ -105,6 +114,14 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - **B10 — Cobertura antes de completar**: no declarar una historia lista ni crear una
   casuística por intuición. Debe contrastar cada flujo, regla y criterio de la historia
   contra sus casos de uso vinculados; un hueco queda como propuesta o decisión pendiente.
+- **B11 — Idea validada antes de registrar**: en DEFINIR, la épica y las historias no
+  se registran en Notion ni se segmentan hasta que el usuario las valida. Registrar un
+  borrador con supuestos ocultos convierte una suposición en requisito.
+- **B12 — Un solo dueño de la especificación**: épicas, historias y casos de uso solo
+  se modifican desde este skill. Un cambio de flujo actualiza caso, diagrama,
+  criterios, ficha técnica y, si corresponde, historia y épica, y deja registro en el
+  `Historial de cambios` del caso. Si otro skill edita la especificación, el diagrama,
+  la cobertura y los criterios se desalinean sin que nadie lo note.
 
 ## Racionalizaciones comunes
 
@@ -118,6 +135,8 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 | "No tengo acceso al repo, asumo que no hay nada construido todavía" | Declarar "no verificado", nunca asumir que está vacío (B5) |
 | "El plan quedó claro en la charla, no hace falta que el archivo lo repita todo" | El documento debe bastarle a un agente que no vio esta conversación (B6) |
 | "Los casos existentes cubren la historia porque sus títulos se parecen" | Hay que leer el contenido de la historia y de cada caso, contrastar cobertura y registrar huecos o contradicciones (B10). |
+| "La idea está clara, la registro en Notion y después la ajustamos" | Sin validación, los supuestos entran como requisitos (B11). |
+| "El cambio es chico, solo corrijo el paso del flujo" | Un paso cambiado suele mover estados, criterios y el diagrama; se actualiza todo lo afectado y se registra en el historial (B12). |
 
 ## Señales de alerta
 
@@ -140,8 +159,8 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - Si hubo mapeo en Notion, informar historias revisadas, casos asociados, cobertura,
   mejoras propuestas o aplicadas, relaciones y decisiones pendientes; no afirmar que
   GitLab fue actualizado.
-- Cierre con el formato de `references/protocolo-analizar.md` o
-  `references/protocolo-actualizar.md` según el modo usado.
+- Cierre con el formato del protocolo del modo usado (`protocolo-analizar.md`,
+  `protocolo-actualizar.md`, `protocolo-definir.md` o `protocolo-ajustar.md`).
 
 ## Referencias
 
@@ -149,4 +168,6 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - `references/plantilla-plan-desarrollo.md`
 - `references/protocolo-analizar.md`
 - `references/protocolo-actualizar.md`
+- `references/protocolo-definir.md`
+- `references/protocolo-ajustar.md`
 - `references/trazabilidad-notion.md`

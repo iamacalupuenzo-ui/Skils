@@ -44,6 +44,9 @@ inspección de código.
   nunca se resuelve con una excepción de una sola pantalla.
 - La ruta se abre, el flujo principal completa y cada estado del plan se
   verifica: carga, vacío, error, permisos, responsive y recuperación aplicable.
+- Si hay caso de uso, cada criterio de aceptación (CA) queda verificado con su
+  evidencia, y cada alterno, error y estado de pantalla del caso existe en la
+  interfaz. Lo marcado como Pendiente se declara en el cierre, no se simula.
 - La navegación por teclado conserva orden y foco; controles tienen nombre;
   errores y estados se anuncian sin interrupciones innecesarias.
 - Un mapa, si existe, tiene alternativa de lista/detalle y comunica frescura,
@@ -59,6 +62,8 @@ inspección de código.
 |---|---|---|
 | “Crea un login” sin repo ni sistema indicado | Pregunta qué sistema de diseño usar antes de instalar nada. | Instalar Comsatel DS (u otro) por costumbre. |
 | “Crea un login con Comsatel DS” sin repo | Plan + bootstrap limpio, librería versionada y estilos públicos. | Clonar o modificar Comsatel DS. |
+| “Construye CU-3764-01” | Lee el caso y la ficha, construye flujo, alternos, errores y estados, y verifica cada CA. | Construir solo el camino feliz o de memoria. |
+| “Mejor que no pida confirmación antes de guardar” durante el desarrollo | Pausa esa pieza y deriva la Solicitud de ajuste a `epica-a-plan-desarrollo`. | Cambiar el código y dejar el caso de uso desactualizado. |
 | “Usa mi sistema de diseño personal” | Pide paquete y documentación, lo registra en el README y trabaja con su API pública. | Suponer que funciona como Comsatel DS o copiar sus recetas. |
 | “Agrega alertas de flota” en repo existente | Plan de severidad, audiencia, estado y recuperación antes de UI. | Toast genérico sin acción o duplicado. |
 | “Haz un mapa de unidades” | Lista equivalente, dato fresco/obsoleto y estados de mapa. | Mapa visual sin alternativa ni error. |

@@ -9,7 +9,7 @@ description: >
   construcción elige el builder según el stack y el sistema de diseño del
   proyecto. No implementa componentes ni reemplaza los skills que coordina.
 metadata:
-  version: "2.0.0"
+  version: "2.0.1"
 ---
 
 # Product Orchestrator
