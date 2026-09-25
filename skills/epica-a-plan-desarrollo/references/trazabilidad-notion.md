@@ -145,24 +145,56 @@ de UX, **Propuesta**. Nunca se inventan textos, formatos ni reglas.
    ficha técnica.
 2. `Precondiciones y garantías`: precondición, garantía de éxito y garantía mínima (lo que
    queda cierto aunque falle o se cancele).
-3. `Flujo principal`: pasos numerados `**Actor:** …` / `**Sistema:** …`, nombrando
+3. `Diagrama`: una línea de leyenda y un bloque ```` ```mermaid ```` construido desde el
+   texto (ver reglas abajo).
+4. `Flujo principal`: pasos numerados `**Actor:** …` / `**Sistema:** …`, nombrando
    pantallas, botones y campos.
-4. `Flujos alternos`: `A1 — nombre (paso n)`: qué cambia y a qué paso vuelve. Son caminos
+5. `Flujos alternos`: `A1 — nombre (paso n)`: qué cambia y a qué paso vuelve. Son caminos
    válidos, incluida la cancelación.
-5. `Errores y excepciones`: `E1 — nombre (paso n)`: validación, permisos, servicio caído o
+6. `Errores y excepciones`: `E1 — nombre (paso n)`: validación, permisos, servicio caído o
    tiempo agotado; qué ve el usuario y cómo se recupera.
-6. `Estados de pantalla`: tabla momento / estado / qué ve el usuario, con inicial, carga,
+7. `Estados de pantalla`: tabla momento / estado / qué ve el usuario, con inicial, carga,
    vacío o sin resultado, parcial, error y éxito donde apliquen.
-7. `Campos y validaciones`: tabla campo / obligatorio / validación.
-8. `Mensajes`: cada momento que necesita un texto, con el texto exacto o Pendiente.
-9. `Reglas aplicadas`: referencias `R-xx` a la ficha técnica, sin copiar su texto.
-10. `Criterios de aceptación`: `CA-nn — nombre (A1/E1)` en DADO/CUANDO/ENTONCES; uno para
+8. `Campos y validaciones`: tabla campo / obligatorio / validación. Si el caso no tiene
+   campos, se omite.
+9. `Mensajes`: cada momento que necesita un texto, con el texto exacto o Pendiente.
+10. `Reglas aplicadas`: referencias `R-xx` a la ficha técnica, sin copiar su texto.
+11. `Criterios de aceptación`: `CA-nn — nombre (A1/E1)` en DADO/CUANDO/ENTONCES; uno para
     el camino principal, uno por alterno y uno por error. Reemplazan la sección de pruebas.
     Un criterio que depende de una decisión se deja escrito como Pendiente.
-11. `Interfaz`: componentes de Comsatel DS y decisiones de UX.
-12. `Dependencias y pendientes`.
+12. `Interfaz`: componentes de Comsatel DS y decisiones de UX.
+13. `Dependencias y pendientes`.
 
 Ejemplo de referencia: CU-3764-01 en Gestión de producto.
+
+### Reglas del diagrama
+
+El diagrama muestra **dónde se ramifica** el flujo, no repite el detalle. Se construye
+desde el texto y, si no coinciden, se corrige el diagrama.
+
+- `flowchart TD` (vertical, legible en el celular). Empieza en un nodo de inicio con forma
+  `([…])` (la pantalla de partida) y termina en uno de fin `([…])` (el resultado).
+- Flujo principal con flechas sólidas: un nodo por paso, `"n. verbo + objeto"`, máximo seis
+  palabras.
+- Cada alterno y cada error es **un solo nodo** `"A1 nombre corto"` / `"E1 nombre corto"`,
+  unido con flecha punteada `-.->` al paso donde aparece y, si vuelve, al paso de retorno.
+  Los reintentos llevan la etiqueta en la flecha: `E3 -. Reintentar .-> P5`.
+- Nunca desarrollar un alterno paso a paso: si lo necesita, es otro caso de uso.
+- Clases fijas, al final del bloque:
+
+```text
+classDef actor fill:#DBEAFE,stroke:#2563EB,color:#1E3A8A
+classDef sistema fill:#EFF6FF,stroke:#93C5FD,color:#1E3A8A
+classDef alterno fill:#F3F4F6,stroke:#6B7280,color:#374151
+classDef error fill:#FEE2E2,stroke:#DC2626,color:#7F1D1D
+classDef pendiente stroke-dasharray:5 5
+```
+
+  Pasos del actor → `actor`; del sistema → `sistema`; alternos → `alterno`; errores →
+  `error`. Todo lo que depende de una decisión pendiente suma `pendiente`.
+- Leyenda de una línea antes del bloque: "Azul: flujo principal (operador en azul fuerte,
+  sistema en azul claro). Gris: flujos alternos. Rojo: errores. Borde punteado: pendiente de
+  decisión. El texto de abajo manda: si no coinciden, se corrige el diagrama."
 
 ## Informe de cobertura
 
