@@ -8,7 +8,7 @@ description: >
   Deriva al skill especializado con el contexto y límites preservados; no
   implementa componentes del DS ni reemplaza los skills que coordina.
 metadata:
-  version: "1.4.0"
+  version: "1.4.1"
 ---
 
 # Comsatel Product Orchestrator
@@ -144,20 +144,16 @@ que no estén bloqueadas.
    épica; si no existe, solicita el dato o, cuando el usuario lo autorizó y la
    capacidad existe, usa `gitlab-source.md`. No convierte una URL en
    requerimiento de negocio sin leer su contenido.
-2. Deriva la operación a `gestion-proyectos` para validar el proyecto, las
-   dependencias, el criterio de cierre y la evidencia. Usa `gestor-notion` en
+2. Deriva el proyecto y sus tareas a `gestion-proyectos` (Gestión de proyectos) y la
+   épica, las historias y los casos de uso a `epica-a-plan-desarrollo` (Gestión de
+   producto), que es su responsable y conoce su estructura. Usa `gestor-notion` en
    modo MODELO solo para un cambio explícitamente autorizado de bases,
-   propiedades, relaciones o vistas. Si el modelo ya está validado, crea o
-   actualiza únicamente los registros operativos afectados.
+   propiedades, relaciones o vistas.
 3. Conserva la cadena exacta: Proyecto → Épica → Historia de usuario → Caso
-   de uso. La historia conserva la fuente y alcance oficial; cada caso cubre
-   un flujo o regla verificable. Relee la historia y sus casos relacionados
-   antes de crear otro, mejora el existente cuando cubra el mismo flujo y no
-   lo presenta como una historia de usuario nueva.
-4. Guarda en el cuerpo de la épica la fuente y el plan versionado que produjo
-   `epica-a-plan-desarrollo`; las relaciones y estados se guardan como
-   propiedades. No reemplaza una versión anterior del plan sin conservar su
-   historial.
+   de uso. La historia conserva la fuente y alcance oficial; cada flujo
+   independiente es un caso de uso de esa historia, nunca una historia nueva.
+4. El plan versionado vive en el archivo local; en Notion solo se actualiza la
+   propiedad `Versión del plan` de la épica. No se pega el plan en su cuerpo.
 5. Después de escribir, relee los registros y ambos extremos de cada relación.
    Reporta URLs, campos modificados, evidencia disponible y cualquier condición
    que siga bloqueada. No marca una historia o épica como hecha por el estado de

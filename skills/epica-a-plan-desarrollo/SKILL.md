@@ -1,8 +1,8 @@
 ---
 name: epica-a-plan-desarrollo
-description: Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias de usuario más chicas (INVEST) con criterios de aceptación, y arma el plan de testing y el orden de implementación. Úsalo cuando el usuario ya tiene la épica escrita y necesita saber en qué módulos y flujos se divide antes de construir. No redacta historias de usuario desde cero ni implementa código.
+description: Responsable de Gestión de producto. Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias y casos de uso con criterios de aceptación, y arma el plan de testing y el orden de implementación. Registra y mantiene en Notion la cadena Épica → Historia de usuario → Caso de uso con su estructura estándar (relato, ficha técnica, mapa de cobertura, caso detallado con diagrama). Úsalo cuando el usuario ya tiene la épica escrita, necesita saber en qué módulos y flujos se divide antes de construir o quiere registrar, revisar o mejorar épicas, historias y casos de uso. No redacta historias de usuario desde cero ni implementa código.
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
 ---
 
 # Épica a plan de desarrollo
@@ -15,6 +15,10 @@ agente de desarrollo (Claude Code u otro) puede tomar como input para implementa
 sin depender de esta conversación. Cuando el usuario autoriza un mapeo en Notion,
 conserva además la trazabilidad entre la épica, cada historia de usuario y sus casos
 de uso; lee esa cadena completa antes de concluir que el alcance está cubierto.
+
+Es el **responsable de la base Gestión de producto** (Épicas, Historias de usuario y Casos
+de uso) y de su estructura, definida en `references/trazabilidad-notion.md`. Los proyectos
+y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-proyectos`.
 
 ## Lo que ES y NO ES
 
@@ -91,9 +95,11 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - **B7 — No implementa**: este skill entrega el plan; no escribe código de
   producción ni ejecuta los tests que enumera.
 - **B8 — Fuente no equivale a desglose**: cuando una historia fuente contiene más de
-  un flujo de valor independiente, se conserva como fuente y se crean historias
-  derivadas INVEST relacionadas. Omitir esta relación pierde trazabilidad y mezcla
-  alcances.
+  un flujo de valor independiente, se conserva como una sola historia (con su fuente
+  y su alcance oficial) y cada flujo se registra como un caso de uso propio
+  `CU-<historia>-<nn>` relacionado por `Historia padre`. No se crean historias
+  derivadas: la base no las relaciona y duplicaría el alcance. Las "historias más
+  chicas" del plan local se registran en Notion como casos de uso.
 - **B9 — GitLab solo lectura**: aun cuando el token permita escritura, este skill
   nunca modifica issues, labels, estados, comentarios, relaciones, responsables ni fechas.
 - **B10 — Cobertura antes de completar**: no declarar una historia lista ni crear una
@@ -120,7 +126,7 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 - Un supuesto mezclado con los hechos de la épica sin la marca `[SUPUESTO]`.
 - Un archivo de salida que reemplaza una versión anterior en vez de crear una nueva.
 - Un módulo propuesto que ya existe en el código sin que se haya señalado el contraste.
-- Una historia fuente amplia con varios flujos pero sin historias derivadas vinculadas.
+- Una historia fuente amplia con varios flujos pero con un solo caso de uso que los mezcla.
 - Una historia sin casos de uso asociados, un caso sin historia padre o un flujo de la historia sin caso que lo cubra.
 
 ## Formato de respuesta
