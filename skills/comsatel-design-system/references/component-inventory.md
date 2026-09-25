@@ -470,6 +470,10 @@ se repite en otro proyecto:
   `build.options.styles` (leaflet.css→maplibre-gl.css, dos builders) y
   `build.options.assets` (worker + shared).
 
+Actualización: 2026-09-14, reconstrucción de Logos. Se añadió la ruta `/foundations/logos`, se habilitó el enlace en la navegación y se documentaron las variantes real y compacta existentes en el menú, además del recurso PNG `design-system-by-comsatel.png` para identificar la plataforma. La marca textual anterior del encabezado fue reemplazada por ese recurso, preservando el enlace al inicio y su nombre accesible. Las descripciones quedaron fuera de las superficies visuales; los lineamientos incluyen ejemplos recomendado/evita y criterios de texto alternativo. Verificación: `npm run build`, reinicio de `ng serve` y ruta cargada sin errores.
+
+Actualización: 2026-09-13, cierre de Motion y Motion tokens. El motor GSAP resuelve curvas y duraciones desde tokens; se migraron Motion, Accordion, Collapse y PressScale para evitar valores duplicados. Ambas páginas ahora documentan accesibilidad y lineamientos; el Playground, presets y botones Repetir se comprobaron en un tab limpio. Verificación: `npm run build`, reinicio de `ng serve`, rutas `/animations/motion` y `/animations/tokens` con HTTP 200, interacción real de Mostrar/Repetir y árbol de accesibilidad. `prefers-reduced-motion` está cubierto por el guard compartido `prefersReducedMotion()` antes de cada tween de Motion.
+
 Actualización: 2026-09-10, reconstrucción de `AppLayout` y navegación. Se
 tokenizaron bordes, motion y tipografía; se agregaron landmarks y estados ARIA
 (`aria-expanded`, `aria-controls`, `aria-current`), nombres accesibles en rail,
@@ -482,7 +486,7 @@ compuestos, incluyendo los pendientes de Angular y los pendientes de fuente
 React.
 
 Este archivo se actualiza al final de cada auditoría o reconstrucción sobre
-el proyecto Angular (`D:\Investigacion\Comsatel-DS-Angular`). Es el único
+el proyecto Angular (`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS`; alternativa histórica: `D:\Investigacion\Comsatel-DS-Angular`). Es el único
 archivo del skill que se espera que cambie con el uso — los demás son
 conocimiento estático de la arquitectura.
 
@@ -679,7 +683,7 @@ AvatarGroup y AvatarAddButton). Se cerraron los criterios C1–C13, la paridad
 documental y la verificación visual del conjunto el 2026-09-10.
 
 Última reconstrucción individual: `Input` + `InputGroup` (incluye
-InputGroupAddon, InputGroupInput e InputGroupText). Se cerraron los criterios
+InputGroupAddon, InputGroupInput, InputGroupText y PasswordInput). Se cerraron los criterios
 C1–C13, la API nativa de accesibilidad, la paridad documental con React y la
 verificación visual/interactiva del conjunto el 2026-09-10.
 
@@ -814,7 +818,7 @@ envolverlo dentro del sistema de diseño no exime a los desarrolladores que
 lo consuman después (confirmado con la FAQ oficial de PrimeUI). La única
 versión MIT permanente (PrimeNG 21) no soporta Angular 22, que es lo que
 corre este proyecto. Historial completo de la evaluación en
-`D:\Investigacion\Comsatel-DS-Angular\PRIMENG_PLAN.md`.
+`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS\PRIMENG_PLAN.md` (o `D:\Investigacion\Comsatel-DS-Angular\PRIMENG_PLAN.md` si esa fue la ruta validada).
 
 **Todo componente se construye a mano, sin excepción — ver B14 en
 `SKILL.md` y `references/accessibility-patterns.md`.** Ese archivo tiene el
@@ -920,7 +924,7 @@ navegador con interacción real:
     dejando un hueco enorme antes del botón de limpiar (se veía "la X muy
     a la derecha") — este SÍ funciona con `width:100%` normal porque no
     hay ningún `display:contents` de por medio en ese caso.
-- Input + InputGroup/InputGroupAddon/InputGroupInput/InputGroupText —
+- Input + InputGroup/InputGroupAddon/InputGroupInput/InputGroupText/PasswordInput —
   `projects/comsatel-ds/src/lib/input/`. `InputGroup` reacciona a
   foco/inválido/disabled del `input` proyectado con selectores `:has()`
   puros (`.cs-input-group:has([data-slot='input-group-control'][aria-invalid='true'])`,
@@ -1559,7 +1563,7 @@ solo porque exista una ronda global histórica.
 
 | Componente | Alcance cerrado | Verificación ejecutada | Estado |
 |---|---|---|---|
-| Button | C1: bordes y anillo de foco atados a tokens; paridad de lineamientos; `aria-label` para botón solo-ícono y nombre de respaldo durante loading; documentación de semántica, teclado y estados. | Build de librería, app local con árbol de accesibilidad + Tab, build de Storybook; rutas Button, Badge y Avatar con sección de accesibilidad. | Cerrado — 2026-09-10 |
+| Button | C1: bordes y anillo de foco atados a tokens; paridad de lineamientos; `aria-label` para botón solo-ícono y nombre de respaldo durante loading; documentación de semántica, teclado y estados. El contenido proyectado conserva su espacio durante `loading`, mientras el spinner se centra sobre él, evitando cambios de ancho. | Build de librería, app local con árbol de accesibilidad + Tab, build de Storybook; rutas Button, Badge y Avatar con sección de accesibilidad. Cambio de carga pendiente de validación visual solicitada por el usuario. | Pendiente de validación — 2026-09-18 |
 | Badge | C1: borde base atado a `--layout-border-thin`; paridad de variantes, tamaños, íconos y lineamientos de uso; documentación de etiqueta informativa, significado textual e interacción. | Build de librería y rutas Button, Badge y Avatar con sección de accesibilidad. | Cerrado — 2026-09-10 |
 | Tag | C1-C3/C13: severidades, escala y line-height se delegan a `cs-badge`; C7-C8: ícono del registro curado y composición del primitivo Badge sin CSS visual duplicado; C9: no interactivo, sin foco por defecto; C12: el texto permanece visible junto al color; B15.2: lineamientos en dos columnas. API con `value`, `severity`, `size`, `rounded`, `icon`, `aria-label` y `aria-live`. | Build de librería y app, reinicio del servidor, ruta `/components/tag`, árbol de accesibilidad, cambio real de severidad, switch de redondeado (`role=switch`, `aria-checked`), revisión visual de Playground/severidades/tamaños/íconos y consola sin errores. | Cerrado — 2026-09-10 |
 | Progress indicator | C1-C3/C13: nodos, conectores y etiquetas usan tokens de layout y tipografía con line-height; C7-C8: ícono `check` del registro curado y composición autónoma; C9-C10: recorrido horizontal/vertical con líneas limitadas entre centros en horizontal y conectores visibles en vertical; C11-C12: estados `done`/`active`/`pending` se comunican con texto y `aria-current`; B15.2: lineamientos en dos columnas. API con `steps`, `orientation`, `interactive`, `ariaLabel` y `stepClick`; `interactive` convierte nodos en botones nombrados. | Build de librería y app, reinicio del servidor, ruta `/components/progress-indicator`, árbol de accesibilidad (`list`/`listitem`, `aria-current`), controles con etiquetas en español y valores técnicos internos, cambio real del switch `Interactivo`, click real de paso en Playground y sección interactiva, revisión visual horizontal/vertical, consola sin errores y build de Storybook con Default/Vertical/Interactive. | Cerrado — 2026-09-11 |
@@ -1582,7 +1586,7 @@ solo porque exista una ronda global histórica.
 | Banner | C1: bordes, padding y foco atados a tokens; C2-C3/C13: título, cuerpo y acción mantienen `content/ui` (13/19.5px), igual que Card Banner; la jerarquía se conserva por peso y color. El reinicio de ejemplos usa `content/note` (12/18px) y padding compacto; C7: íconos curados por variante; C9: acción y cierre quedan dentro del contenedor sin recorte; C12: estados semánticos conservan texto además de color. API con acción y cierre nombrados, secciones de accesibilidad y lineamientos en pares de dos columnas, ejemplos con acción/cierre verificables y `aria-live` en los resultados. | `npm run build:lib`, reinicio de servidor y ruta `/components/banner`; estructura de texto, acciones y cierres confirmada en el árbol de accesibilidad. | Cerrado — 2026-09-11 |
 | Card (todas sus piezas) | C1: bordes de Action/CardBanner/Preview/Spotlight atados a `--layout-border-thin`; C7-C8: composición con AvatarGroup, Badge, Button, Toggle e Icon; C10: contenido y controles se mantienen dentro de la tarjeta; C12-C13: variantes y textos conservan contraste y line-height. Action card expone `buttonClick`/`toggleCheckedChange`, Toggle usa el título como nombre accesible y Preview button usa «Más opciones»; documentación de accesibilidad y lineamientos en pares de dos columnas con toggle real. | Build de librería y app, reinicio de servidor, ruta `/components/card`, árbol de accesibilidad, toggle de recomendación (estado y `aria-label`), botones de opciones nombrados, seis pares de lineamientos y revisión visual de la grilla de dos columnas. | Cerrado — 2026-09-10 |
 | Modal | C1: overlay, superficie, sombra, bordes y foco atados a tokens; C2-C3/C13: título `content/highlight` (18/27px), cuerpo `content/ui` (13/19.5px) y acciones `Button sm` conservan jerarquía; C4: portal, signals y transición; C9-C10: panel con scroll de body/viewport sin recorte; C12: apariencia warning/danger sincroniza título y acción principal. Motor con `role="dialog"`, `aria-modal`, `aria-labelledby`, foco inicial configurable, trampa de foco, Escape, cierre por overlay, restauración de foco y scroll lock; `closeLabel` configurable; accesibilidad y lineamientos en pares de dos columnas con modales reales, estados anunciables y registro de íconos compartido. | Build de librería y app, build de Storybook con historias Default/Warning/Danger/WithoutCloseButton/LongContent, ruta local `/components/modal`, árbol ARIA, apertura real, foco visible, Escape, cierre y restauración, acciones de footer, overlay y revisión visual tipográfica. | Cerrado — 2026-09-10 |
-| Table + TableTree | C4: el buscador del playground compone `InputGroup` con addon de ícono en vez de intentar atravesar la encapsulación de `cs-input`; C8: el ejemplo de lineamientos reutiliza `cs-skeleton`; Table conserva tabla nativa, carga anunciable y filas skeleton, mientras TableTree mantiene carga perezosa con `children === undefined`. | Build de librería y app; servidor reiniciado; ruta `/components/table` con búsqueda, carga inicial y shimmer visibles; ruta `/components/table-tree` con expansión perezosa visible y resolución posterior de sus hijos. | Cerrado — 2026-09-10 |
+| Table + TableTree | C4: el buscador del playground compone `InputGroup` con addon de ícono en vez de intentar atravesar la encapsulación de `cs-input`; C8: el ejemplo de lineamientos reutiliza `cs-skeleton`. `cs-column-manager` es el control reutilizable de administración de columnas: toma la geometría, fondo, borde y foco de InputDropdown/Select, pero conserva semántica de botón y panel propio porque reordenar por arrastre y mostrar/ocultar no son una selección de valor. El trigger comunica `X de X visibles` sin repetir un ojo decorativo; las filas del panel usan la misma altura compacta de Select `sm`, sin separación entre opciones. Mantiene al menos una columna visible. Table conserva tabla nativa, carga anunciable y filas skeleton, mientras TableTree mantiene carga perezosa con `children === undefined`. | Build de librería y app, Storybook `Componentes/ColumnManager` y ruta `/components/table`; panel de Columnas con visibilidad real, protección contra tabla vacía, cierre con Escape y orden por arrastre. Ruta `/components/table-tree` con expansión perezosa visible y resolución posterior de sus hijos. | Cerrado — 2026-09-14 |
 | Skeleton | C4: el host vacío se estiliza con `:host`, no con un selector interno que Emulated no puede aplicar; usa gradiente `base`/`shimmer`, animación ambiente explícita de 1.6s y alternativa estática para `prefers-reduced-motion`. | Build de librería y app; verificación visual de las cinco filas de Table y de la fila perezosa de TableTree. | Cerrado — 2026-09-10 |
 | Patrón de lineamientos | `guide-grid` y `guidelines-grid` fijados a dos columnas: Recomendado a la izquierda y Evita a la derecha; cada tarjeta conserva su demo vivo dentro del cuerpo. | Recarga correcta del servidor Angular y rutas Button, Card, Banner y Modal actualizadas; acciones, toggles, cierres y modales interactivos comprobados. | Cerrado — 2026-09-10 |
 
@@ -1602,7 +1606,7 @@ individual trazable.
 
 | Prioridad | Componente o familia | Estado de evaluación | Siguiente alcance |
 |---|---|---|---|
-| Cerrado | Button | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
+| P1 | Button | Cambio de carga: debe conservar el ancho del contenido proyectado con spinner centrado. | Validar visualmente reposo y `loading` en xs/sm/md/lg, texto largo e ícono; después actualizar la ficha individual. |
 | Cerrado | Badge | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Tag | Componente nuevo solicitado: API semántica, composición con Badge, accesibilidad, Storybook y lineamientos verificados. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Progress indicator | Componente nuevo solicitado: recorrido por etapas, estados, orientaciones, líneas de conexión horizontales/verticales, interacción opcional, accesibilidad, Storybook y lineamientos verificados. | Ninguno; reabrir solo ante cambio. |
@@ -1615,12 +1619,14 @@ individual trazable.
 | Cerrado | Checkbox | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Toggle | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Tooltip | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
-| Cerrado | Input + InputGroup | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
+| Cerrado | Input + InputGroup + PasswordInput | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Dropdown + InputDropdown | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | AppLayout + navegación | Ficha individual completa. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Motion | Auditoría y reconstrucción individual completa: borde tokenizado, íconos de lineamientos migrados a cs-icon, botón "Repetir" alineado al patrón de acciones auxiliares (content/note) en las 3 piezas que lo repetían. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Tema de mapa | Auditoría y reconstrucción individual completa: tokens, motor MapLibre+OpenFreeMap, contraste de proveedor (etiquetas y calles) y marcador real reusado. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Marcadores | Auditoría y reconstrucción individual completa: tokens, escala tipográfica por iconTier, íconos curados y contenido de integración actualizado a MapLibre. | Ninguno; reabrir solo ante cambio. |
+| Cerrado | Logos | Página de fundamentos reconstruida con las variantes aprobadas de menú, ejemplos de lineamientos y criterios de accesibilidad. El paquete público incluye `CFlotasLogo`: wordmark `C-` + cápsula `FLOTAS` + `by COMSATEL` e isotipo `C-` + cápsula `FL`, SVG auto-contenidos, tamaños, `fit` y alternativa accesible configurable; aliases heredados preservados. | Ninguno; reabrir solo ante cambio. |
+| Cerrado | Motion + Motion tokens | C1-C13: durations/easings, bordes, espaciado y tipografía se atan a tokens; estados de entrada/salida usan signals; GSAP respeta movimiento reducido; documentación incluye accesibilidad, lineamientos y controles nombrados con foco visible. | `npm run build`, reinicio de servidor, rutas `/animations/motion` y `/animations/tokens`, toggle Mostrar, botones Repetir y árbol de accesibilidad. |
 | Cerrado | Toast | Reconstrucción individual: anuncio accesible, acciones y cierre verificables, lineamientos en pares, documentación de accesibilidad y Storybook. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Popover | Reconstrucción individual: portal, posicionamiento por colisión, vínculo ARIA trigger/panel, Escape con retorno de foco, lineamientos interactivos y Storybook. | Ninguno; reabrir solo ante cambio. |
 | Cerrado | Spotlight | Reconstrucción individual: diálogo no modal, relaciones ARIA, Escape opcional, posiciones sin colisión, lineamientos interactivos, accesibilidad y Storybook verificados. | Ninguno; reabrir solo ante cambio. |
