@@ -10,7 +10,7 @@ description: >
   herramienta", "registra lo que probamos".
 argument-hint: "[producto, herramienta o método a investigar, o 'registro' para documentar uno ya probado]"
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   entornos: "Codex, Claude Code"
 ---
 
@@ -49,7 +49,24 @@ la investigación.
 - `references/estructura-de-informe.md` — las dos capas del informe (lectura arriba, registro técnico abajo), la guía paso a paso, el formato en Notion, las etiquetas de evidencia y la tabla de clasificación de activos. **Leer antes de escribir cualquier informe.**
 - `references/evaluacion-en-uso.md` — protocolo para probar un producto sobre algo nuestro: línea base, revisión de seguridad previa, rondas, verificación independiente y veredicto. **Leer completo antes de ejecutar el producto.**
 - `references/notion-research.md` — esquema de la base Investigaciones. Leer solo cuando el usuario pide guardar o actualizar en Notion.
-- `references/casos/` — registros de investigaciones anteriores. Consultar antes de abrir una nueva, para no repetir trabajo y para reusar el método que ya funcionó.
+- `references/casos/` — registros anteriores a 2026-09-24. Solo lectura: los casos nuevos van en la carpeta de investigaciones (ver abajo).
+
+---
+
+## Dónde se guardan las investigaciones
+
+- **Carpeta local:** `D:\Investigacion - V4\02-investigaciones`. Se respalda en Google
+  Drive. Ahí van los informes nuevos y sus versiones, nunca dentro de la carpeta del skill:
+  `update` reemplaza la copia instalada entera y borraría lo escrito ahí.
+- **Nombre del archivo:** `investigador-de-producto-[objeto]-v[N]-[YYYY-MM-DD].md`, sin
+  tildes ni espacios. Una versión nueva es un archivo nuevo; las anteriores no se
+  sobrescriben.
+- **Proyecto asociado:** si la investigación pertenece a un proyecto, su `_proyecto.md`
+  vive en `D:\Investigacion - V4\01-proyectos\[proyecto]\` y enlaza el informe.
+- **Notion:** base Investigaciones, cuando el usuario lo pide (B10). Si existe la página,
+  la copia local la enlaza y la página enlaza la copia local.
+- Si la carpeta no existe en este equipo, preguntar la ruta antes de escribir. No volver
+  a `references/casos/` ni a `Documents\Proyectos`.
 
 ---
 
@@ -63,13 +80,18 @@ $skillRoots = @(
 ) | Where-Object { Test-Path -LiteralPath $_ }
 $skillRoot = $skillRoots | Select-Object -First 1
 Test-Path -LiteralPath (Join-Path $skillRoot 'references\evaluacion-en-uso.md')
-Get-ChildItem -LiteralPath (Join-Path $skillRoot 'references\casos') -File -ErrorAction SilentlyContinue | Select-Object Name
+$researchDir = 'D:\Investigacion - V4\02-investigaciones'
+Test-Path -LiteralPath $researchDir
+Get-ChildItem -LiteralPath $researchDir, (Join-Path $skillRoot 'references\casos') -File -ErrorAction SilentlyContinue | Select-Object Name
 ```
 
 - Si la primera da `False` → falta el método. Declararlo y no ejecutar ningún producto
   hasta tenerlo: sin protocolo, una prueba en uso es una corrida a ciegas.
-- El segundo comando lista los casos existentes: es el chequeo anti duplicado. Si ya hay
-  un caso del mismo objeto, leerlo y continuarlo en vez de abrir otro.
+- Si la carpeta de investigaciones da `False` → preguntar la ruta en este equipo antes
+  de escribir cualquier informe.
+- El último comando lista los informes existentes (carpeta nueva y casos anteriores): es
+  el chequeo anti duplicado. Si ya hay uno del mismo objeto, leerlo y continuarlo en una
+  versión nueva en vez de abrir otro.
 - En modo EN_USO, además: confirmar cuál es el sujeto de prueba real y que se puede medir
   antes de tocarlo. Si no hay forma de medir el estado inicial, decirlo y acordar la
   métrica antes de seguir.
@@ -179,9 +201,9 @@ Queda como capacidad propia: [qué]
 
 ## REGISTRO — Protocolo
 
-1. Verificar anti duplicado en `references/casos/`.
-2. Escribir el caso en `references/casos/[YYYY-MM]-[objeto].md` con el contenido mínimo
-   que exige `references/evaluacion-en-uso.md`.
+1. Verificar anti duplicado en la carpeta de investigaciones y en `references/casos/`.
+2. Escribir el informe en `D:\Investigacion - V4\02-investigaciones\investigador-de-producto-[objeto]-v[N]-[YYYY-MM-DD].md`
+   con el contenido mínimo que exige `references/evaluacion-en-uso.md`.
 3. Si el usuario pide Notion: leer `references/notion-research.md`, usar la base
    **Investigaciones**, crear registro nuevo para un objeto nuevo o actualizar el
    existente si es continuación. Nunca escribir en Notion sin pedido explícito (B10).
@@ -192,7 +214,7 @@ Queda como capacidad propia: [qué]
 ```
 Registro — [objeto]
 ---------------------
-Caso en disco: references/casos/[archivo]
+Caso en disco: D:\Investigacion - V4\02-investigaciones\[archivo]
 Notion:        [URL o "no solicitado"]
 Fase:          [Propuesta / En investigacion / En validacion / Aprobada / Descartada]
 Pendiente:     [experimento o verificación que quedó abierta]
@@ -223,9 +245,9 @@ Pendiente:     [experimento o verificación que quedó abierta]
 - **B7 — CI, configuración compartida y repositorio requieren aprobación explícita**: ningún comando del producto los toca sin que el usuario lo autorice en el momento.
 - **B8 — Hallazgos separados**: lo que falla en el producto va aparte de lo que falla en nuestro sistema. Mezclarlos hace que se descarte una herramienta útil o que se ignore un defecto propio.
 - **B9 — Lo no verificado se declara**: si el entorno no permitió observar algo, se dice. Que compile o que suba el puntaje no es verificación.
-- **B10 — Notion solo a pedido**: el registro vive en disco. No se crea ni se actualiza una página porque sí.
+- **B10 — Notion solo a pedido**: el registro vive en disco, en `D:\Investigacion - V4\02-investigaciones`. No se crea ni se actualiza una página porque sí.
 - **B11 — Skill solo con evidencia**: no proponer convertir la investigación en skill o capacidad antes de que los hechos verificados lo sostengan. Si se decide, el trabajo es de `skill-builder`.
-- **B12 — Casos anteriores primero**: leer `references/casos/` antes de abrir uno nuevo. Dos registros del mismo objeto fragmentan la evidencia.
+- **B12 — Casos anteriores primero**: revisar la carpeta de investigaciones y `references/casos/` antes de abrir uno nuevo. Dos registros del mismo objeto fragmentan la evidencia.
 - **B13 — Capacidades verificadas antes de actuar**: no asumir conectores de Notion, búsqueda web ni permisos por el frontmatter. Confirmar la capacidad disponible antes de usarla; si falta, conservar el caso local y declarar la sincronización como pendiente.
 - **B14 — La capa de lectura refleja el estado actual**: toda actualización reescribe "En 30 segundos", la historia y "Qué sigue". Cerrar una actualización dejando arriba una conclusión vieja hace que el lector decida con información vencida, porque no va a llegar al registro de abajo.
 - **B15 — Guía probada o no es guía**: cada comando y fragmento de código de una guía paso a paso se ejecuta antes de publicarse, y la salida que muestra la guía es la observada. Los errores no reproducidos se etiquetan como probables. Una guía sin probar deja al lector bloqueado en el primer fallo.
@@ -254,4 +276,4 @@ Pendiente:     [experimento o verificación que quedó abierta]
 - `references/estructura-de-informe.md` — las dos capas del informe, la guía paso a paso, el formato en Notion, etiquetas de evidencia, clasificación de activos y reglas de métricas
 - `references/evaluacion-en-uso.md` — protocolo de prueba sobre un sistema propio: preparación, seguridad previa, rondas, verificación, veredicto y trampas conocidas
 - `references/notion-research.md` — destino, propiedades y plantilla de la base Investigaciones
-- `references/casos/` — registros de investigaciones anteriores, uno por objeto estudiado
+- `references/casos/` — registros anteriores a 2026-09-24, solo lectura; los nuevos van en `D:\Investigacion - V4\02-investigaciones`

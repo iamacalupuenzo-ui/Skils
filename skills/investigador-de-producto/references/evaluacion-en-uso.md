@@ -144,7 +144,7 @@ Una investigación sin hechos verificados es una reseña, no una investigación.
 
 ## Qué registrar siempre
 
-El registro del caso se guarda en `references/casos/[YYYY-MM]-[objeto].md` e incluye,
+El registro del caso se guarda en `D:\Investigacion - V4\02-investigaciones\investigador-de-producto-[objeto]-v[N]-[YYYY-MM-DD].md` e incluye,
 como mínimo: decisión, baseline con fecha, versión exacta probada, cronología de rondas
 con el número antes y después de cada una, hallazgos separados en "del producto" y "de
 nuestro sistema", lo que no se pudo verificar, veredicto y qué quedó como capacidad
