@@ -13,6 +13,11 @@ Notion es una fuente suficiente para planificar y auditar la cadena autorizada.
         └── Tareas de ejecución y validación, cuando se autoricen
 ```
 
+Épicas, Historias de usuario y Casos de uso viven en **Gestión de producto**. Los
+proyectos y las tareas viven en **Minimalist Project Manager**: la épica se relaciona con
+su proyecto por `Proyecto` (base Project) y las historias y casos con sus tareas por
+`Tareas` (base Tasks Manager). No crear proyectos ni tareas dentro de Gestión de producto.
+
 La historia de usuario conserva el alcance funcional y su fuente. Un caso de uso
 expresa un flujo, una regla o una interacción verificable dentro de esa historia.
 No sustituir la historia por sus casos, no presentar un caso como una nueva historia

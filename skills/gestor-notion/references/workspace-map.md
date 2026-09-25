@@ -7,9 +7,11 @@ Este archivo es una instantánea para routing; el schema vivo es la fuente de ve
 > documentado en `../../../docs/sistema-skills-notion.md`. `Skills & Marcos` de Process OS
 > se conserva como base histórica y no recibe nuevos registros.
 
-> Para gestión personal de proyectos y productividad, el destino simplificado vigente es
-> **Minimalist Project Manager**. Consultar el schema vivo y la sección correspondiente de
-> `../../gestion-proyectos/references/modelo-notion.md` antes de modificarlo.
+> Para proyectos y tareas (de Comsatel y personales, separados por `Ámbito`), el destino
+> vigente es **Minimalist Project Manager**. **Gestión de producto** guarda solo Épicas →
+> Historias de usuario → Casos de uso, relacionados con Project y Tasks Manager (desde
+> 2026-09-24). Consultar el schema vivo y la sección correspondiente de
+> `../../gestion-proyectos/references/modelo-notion.md` antes de modificarlos.
 
 ---
 

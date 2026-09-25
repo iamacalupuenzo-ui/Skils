@@ -6,7 +6,7 @@ description: >
   "busca en Notion", "relaciona estas páginas" o "crea una plantilla". Para gestionar
   tareas, dependencias, avances o seguimiento PM, usar gestion-proyectos.
 metadata:
-  version: "1.2.1"
+  version: "1.2.2"
 ---
 
 # Gestor de Notion — Operador del workspace

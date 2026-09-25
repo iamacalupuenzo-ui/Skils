@@ -91,6 +91,18 @@ Proyecto ↔ Tareas
 Tarea ──Bloqueada por / Bloquea a── Tarea
 ```
 
+**Puente con Gestión de producto (desde 2026-09-24).** Todos los proyectos y tareas, de
+Comsatel o personales, viven aquí; `Ámbito` (`Comsatel` / `Personal`) los separa. Gestión de
+producto guarda solo el qué: Épicas → Historias de usuario → Casos de uso. Las relaciones:
+
+| Desde | Propiedad | Hacia |
+|---|---|---|
+| Épica | `Proyecto` ↔ `Épicas` | Project |
+| Historia de usuario | `Tareas` ↔ `Historia` | Tasks Manager |
+| Caso de uso | `Tareas` ↔ `Caso de uso` | Tasks Manager |
+
+No crear proyectos ni tareas dentro de Gestión de producto.
+
 | Entidad | Fuente de datos | Propósito |
 |---|---|---|
 | Project | `collection://b2d1a7d0-6388-8272-9051-877b11c20d9d` | Resultado de trabajo con fechas, prioridad, salud y tareas relacionadas. |
