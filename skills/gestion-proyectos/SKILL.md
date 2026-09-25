@@ -7,7 +7,7 @@ description: >
   Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
   revisar riesgos, dar estado o hacer seguimiento.
 metadata:
-  version: "1.9.0"
+  version: "1.9.1"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -121,6 +121,11 @@ evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
    propia. Primero se define el mapeo Notion ↔ ClickUp y la acción concreta autorizada.
 4. Distinguir siempre entre un dato interno de Notion, una señal compartida de ClickUp y una
    discrepancia pendiente de resolver; ninguna fuente sobrescribe la otra automáticamente.
+4.1. **No adelantar en ClickUp.** Notion es personal y puede ir adelantado; ClickUp es
+   colaborativo y muestra el avance al ritmo del cronograma. Una tarea completada en Notion solo
+   se marca completada en ClickUp si su fecha límite es hoy o anterior; si vence después, se deja
+   como está en ClickUp hasta su fecha, aunque ya esté terminada. Cuadrar solo el rango de fechas
+   que el usuario indique.
 5. Cuando el usuario autorice una sincronización, finalizar primero el registro y las
    relaciones de Notion. Antes de cambiar ClickUp, distinguir expresamente si «proyecto» significa
    una etiqueta de la tarea o un contenedor jerárquico (carpeta/lista); nunca inferirlo por el
