@@ -22,8 +22,8 @@ La decisión y evidencia que justifican la CLI están documentadas en
 
 | Skill | Estado | Entornos |
 | --- | --- | --- |
-| `comsatel-angular-product-builder` | Activo | Codex, Claude Code |
-| `comsatel-product-orchestrator` | Activo | Codex, Claude Code |
+| `angular-product-builder` | Activo | Codex, Claude Code |
+| `product-orchestrator` | Activo | Codex, Claude Code |
 | `comsatel-design-system` | Activo | Codex, Claude Code |
 | `documentacion-handoff` | Activo | Codex, Claude Code |
 | `epica-a-plan-desarrollo` | Activo | Codex, Claude Code |

@@ -1,0 +1,107 @@
+# Mapa de enrutamiento de Product Orchestrator
+
+Este mapa separa la toma de decisión del trabajo especializado. El orquestador
+elige la ruta y conserva la evidencia; no reemplaza al skill elegido ni mezcla
+sus permisos.
+
+## Inventario de responsabilidades
+
+| Skill | Responsabilidad exclusiva | Cuándo se invoca | No usar para |
+| --- | --- | --- | --- |
+| `product-orchestrator` | Clasificar la petición, ordenar la secuencia y consolidar el resultado | Peticiones ambiguas, transversales o que requieren más de un dominio, en cualquier proyecto | Implementar pantallas, modificar APIs o publicar por cuenta propia |
+| `epica-a-plan-desarrollo` | Responsable de Gestión de producto: segmentar una épica ya redactada en módulos, flujos, historias, casos, criterios y plan de pruebas, y mantener su estructura en Notion | La entrada incluye una épica, historias o export legible de GitLab/GitHub antes de construir | Leer enlaces automáticamente, crear épicas desde cero o implementar código |
+| `angular-product-builder` | Planificar y construir una aplicación Angular que consume un sistema de diseño publicado; confirma con el usuario cuál usar | Pantallas, flujos, formularios, alertas, mapas o una aplicación nueva en Angular | Modificar componentes o archivos internos del sistema de diseño; proyectos que no son Angular |
+| `frontend-design-direction` | Definir dirección visual y revisar jerarquía, tono, densidad y consistencia | La petición construye o mejora una interfaz y requiere una decisión visual explícita | Reemplazar investigación de producto, flujos o contratos de componentes |
+| `gestion-proyectos` | Validar y operar la trazabilidad de proyecto, entregables, tareas, dependencias, riesgos y cierre en Notion | La planificación o el seguimiento deben persistir en Notion | Inventar requisitos de producto o implementar código |
+| `gestor-notion` | Operar el schema, bases, relaciones y vistas del workspace | El usuario autorizó crear o modificar el modelo de Notion | Decidir por sí solo la política de gestión de proyecto |
+| `comsatel-design-system` | Auditar o cambiar componentes, tokens, documentación, pruebas y publicación de Comsatel DS | La petición toca el repositorio de Comsatel DS o falta/cambia una API pública de ese sistema | Construir una aplicación consumidora; mantener otro sistema de diseño |
+| `reference-core` | Guiar cambios al runtime interno de Angular | El destino verificado es `packages/core` de un checkout de Angular | Aplicaciones Angular, librerías de negocio, componentes de un sistema de diseño o documentación de producto |
+
+`frontend-design-direction` y `reference-core` son skills externos: no forman parte
+del catálogo Skils ni se instalan con él. Son opcionales y se usan solo si la
+verificación de disponibilidad los encuentra.
+
+Hoy el catálogo solo tiene builder para Angular. Si el proyecto usa otro stack
+(React, Vue, móvil), declarar que no hay builder disponible y ofrecer planificar
+con `epica-a-plan-desarrollo`; no forzar el builder de Angular.
+
+## Árbol de decisión
+
+1. Si la solicitud parte de una épica, historia o export de GitLab/GitHub,
+   comprobar que su contenido es legible. Si solo hay URL, pedir texto o export
+   y detener esa rama; no se hace fetch automático. Con contenido legible,
+   activar `epica-a-plan-desarrollo` y usar su documento de salida como entrada
+   del flujo de producto.
+2. Si el usuario pidió registrar o gestionar el plan en Notion, aplica el
+   contrato Proyecto → Épica → Historia de usuario → Caso de uso: el proyecto y
+   las tareas con `gestion-proyectos`, y la épica, las historias y los casos con
+   `epica-a-plan-desarrollo`. Si cambia el schema, invoca `gestor-notion` en modo
+   MODELO. Esa persistencia no autoriza ni reemplaza trabajo de código.
+3. Identifica el destino real leyendo el manifiesto, las rutas y el estado Git:
+   stack, sistema de diseño instalado y si es una aplicación o una librería. Un
+   directorio que contiene `package.json` no identifica por sí solo un proyecto
+   consumidor, un sistema de diseño ni Angular.
+4. Si el destino es un checkout de Angular y el cambio afecta
+   `packages/core/**`, activa `reference-core`. Ese skill es obligatorio para
+   ese alcance y el orquestador permanece como coordinador.
+5. Si el destino es un sistema de diseño o la petición solicita crear,
+   modificar, documentar, probar o publicar un componente/tokens/export
+   público, deriva a su mantenedor (`comsatel-design-system` si es Comsatel DS;
+   si es otro, al dueño que indique el usuario) y no construye producto en ese
+   mismo recorrido.
+6. Si el destino es una aplicación Angular consumidora o se pidió iniciar una
+   nueva en Angular, deriva a `angular-product-builder`, que confirma el sistema
+   de diseño con el usuario. Si el stack es otro, aplica la regla de "sin
+   builder disponible" del inventario.
+7. Durante una pantalla o flujo consumidor, activa
+   `frontend-design-direction` (si está disponible) después de que el builder
+   haya definido actor, tarea, estados y restricciones, y antes de cerrar
+   decisiones de jerarquía, densidad, tono y responsive.
+8. Si el consumidor necesita una API, token, asset o comportamiento público
+   inexistente, detén esa pieza. Produce un handoff para el mantenedor del
+   sistema de diseño; no copies CSS, assets o archivos internos y no inventes
+   una variante local.
+
+## Secuencia para una característica consumidora
+
+```text
+Necesidad del usuario
+  -> Épica/historias disponibles: segmentación trazable con Épica a plan de desarrollo
+  -> Builder del stack: sistema de diseño confirmado, actores, reglas, estados, datos y plan
+  -> Frontend Design Direction (opcional): dirección visual acorde al dominio
+  -> Mantenedor del sistema de diseño: solo si debe confirmar una API pública o falta un contrato
+  -> Builder del stack: implementación con componentes y estilos públicos
+  -> Verificación: build, flujo crítico, teclado, foco, responsive y estados
+```
+
+No se invierte la secuencia: definir una estética antes de conocer el flujo
+convierte la interfaz en decoración; confirmar un componente desde código
+interno rompe el contrato de consumo.
+
+## Disponibilidad y recuperación
+
+Antes de nombrar un skill externo como ejecutable, comprueba una de estas rutas:
+
+```powershell
+$candidates = @(
+  (Join-Path $env:USERPROFILE '.codex\skills\frontend-design-direction'),
+  (Join-Path $env:USERPROFILE '.claude\skills\frontend-design-direction')
+)
+$candidates | Where-Object { Test-Path -LiteralPath (Join-Path $_ 'SKILL.md') }
+```
+
+Repite la verificación cambiando el nombre a `reference-core`. Si falta uno,
+declara la capacidad pendiente y conserva la ruta que sí puede ejecutarse. No
+copies el contenido externo dentro de un proyecto ni lo declares disponible
+solo porque el repositorio remoto sea accesible.
+
+Los comandos de referencia para instalar los dos skills evaluados en Codex son:
+
+```powershell
+npx skills add https://github.com/angular/angular/tree/main/.agent/skills/reference-core -g -a codex -y
+npx skills add https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/frontend-design-direction -g -a codex -y
+```
+
+Son operaciones de instalación independientes. Deben ejecutarse solo cuando el
+usuario las haya autorizado y requieren una nueva sesión del agente para que el
+catálogo se redescubra.

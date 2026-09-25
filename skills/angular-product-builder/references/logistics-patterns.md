@@ -2,7 +2,7 @@
 
 Los referentes sirven para aprender estructura de trabajo, jerarquía y estados;
 nunca para copiar marca, capturas, CSS, textos ni componentes. La UI final usa
-los componentes y tokens públicos de Comsatel DS.
+los componentes y tokens públicos del sistema de diseño elegido.
 
 ## Investigación proporcional
 

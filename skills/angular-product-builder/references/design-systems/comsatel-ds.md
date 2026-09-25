@@ -1,4 +1,9 @@
-# Contrato de consumo de Comsatel DS
+# Sistema de diseño: Comsatel DS
+
+Leer después de `../design-system-contract.md` cuando el sistema elegido para el
+proyecto es Comsatel DS. Aquí están los datos exactos de este sistema: paquete,
+registro, estilos, tipografía y recetas de composición. Su mantenedor es el skill
+`comsatel-design-system`.
 
 ## Límite de responsabilidad
 

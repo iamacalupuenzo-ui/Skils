@@ -11,8 +11,8 @@ Catálogo vigente: base Skills del espacio `Herramientas de IA` (antes `Sistema 
 | `documentacion-handoff` | `skills/documentacion-handoff` | Coincidencia directa; se conserva para evitar una migración no implementada. |
 | `paridad-diseno-desarrollo` | `skills/paridad-diseno-desarrollo` | Coincidencia directa; se conserva para evitar una migración no implementada. |
 | `gestor-notion` | `skills/gestor-notion` | Coincidencia directa; se conserva para evitar una migración no implementada. |
-| `comsatel-angular-product-builder` | `skills/comsatel-angular-product-builder` | Coincidencia directa; registrado el 2026-09-24. |
-| `comsatel-product-orchestrator` | `skills/comsatel-product-orchestrator` | Coincidencia directa. |
+| `angular-product-builder` | `skills/angular-product-builder` | Coincidencia directa; registrado el 2026-09-24. |
+| `product-orchestrator` | `skills/product-orchestrator` | Coincidencia directa. |
 | `epica-a-plan-desarrollo` | `skills/epica-a-plan-desarrollo` | Coincidencia directa. |
 
 Cuando se renombre un skill, actualizar esta tabla, el registro en Notion y el instalador

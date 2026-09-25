@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "skills": [
-    "comsatel-angular-product-builder",
-    "comsatel-product-orchestrator",
+    "angular-product-builder",
+    "product-orchestrator",
     "comsatel-design-system",
     "documentacion-handoff",
     "epica-a-plan-desarrollo",

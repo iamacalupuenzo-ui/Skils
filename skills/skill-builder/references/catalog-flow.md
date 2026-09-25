@@ -111,7 +111,7 @@ encabezado 2:
 Todo lo que la página afirma sale del `SKILL.md` y sus referencias. Una recomendación de
 uso que el skill no ejecuta por sí mismo (por ejemplo, guardar un plan en un archivo) se
 escribe como práctica para la persona, no como comportamiento del skill. Ejemplo de
-referencia: la página de `comsatel-angular-product-builder`.
+referencia: la página de `angular-product-builder`.
 
 Ícono: nativo de Notion, `icons/code_blue` para skills y `icons/tag_blue` para
 capacidades. Nunca emojis. Encabezados 2 y 3; nunca encabezado 1.
