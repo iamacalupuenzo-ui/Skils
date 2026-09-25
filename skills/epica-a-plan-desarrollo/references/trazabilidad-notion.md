@@ -40,8 +40,7 @@ abrir las historias.
 
 **Propiedades:** `Épica` (título `EP-<n> — <resultado>`, sin mezclar el nombre de una
 historia), `Estado`, `Prioridad`, `Objetivo`, `Criterio de cierre`, `Proyecto`,
-`Historias de usuario`, `Fuente`, `Versión del plan`, `Inicio`, `Fin objetivo` y
-`Responsable`. No agregar propiedades que repitan el cuerpo (por ejemplo, riesgos).
+`Historias de usuario`, `Fuente`, `Versión del plan`, `Inicio` y `Fin objetivo`. No agregar propiedades que repitan el cuerpo (por ejemplo, riesgos).
 
 **Cuerpo, en este orden y con encabezado 2:**
 1. `Qué se construye`: un párrafo con el actor, el resultado y para qué, y una lista numerada
